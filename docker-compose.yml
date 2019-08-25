@@ -1,0 +1,31 @@
+version: '3.7'
+
+services:
+
+  db:
+    container_name: db
+    image: postgres
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - surwave_net
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+
+  adminer:
+    container_name: adminer
+    image: adminer
+    networks:
+      - surwave_net
+    ports:
+      - 1234:8080
+
+volumes:
+  db: {}
+
+networks:
+  surwave_net:
+    driver: bridge
+    name: surwave_net
