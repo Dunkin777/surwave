@@ -13,8 +13,8 @@ public class OptionController {
 
   private final OptionRepository optionRepository;
 
-  @GetMapping("/hi")
-  String getAnswer() {
+  @GetMapping("/all")
+  String getAllAnswers() {
     optionRepository.findAll();
     return "Well, hello";
   }

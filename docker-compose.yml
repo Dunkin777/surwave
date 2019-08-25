@@ -6,7 +6,7 @@ services:
     container_name: db
     image: postgres
     volumes:
-      - db:/var/lib/postgresql/data
+      - ./db:/var/lib/postgresql
     networks:
       - surwave_net
     ports:
@@ -21,9 +21,6 @@ services:
       - surwave_net
     ports:
       - 1234:8080
-
-volumes:
-  db: {}
 
 networks:
   surwave_net:
