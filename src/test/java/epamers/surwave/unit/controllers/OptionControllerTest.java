@@ -1,4 +1,4 @@
-package unit.controllers;
+package epamers.surwave.unit.controllers;
 
 import epamers.surwave.controllers.OptionController;
 import epamers.surwave.services.OptionService;
@@ -18,10 +18,12 @@ public class OptionControllerTest {
 
   @Before
   public void setUp() {
+
     MockitoAnnotations.initMocks(this);
   }
 
   @Test
   public void getAllAnswers() {
+
   }
 }
