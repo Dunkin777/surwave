@@ -34,4 +34,9 @@ public class OptionService {
     option.setId(id);
     optionRepository.save(option);
   }
+
+  public void delete(Long id) {
+
+    optionRepository.deleteById(id);
+  }
 }

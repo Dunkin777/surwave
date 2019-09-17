@@ -8,13 +8,17 @@ import epamers.surwave.entities.Option;
 import epamers.surwave.services.OptionService;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -42,14 +46,22 @@ public class OptionController {
   }
 
   @PostMapping
-  public void createAnswer(@RequestBody OptionForm optionForm) {
+  @ResponseStatus(HttpStatus.CREATED)
+  public void createAnswer(@RequestBody OptionForm optionForm, HttpServletResponse response) {
 
-    optionService.save(formToOptionConverter.convert(optionForm));
+    Long newEntityId = optionService.save(formToOptionConverter.convert(optionForm));
+    response.addHeader("Location", "/option/" + newEntityId);
   }
 
   @PutMapping("/{id}")
   public void updateAnswer(@PathVariable Long id, @RequestBody OptionForm optionForm) {
 
     optionService.update(id, formToOptionConverter.convert(optionForm));
+  }
+
+  @DeleteMapping("/{id}")
+  public void deleteAnswer(@PathVariable Long id) {
+
+    optionService.delete(id);
   }
 }
