@@ -50,8 +50,8 @@ public class OptionController {
   @ResponseStatus(HttpStatus.CREATED)
   public void createAnswer(@RequestBody @Valid OptionForm optionForm, HttpServletResponse response) {
 
-    Long newEntityId = optionService.save(converter.convert(optionForm, Option.class));
-    response.addHeader("Location", OPTION_URL + "/" + newEntityId);
+    Option option = optionService.create(converter.convert(optionForm, Option.class));
+    response.addHeader("Location", OPTION_URL + "/" + option.getId());
   }
 
   @PutMapping("/{id}")

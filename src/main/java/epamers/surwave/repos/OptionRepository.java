@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OptionRepository extends JpaRepository<Option, Long> {
 
-  List<Option> findByTitle(String title);
+  List<Option> findAllByTitle(String title);
 
-  List<Option> findByAuthor(String author);
+  List<Option> findAllByAuthor(String author);
 }

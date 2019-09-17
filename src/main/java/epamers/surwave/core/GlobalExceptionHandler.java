@@ -1,5 +1,6 @@
 package epamers.surwave.core;
 
+import java.util.NoSuchElementException;
 import javax.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,14 @@ public class GlobalExceptionHandler {
   public String handleEntityNotFoundException(EntityNotFoundException ex) {
 
     log.debug("EntityNotFoundException: ", ex);
+    return ex.getMessage();
+  }
+
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  @ExceptionHandler(NoSuchElementException.class)
+  public String handleNoSuchElementException(NoSuchElementException ex) {
+
+    log.debug("NoSuchElementException: ", ex);
     return ex.getMessage();
   }
 
