@@ -31,6 +31,10 @@ public class OptionService {
 
   public void update(Long id, Option option) {
 
+    if (option == null) {
+      throw new IllegalArgumentException();
+    }
+
     option.setId(id);
     optionRepository.save(option);
   }

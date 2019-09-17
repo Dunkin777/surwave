@@ -1,5 +1,6 @@
 package epamers.surwave.integration;
 
+import static epamers.surwave.core.Contract.OPTION_URL;
 import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -12,10 +13,14 @@ import epamers.surwave.dtos.OptionForm;
 import org.junit.Before;
 import org.junit.Test;
 
-//TODO: first version. Probably will require rewriting after changing Option entity. Also, need to add 'Put' tests.
+//TODO: first version. Probably will require rewriting after changing Option entity. Also, need to add some 'Put' tests.
 public class ITOptionTest extends IntegrationTest {
 
   private OptionForm optionForm;
+
+  private final String AUTHOR = "Some Author";
+  private final String MEDIA_URL = "http://youtube.com/supervideo256";
+  private final String TITLE = "Elton John - Komarinskaya (feat. Ella Fitzgerald)";
 
   @Before
   public void setUp() {
@@ -23,18 +28,18 @@ public class ITOptionTest extends IntegrationTest {
     RestAssured.port = port;
 
     optionForm = OptionForm.builder()
-        .author("ME")
-        .mediaUrl("hahaha.com")
-        .title("hahaha")
+        .author(AUTHOR)
+        .mediaUrl(MEDIA_URL)
+        .title(TITLE)
         .build();
   }
 
   @Test
-  public void optionControllerTest() {
+  public void optionController_successCase() {
 
     //Check that we have zero Options at the start
     givenJson()
-        .get("/option/all")
+        .get(OPTION_URL + "/all")
         .then()
         .statusCode(SC_OK)
         .body("$", hasSize(0));
@@ -42,7 +47,7 @@ public class ITOptionTest extends IntegrationTest {
     //Post a new Option
     Response response = givenJson()
         .body(optionForm)
-        .post("/option")
+        .post(OPTION_URL)
         .then()
         .statusCode(SC_CREATED)
         .extract()
@@ -55,13 +60,13 @@ public class ITOptionTest extends IntegrationTest {
         .get(newEntityURI)
         .then()
         .statusCode(SC_OK)
-        .body("title", equalTo("hahaha"))
-        .body("mediaUrl", equalTo("hahaha.com"))
-        .body("author", equalTo("ME"));
+        .body("title", equalTo(TITLE))
+        .body("mediaUrl", equalTo(MEDIA_URL))
+        .body("author", equalTo(AUTHOR));
 
     //Ensure that we have exactly one Option in repo
     givenJson()
-        .get("/option/all")
+        .get(OPTION_URL + "/all")
         .then()
         .statusCode(SC_OK)
         .body("$", hasSize(1));
@@ -80,7 +85,7 @@ public class ITOptionTest extends IntegrationTest {
 
     //Check that we have zero Options in the end
     givenJson()
-        .get("/option/all")
+        .get(OPTION_URL + "/all")
         .then()
         .statusCode(SC_OK)
         .body("$", hasSize(0));
