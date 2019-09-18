@@ -20,18 +20,34 @@ public class OptionService {
 
   public Option getById(Long id) {
 
-    return optionRepository.getOne(id);
+    return optionRepository.findById(id).orElseThrow();
   }
 
   @Transactional
-  public Long save(Option option) {
+  public Option create(Option option) {
 
-    return optionRepository.save(option).getId();
+    if (option == null) {
+      throw new IllegalArgumentException();
+    }
+    return optionRepository.save(option);
   }
 
+  @Transactional
   public void update(Long id, Option option) {
 
+    if (option == null) {
+      throw new IllegalArgumentException();
+    }
+
+    optionRepository.findById(id).orElseThrow();
     option.setId(id);
     optionRepository.save(option);
+  }
+
+  @Transactional
+  public void delete(Long id) {
+
+    optionRepository.findById(id).orElseThrow();
+    optionRepository.deleteById(id);
   }
 }
