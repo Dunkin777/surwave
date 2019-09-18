@@ -26,20 +26,28 @@ public class OptionService {
   @Transactional
   public Option create(Option option) {
 
+    if (option == null) {
+      throw new IllegalArgumentException();
+    }
     return optionRepository.save(option);
   }
 
+  @Transactional
   public void update(Long id, Option option) {
 
     if (option == null) {
       throw new IllegalArgumentException();
     }
+
+    optionRepository.findById(id).orElseThrow();
     option.setId(id);
     optionRepository.save(option);
   }
 
+  @Transactional
   public void delete(Long id) {
 
+    optionRepository.findById(id).orElseThrow();
     optionRepository.deleteById(id);
   }
 }

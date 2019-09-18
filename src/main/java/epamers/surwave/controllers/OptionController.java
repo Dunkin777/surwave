@@ -32,7 +32,7 @@ public class OptionController {
   private final ConversionService converter;
 
   @GetMapping("/all")
-  public List<OptionView> getAllAnswers() {
+  public List<OptionView> getAllOptions() {
 
     return optionService.getAll().stream()
         .map(o -> converter.convert(o, OptionView.class))
@@ -40,7 +40,7 @@ public class OptionController {
   }
 
   @GetMapping("/{id}")
-  public OptionView getAnswer(@PathVariable Long id) {
+  public OptionView getOption(@PathVariable Long id) {
 
     Option option = optionService.getById(id);
     return converter.convert(option, OptionView.class);
@@ -48,20 +48,21 @@ public class OptionController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public void createAnswer(@RequestBody @Valid OptionForm optionForm, HttpServletResponse response) {
+  public void createOption(@RequestBody @Valid OptionForm optionForm, HttpServletResponse response) {
 
     Option option = optionService.create(converter.convert(optionForm, Option.class));
     response.addHeader("Location", OPTION_URL + "/" + option.getId());
   }
 
   @PutMapping("/{id}")
-  public void updateAnswer(@PathVariable Long id, @RequestBody @Valid OptionForm optionForm) {
+  public void updateOption(@PathVariable Long id, @RequestBody @Valid OptionForm optionForm) {
 
     optionService.update(id, converter.convert(optionForm, Option.class));
   }
 
+  //TODO: remove this endpoint when Survey controller will be ready
   @DeleteMapping("/{id}")
-  public void deleteAnswer(@PathVariable Long id) {
+  public void deleteOption(@PathVariable Long id) {
 
     optionService.delete(id);
   }
