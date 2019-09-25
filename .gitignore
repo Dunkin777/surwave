@@ -22,6 +22,10 @@ gradle/
 *.ipr
 out/
 
+### Log file ###
+*.log.gz
+*.log
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
