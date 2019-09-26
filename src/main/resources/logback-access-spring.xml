@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="LOG_ACCESS_NAME" value="logs/surwave_access"/>
+
+    <appender name="FILE_ACCESS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_ACCESS_NAME}.log</file>
+        <encoder>
+            <pattern>combined</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_ACCESS_NAME}_%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <appender-ref ref="FILE_ACCESS"/>
+
+</configuration>
