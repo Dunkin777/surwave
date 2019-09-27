@@ -9,12 +9,13 @@ import org.springframework.stereotype.Component;
 public class FormToOptionConverter implements Converter<OptionForm, Option> {
 
   @Override
-  public Option convert(OptionForm option) {
+  public Option convert(OptionForm optionForm) {
 
     return Option.builder()
-        .author(option.getAuthor())
-        .mediaUrl(option.getMediaUrl())
-        .title(option.getTitle())
+        .author(optionForm.getAuthor())
+        .mediaUrl(optionForm.getMediaUrl())
+        .title(optionForm.getTitle())
+        .comment(optionForm.getComment())
         .build();
   }
 }

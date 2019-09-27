@@ -16,6 +16,7 @@ public class OptionToViewConverter implements Converter<Option, OptionView> {
         .id(option.getId())
         .mediaUrl(option.getMediaUrl())
         .title(option.getTitle())
+        .comment(option.getComment())
         .build();
   }
 }

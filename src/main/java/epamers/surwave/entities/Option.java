@@ -25,4 +25,6 @@ public class Option {
   private String title;
 
   private String mediaUrl;
+
+  private String comment;
 }

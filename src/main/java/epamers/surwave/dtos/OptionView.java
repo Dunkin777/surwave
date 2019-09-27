@@ -14,4 +14,6 @@ public class OptionView {
   private String title;
 
   private String mediaUrl;
+
+  private String comment;
 }

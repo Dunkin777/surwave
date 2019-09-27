@@ -21,6 +21,7 @@ public class ITOptionTest extends IntegrationTest {
   private final String AUTHOR = "Some Author";
   private final String MEDIA_URL = "http://youtube.com/supervideo256";
   private final String TITLE = "Elton John - Komarinskaya (feat. Ella Fitzgerald)";
+  private final String COMMENT = "Starts in D#, then sudden change to another religion.";
 
   @Before
   public void setUp() {
@@ -31,6 +32,7 @@ public class ITOptionTest extends IntegrationTest {
         .author(AUTHOR)
         .mediaUrl(MEDIA_URL)
         .title(TITLE)
+        .comment(COMMENT)
         .build();
   }
 
@@ -62,6 +64,7 @@ public class ITOptionTest extends IntegrationTest {
         .statusCode(SC_OK)
         .body("title", equalTo(TITLE))
         .body("mediaUrl", equalTo(MEDIA_URL))
+        .body("comment", equalTo(COMMENT))
         .body("author", equalTo(AUTHOR));
 
     //Ensure that we have exactly one Option in repo

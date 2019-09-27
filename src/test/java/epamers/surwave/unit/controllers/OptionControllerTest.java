@@ -33,6 +33,8 @@ public class OptionControllerTest {
   private final String AUTHOR = "Some Author";
   private final String MEDIA_URL = "http://youtube.com/supervideo256";
   private final String TITLE = "Elton John - Komarinskaya (feat. Ella Fitzgerald)";
+  private final String COMMENT = "Starts in D#, then sudden change to another religion.";
+
   private Option option;
   private OptionView optionView;
   private OptionForm optionForm;
@@ -46,6 +48,7 @@ public class OptionControllerTest {
         .mediaUrl(MEDIA_URL)
         .title(TITLE)
         .id(ID)
+        .comment(COMMENT)
         .build();
 
     optionForm = OptionForm.builder().build();
