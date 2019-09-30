@@ -8,16 +8,18 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+//Added only to test storing of multiple entity types in one table. Unused for now.
+
 @EqualsAndHashCode(callSuper = true)
-@DiscriminatorValue("classic")
+@DiscriminatorValue("ranged")
 @Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClassicSurvey extends Survey {
+public class RangedSurvey extends Survey {
 
-  private final SurveyType type = SurveyType.CLASSIC;
+  private final SurveyType type = SurveyType.RANGED;
 
-  private Integer choicesByUser;
+  private Boolean logarithmicRatingScale;
 }

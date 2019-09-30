@@ -1,33 +1,49 @@
 package epamers.surwave.entities;
 
 import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING)
+@Builder
+@NoArgsConstructor
 @Data
-abstract class Survey {
+public abstract class Survey {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private SurveyType type;
+
   @OneToMany(fetch = FetchType.EAGER)
   private Set<Option> options;
 
-  @Enumerated(EnumType.STRING)
-  private SurveyType type;
+  private String description;
 
   private Integer proposalsByUser;
 
-  private String description;
+  private Boolean isUsersSeparated;
 
-  private Boolean isStarted;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private SurveyState state;
 }

@@ -1,10 +1,10 @@
 package epamers.surwave.repos;
 
-import epamers.surwave.entities.ClassicSurvey;
+import epamers.surwave.entities.Survey;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ClassicSurveyRepository extends JpaRepository<ClassicSurvey, Long> {
+public interface SurveyRepository extends JpaRepository<Survey, Long> {
 
 }
