@@ -1,10 +1,10 @@
 package epamers.surwave.controllers;
 
-import static epamers.surwave.core.Contract.OPTION_URL;
 import static epamers.surwave.core.Contract.SURVEY_URL;
 
-import epamers.surwave.dtos.OptionForm;
 import epamers.surwave.dtos.OptionView;
+import epamers.surwave.dtos.SurveyForm;
+import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.services.SurveyService;
 import java.util.List;
@@ -41,24 +41,24 @@ public class SurveyController {
   }
 
   @GetMapping("/{id}")
-  public OptionView getSurvey(@PathVariable Long id) {
+  public SurveyView getSurvey(@PathVariable Long id) {
 
     Survey survey = surveyService.getById(id);
-    return converter.convert(survey, OptionView.class);
+    return converter.convert(survey, SurveyView.class);
   }
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public void createSurvey(@RequestBody @Valid OptionForm optionForm, HttpServletResponse response) {
+  public void createSurvey(@RequestBody @Valid SurveyForm surveyForm, HttpServletResponse response) {
 
-    Survey survey = surveyService.create(converter.convert(optionForm, Survey.class));
-    response.addHeader("Location", OPTION_URL + "/" + survey.getId());
+    Survey survey = surveyService.create(converter.convert(surveyForm, Survey.class));
+    response.addHeader("Location", SURVEY_URL + "/" + survey.getId());
   }
 
   @PutMapping("/{id}")
-  public void updateSurvey(@PathVariable Long id, @RequestBody @Valid OptionForm optionForm) {
+  public void updateSurvey(@PathVariable Long id, @RequestBody @Valid SurveyForm surveyForm) {
 
-    surveyService.update(id, converter.convert(optionForm, Survey.class));
+    surveyService.update(id, converter.convert(surveyForm, Survey.class));
   }
 
   @DeleteMapping("/{id}")

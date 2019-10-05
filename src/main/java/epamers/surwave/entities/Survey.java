@@ -14,14 +14,14 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING)
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @Data
 public abstract class Survey {
@@ -39,8 +39,10 @@ public abstract class Survey {
 
   private String description;
 
+  @Column(nullable = false)
   private Integer proposalsByUser;
 
+  @Column(nullable = false)
   private Boolean isUsersSeparated;
 
   @Enumerated(EnumType.STRING)
