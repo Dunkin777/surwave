@@ -60,7 +60,6 @@ public class OptionController {
     optionService.update(id, converter.convert(optionForm, Option.class));
   }
 
-  //TODO: remove this endpoint when Survey controller will be ready
   @DeleteMapping("/{id}")
   public void deleteOption(@PathVariable Long id) {
 

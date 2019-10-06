@@ -6,6 +6,7 @@ import epamers.surwave.dtos.OptionView;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.entities.Survey;
+import epamers.surwave.entities.SurveyState;
 import epamers.surwave.services.SurveyService;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,6 +60,18 @@ public class SurveyController {
   public void updateSurvey(@PathVariable Long id, @RequestBody @Valid SurveyForm surveyForm) {
 
     surveyService.update(id, converter.convert(surveyForm, Survey.class));
+  }
+
+  @PutMapping("/{id}/options")
+  public void addOptionsToSurvey(@PathVariable Long id, @RequestBody List<Long> optionIds) {
+
+    surveyService.addOptions(id, optionIds);
+  }
+
+  @PutMapping("/{id}/state")
+  public void updateSurveyState(@PathVariable Long id, @RequestBody SurveyState surveyState) {
+
+    surveyService.updateState(id, surveyState);
   }
 
   @DeleteMapping("/{id}")

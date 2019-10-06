@@ -37,4 +37,12 @@ public class GlobalExceptionHandler {
     log.debug("IllegalArgumentException: ", ex);
     return ex.getMessage();
   }
+
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(IllegalStateException.class)
+  public String handleIllegalStateException(IllegalArgumentException ex) {
+
+    log.debug("IllegalStateException: ", ex);
+    return ex.getMessage();
+  }
 }

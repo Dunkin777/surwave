@@ -33,8 +33,8 @@ public class ITSurveyTest extends IntegrationTest {
 
   private final String AUTHOR = "Some Author";
   private final String MEDIA_URL = "http://youtube.com/supervideo256";
-  private final String TITLE = "Elton John - Komarinskaya (feat. Ella Fitzgerald)";
-  private final String COMMENT = "Starts in D#, then sudden change to another religion.";
+  private final String TITLE = "Elton John Lennon - Korobeiniki (feat. George Gershwin)";
+  private final String COMMENT = "Actually, I don't wanna to play this song, adding just for lulz...";
 
   private final String SURVEY_DESCRIPTION = "Please think twice before choosing!";
 
@@ -96,12 +96,16 @@ public class ITSurveyTest extends IntegrationTest {
         .body("options", hasSize(0));
 
     //Add an Option to our Survey
-    surveyForm.setOptionIds(List.of(createdOption.getId()));
-    surveyForm.setState(SurveyState.CREATED);
-
     givenJson()
-        .body(surveyForm)
-        .put(newEntityURI)
+        .body(List.of(createdOption.getId()))
+        .put(newEntityURI + "/options")
+        .then()
+        .statusCode(SC_OK);
+
+    //Change status of Survey
+    givenJson()
+        .body("STARTED")
+        .put(newEntityURI + "/state")
         .then()
         .statusCode(SC_OK);
   }

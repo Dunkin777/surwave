@@ -1,5 +1,7 @@
 package epamers.surwave.services;
 
+import static java.util.stream.Collectors.toSet;
+
 import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyState;
@@ -7,7 +9,6 @@ import epamers.surwave.repos.SurveyRepository;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +37,8 @@ public class SurveyService {
       throw new IllegalArgumentException();
     }
 
-    processSurvey(survey);
+    Set<Option> processedOptions = optionService.process(survey.getOptions());
+    survey.setOptions(processedOptions);
     survey.setState(SurveyState.CREATED);
     return surveyRepository.save(survey);
   }
@@ -44,18 +46,14 @@ public class SurveyService {
   @Transactional
   public void update(Long id, Survey survey) {
 
-    if (survey == null) {
-      throw new IllegalArgumentException();
-    }
-
-
-
     if (!surveyRepository.existsById(id)) {
       throw new NoSuchElementException();
     }
 
     survey.setId(id);
-    processSurvey(survey);
+
+    Set<Option> processedOptions = optionService.process(survey.getOptions());
+    survey.setOptions(processedOptions);
     surveyRepository.save(survey);
   }
 
@@ -68,13 +66,24 @@ public class SurveyService {
     surveyRepository.deleteById(id);
   }
 
-  public void processSurvey(Survey survey) {
+  public void addOptions(Long id, List<Long> optionIds) {
 
-    Set<Option> options = survey.getOptions().stream()
-        .map(Option::getId)
-        .map(optionService::getById)
-        .collect(Collectors.toSet());
+    Survey survey = getById(id);
 
-    survey.setOptions(options);
+    Set<Option> options = optionIds.stream()
+        .map(i -> Option.builder()
+            .id(i)
+            .build())
+        .collect(toSet());
+    survey.getOptions().addAll(optionService.process(options));
+
+    surveyRepository.save(survey);
+  }
+
+  public void updateState(Long id, SurveyState surveyState) {
+
+    Survey survey = getById(id);
+    survey.setState(surveyState);
+    surveyRepository.save(survey);
   }
 }
