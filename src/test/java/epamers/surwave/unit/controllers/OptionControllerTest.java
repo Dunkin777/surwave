@@ -2,6 +2,9 @@ package epamers.surwave.unit.controllers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import epamers.surwave.controllers.OptionController;
@@ -10,6 +13,7 @@ import epamers.surwave.dtos.OptionView;
 import epamers.surwave.entities.Option;
 import epamers.surwave.services.OptionService;
 import java.util.List;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -28,8 +32,10 @@ public class OptionControllerTest {
   @Mock
   ConversionService converter;
 
+  @Mock
+  HttpServletResponse response;
+
   private final Long ID = 156L;
-  private final Long NON_EXISTING_ID = 36L;
   private final String AUTHOR = "Some Author";
   private final String MEDIA_URL = "http://youtube.com/supervideo256";
   private final String TITLE = "Elton John - Komarinskaya (feat. Ella Fitzgerald)";
@@ -56,12 +62,13 @@ public class OptionControllerTest {
 
     when(optionService.getAll()).thenReturn(List.of(option));
     when(optionService.getById(ID)).thenReturn(option);
+    when(optionService.create(option)).thenReturn(option);
     when(converter.convert(option, OptionView.class)).thenReturn(optionView);
     when(converter.convert(optionForm, Option.class)).thenReturn(option);
   }
 
   @Test
-  public void getAllAnswers_success() {
+  public void getAllOptions_success() {
 
     List<OptionView> returnedOptions = optionController.getAllOptions();
 
@@ -75,5 +82,32 @@ public class OptionControllerTest {
     OptionView returnedOption = optionController.getOption(ID);
 
     assertEquals(optionView, returnedOption);
+  }
+
+  @Test
+  public void createOption() {
+
+    optionController.createOption(optionForm, response);
+
+    verify(converter, times(1)).convert(optionForm, Option.class);
+    verify(optionService, times(1)).create(option);
+    verify(response, times(1)).addHeader(any(), any());
+  }
+
+  @Test
+  public void updateOption() {
+
+    optionController.updateOption(ID, optionForm);
+
+    verify(converter, times(1)).convert(optionForm, Option.class);
+    verify(optionService, times(1)).update(ID, option);
+  }
+
+  @Test
+  public void deleteOption() {
+
+    optionController.deleteOption(ID);
+
+    verify(optionService, times(1)).delete(ID);
   }
 }

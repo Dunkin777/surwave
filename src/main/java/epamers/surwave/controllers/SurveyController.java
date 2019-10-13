@@ -68,12 +68,6 @@ public class SurveyController {
     surveyService.addOptions(id, optionIds);
   }
 
-  @PutMapping("/{id}/state")
-  public void updateSurveyState(@PathVariable Long id, @RequestBody SurveyState surveyState) {
-
-    surveyService.updateState(id, surveyState);
-  }
-
   @DeleteMapping("/{id}")
   public void deleteSurvey(@PathVariable Long id) {
 

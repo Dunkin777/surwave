@@ -16,7 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-//TODO: first version. Probably will require rewriting after changing Option entity. Also, need to add some 'Put' tests.
 public class ITOptionTest extends IntegrationTest {
 
   @Autowired
@@ -85,6 +84,23 @@ public class ITOptionTest extends IntegrationTest {
         .then()
         .statusCode(SC_OK)
         .body("$", hasSize(1));
+
+    //Change some property of created Option
+    final String changedTitle = "Oh my!.. Title has changed & now it's even better!";
+    optionForm.setTitle(changedTitle);
+
+    givenJson()
+        .body(optionForm)
+        .put(newEntityURI)
+        .then()
+        .statusCode(SC_OK);
+
+    //Check successfullness of the change
+    givenJson()
+        .get(newEntityURI)
+        .then()
+        .statusCode(SC_OK)
+        .body("title", equalTo(changedTitle));
 
     //Then try to delete it
     givenJson()

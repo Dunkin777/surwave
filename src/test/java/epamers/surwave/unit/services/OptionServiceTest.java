@@ -47,6 +47,7 @@ public class OptionServiceTest {
         .comment(COMMENT)
         .build();
 
+    when(optionRepository.existsById(ID)).thenReturn(true);
     when(optionRepository.findById(ID)).thenReturn(Optional.of(option));
     when(optionRepository.findAll()).thenReturn(List.of(option));
     when(optionRepository.save(option)).thenReturn(option);
@@ -72,6 +73,8 @@ public class OptionServiceTest {
   @Test(expected = NoSuchElementException.class)
   public void getById_nonExistingId_exception() {
 
+    when(optionRepository.existsById(ID)).thenReturn(false);
+
     optionService.getById(13L);
   }
 
@@ -95,7 +98,6 @@ public class OptionServiceTest {
 
     optionService.update(ID, option);
 
-    verify(optionRepository, times(1)).findById(ID);
     verify(optionRepository, times(1)).save(option);
   }
 
