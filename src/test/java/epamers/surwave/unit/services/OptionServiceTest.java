@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 import epamers.surwave.entities.Option;
 import epamers.surwave.repos.OptionRepository;
@@ -83,7 +82,7 @@ public class OptionServiceTest {
 
     Option returnedOption = optionService.create(option);
 
-    verify(optionRepository, times(1)).save(option);
+    verify(optionRepository).save(option);
     assertEquals(option, returnedOption);
   }
 
@@ -98,7 +97,7 @@ public class OptionServiceTest {
 
     optionService.update(ID, option);
 
-    verify(optionRepository, times(1)).save(option);
+    verify(optionRepository).save(option);
   }
 
   @Test(expected = NoSuchElementException.class)
@@ -122,7 +121,7 @@ public class OptionServiceTest {
 
     optionService.delete(ID);
 
-    verify(optionRepository, times(1)).deleteById(ID);
+    verify(optionRepository).deleteById(ID);
   }
 
   @Test(expected = NoSuchElementException.class)

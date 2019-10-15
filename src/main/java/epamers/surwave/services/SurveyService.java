@@ -69,13 +69,15 @@ public class SurveyService {
   public void addOptions(Long id, List<Long> optionIds) {
 
     Survey survey = getById(id);
-
     Set<Option> options = optionIds.stream()
         .map(i -> Option.builder()
             .id(i)
             .build())
         .collect(toSet());
-    survey.getOptions().addAll(optionService.process(options));
+
+    Set<Option> optionsToSet = survey.getOptions();
+    optionsToSet.addAll(optionService.process(options));
+    survey.setOptions(optionsToSet);
 
     surveyRepository.save(survey);
   }
