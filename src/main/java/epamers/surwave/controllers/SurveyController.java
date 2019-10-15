@@ -2,11 +2,9 @@ package epamers.surwave.controllers;
 
 import static epamers.surwave.core.Contract.SURVEY_URL;
 
-import epamers.surwave.dtos.OptionView;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.entities.Survey;
-import epamers.surwave.entities.SurveyState;
 import epamers.surwave.services.SurveyService;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,10 +32,10 @@ public class SurveyController {
   private final ConversionService converter;
 
   @GetMapping("/all")
-  public List<OptionView> getAllSurveys() {
+  public List<SurveyView> getAllSurveys() {
 
     return surveyService.getAll().stream()
-        .map(o -> converter.convert(o, OptionView.class))
+        .map(s -> converter.convert(s, SurveyView.class))
         .collect(Collectors.toList());
   }
 

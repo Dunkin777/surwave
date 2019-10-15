@@ -15,6 +15,7 @@ import epamers.surwave.services.OptionService;
 import epamers.surwave.services.SurveyService;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.Before;
@@ -42,6 +43,7 @@ public class SurveyServiceTest {
   private final String COMMENT = "Starts in D#, then sudden change to another religion.";
 
   private final Long SURVEY_ID = 35L;
+  private final Long NONEXISTENT_SURVEY_ID = 100L;
   private final String SURVEY_DESCRIPTION = "Please think twice before choosing!";
   private Option option;
 
@@ -78,7 +80,7 @@ public class SurveyServiceTest {
   }
 
   @Test
-  public void getAll() {
+  public void getAll_success() {
 
     List<Survey> surveys = surveyService.getAll();
 
@@ -87,15 +89,21 @@ public class SurveyServiceTest {
   }
 
   @Test
-  public void getById() {
+  public void getById_existingId_success() {
 
     Survey foundSurvey = surveyService.getById(SURVEY_ID);
 
     assertEquals(survey, foundSurvey);
   }
 
+  @Test(expected = NoSuchElementException.class)
+  public void getById_nonexistentID_exception() {
+
+    surveyService.getById(NONEXISTENT_SURVEY_ID);
+  }
+
   @Test
-  public void create() {
+  public void create_validEntity_success() {
 
     Survey createdSurvey = surveyService.create(survey);
 
@@ -104,24 +112,48 @@ public class SurveyServiceTest {
     assertEquals(SurveyState.CREATED, survey.getState());
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void create_nullSurvey_success() {
+
+    surveyService.create(null);
+  }
+
   @Test
-  public void update() {
+  public void update_validArguments_success() {
 
     surveyService.update(SURVEY_ID, survey);
 
     verify(surveyRepository).save(survey);
   }
 
+  @Test(expected = NoSuchElementException.class)
+  public void update_nonexistentId_exception() {
+
+    surveyService.update(NONEXISTENT_SURVEY_ID, survey);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void update_nullSurvey_exception() {
+
+    surveyService.update(SURVEY_ID, null);
+  }
+
   @Test
-  public void delete() {
+  public void delete_validId_success() {
 
     surveyService.delete(SURVEY_ID);
 
     verify(surveyRepository).deleteById(SURVEY_ID);
   }
 
+  @Test(expected = NoSuchElementException.class)
+  public void delete_nonexistentId_exception() {
+
+    surveyService.delete(NONEXISTENT_SURVEY_ID);
+  }
+
   @Test
-  public void addOptions() {
+  public void addOptions_validArguments_success() {
 
     ArgumentCaptor<Survey> arg = ArgumentCaptor.forClass(Survey.class);
     survey.setOptions(new HashSet<>());
@@ -134,7 +166,7 @@ public class SurveyServiceTest {
   }
 
   @Test
-  public void updateState() {
+  public void updateState_validArguments_success() {
 
     ArgumentCaptor<Survey> arg = ArgumentCaptor.forClass(Survey.class);
 

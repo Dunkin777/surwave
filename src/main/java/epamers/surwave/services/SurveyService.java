@@ -50,6 +50,10 @@ public class SurveyService {
       throw new NoSuchElementException();
     }
 
+    if (survey == null) {
+      throw new IllegalArgumentException();
+    }
+
     survey.setId(id);
 
     Set<Option> processedOptions = optionService.process(survey.getOptions());

@@ -3,7 +3,6 @@ package epamers.surwave.unit.controllers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -89,9 +88,8 @@ public class OptionControllerTest {
 
     optionController.createOption(optionForm, response);
 
-    verify(converter, times(1)).convert(optionForm, Option.class);
-    verify(optionService, times(1)).create(option);
-    verify(response, times(1)).addHeader(any(), any());
+    verify(optionService).create(option);
+    verify(response).addHeader(any(), any());
   }
 
   @Test
@@ -99,8 +97,8 @@ public class OptionControllerTest {
 
     optionController.updateOption(ID, optionForm);
 
-    verify(converter, times(1)).convert(optionForm, Option.class);
-    verify(optionService, times(1)).update(ID, option);
+    verify(converter).convert(optionForm, Option.class);
+    verify(optionService).update(ID, option);
   }
 
   @Test
@@ -108,6 +106,6 @@ public class OptionControllerTest {
 
     optionController.deleteOption(ID);
 
-    verify(optionService, times(1)).delete(ID);
+    verify(optionService).delete(ID);
   }
 }

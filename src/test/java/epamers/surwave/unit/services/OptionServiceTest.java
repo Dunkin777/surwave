@@ -27,7 +27,7 @@ public class OptionServiceTest {
   OptionRepository optionRepository;
 
   private final Long ID = 156L;
-  private final Long NON_EXISTING_ID = 36L;
+  private final Long NONEXISTENT_ID = 36L;
   private final String AUTHOR = "Some Author";
   private final String MEDIA_URL = "http://youtube.com/supervideo256";
   private final String TITLE = "Elton John - Komarinskaya (feat. Ella Fitzgerald)";
@@ -103,7 +103,7 @@ public class OptionServiceTest {
   @Test(expected = NoSuchElementException.class)
   public void update_nonExistingId_exception() {
 
-    optionService.update(NON_EXISTING_ID, option);
+    optionService.update(NONEXISTENT_ID, option);
 
     verify(optionRepository, never()).save(option);
   }
@@ -127,8 +127,8 @@ public class OptionServiceTest {
   @Test(expected = NoSuchElementException.class)
   public void delete_nonExistingId_exception() {
 
-    optionService.delete(NON_EXISTING_ID);
+    optionService.delete(NONEXISTENT_ID);
 
-    verify(optionRepository, never()).deleteById(NON_EXISTING_ID);
+    verify(optionRepository, never()).deleteById(NONEXISTENT_ID);
   }
 }
