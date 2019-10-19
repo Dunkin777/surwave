@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 import epamers.surwave.entities.Option;
 import epamers.surwave.repos.OptionRepository;
@@ -28,10 +27,11 @@ public class OptionServiceTest {
   OptionRepository optionRepository;
 
   private final Long ID = 156L;
-  private final Long NON_EXISTING_ID = 36L;
+  private final Long NONEXISTENT_ID = 36L;
   private final String AUTHOR = "Some Author";
   private final String MEDIA_URL = "http://youtube.com/supervideo256";
   private final String TITLE = "Elton John - Komarinskaya (feat. Ella Fitzgerald)";
+  private final String COMMENT = "Starts in D#, then sudden change to another religion.";
   private Option option;
 
   @Before
@@ -43,8 +43,10 @@ public class OptionServiceTest {
         .mediaUrl(MEDIA_URL)
         .title(TITLE)
         .id(ID)
+        .comment(COMMENT)
         .build();
 
+    when(optionRepository.existsById(ID)).thenReturn(true);
     when(optionRepository.findById(ID)).thenReturn(Optional.of(option));
     when(optionRepository.findAll()).thenReturn(List.of(option));
     when(optionRepository.save(option)).thenReturn(option);
@@ -70,6 +72,8 @@ public class OptionServiceTest {
   @Test(expected = NoSuchElementException.class)
   public void getById_nonExistingId_exception() {
 
+    when(optionRepository.existsById(ID)).thenReturn(false);
+
     optionService.getById(13L);
   }
 
@@ -78,7 +82,7 @@ public class OptionServiceTest {
 
     Option returnedOption = optionService.create(option);
 
-    verify(optionRepository, times(1)).save(option);
+    verify(optionRepository).save(option);
     assertEquals(option, returnedOption);
   }
 
@@ -93,14 +97,13 @@ public class OptionServiceTest {
 
     optionService.update(ID, option);
 
-    verify(optionRepository, times(1)).findById(ID);
-    verify(optionRepository, times(1)).save(option);
+    verify(optionRepository).save(option);
   }
 
   @Test(expected = NoSuchElementException.class)
   public void update_nonExistingId_exception() {
 
-    optionService.update(NON_EXISTING_ID, option);
+    optionService.update(NONEXISTENT_ID, option);
 
     verify(optionRepository, never()).save(option);
   }
@@ -118,14 +121,14 @@ public class OptionServiceTest {
 
     optionService.delete(ID);
 
-    verify(optionRepository, times(1)).deleteById(ID);
+    verify(optionRepository).deleteById(ID);
   }
 
   @Test(expected = NoSuchElementException.class)
   public void delete_nonExistingId_exception() {
 
-    optionService.delete(NON_EXISTING_ID);
+    optionService.delete(NONEXISTENT_ID);
 
-    verify(optionRepository, never()).deleteById(NON_EXISTING_ID);
+    verify(optionRepository, never()).deleteById(NONEXISTENT_ID);
   }
 }

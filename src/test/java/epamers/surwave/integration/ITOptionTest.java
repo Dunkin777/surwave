@@ -10,17 +10,23 @@ import static org.hamcrest.Matchers.hasSize;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 import epamers.surwave.dtos.OptionForm;
+import epamers.surwave.repos.OptionRepository;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
-//TODO: first version. Probably will require rewriting after changing Option entity. Also, need to add some 'Put' tests.
 public class ITOptionTest extends IntegrationTest {
+
+  @Autowired
+  private OptionRepository optionRepository;
 
   private OptionForm optionForm;
 
   private final String AUTHOR = "Some Author";
   private final String MEDIA_URL = "http://youtube.com/supervideo256";
   private final String TITLE = "Elton John - Komarinskaya (feat. Ella Fitzgerald)";
+  private final String COMMENT = "Starts in D#, then sudden change to another religion.";
 
   @Before
   public void setUp() {
@@ -31,7 +37,14 @@ public class ITOptionTest extends IntegrationTest {
         .author(AUTHOR)
         .mediaUrl(MEDIA_URL)
         .title(TITLE)
+        .comment(COMMENT)
         .build();
+  }
+
+  @After
+  public void cleanUp() {
+
+    optionRepository.deleteAll();
   }
 
   @Test
@@ -55,13 +68,14 @@ public class ITOptionTest extends IntegrationTest {
 
     String newEntityURI = response.getHeader("Location");
 
-    //Try to retrieve a newly created Option
+    //Retrieve and check newly created Option
     givenJson()
         .get(newEntityURI)
         .then()
         .statusCode(SC_OK)
         .body("title", equalTo(TITLE))
         .body("mediaUrl", equalTo(MEDIA_URL))
+        .body("comment", equalTo(COMMENT))
         .body("author", equalTo(AUTHOR));
 
     //Ensure that we have exactly one Option in repo
@@ -70,6 +84,23 @@ public class ITOptionTest extends IntegrationTest {
         .then()
         .statusCode(SC_OK)
         .body("$", hasSize(1));
+
+    //Change some property of created Option
+    final String changedTitle = "Oh my!.. Title has changed & now it's even better!";
+    optionForm.setTitle(changedTitle);
+
+    givenJson()
+        .body(optionForm)
+        .put(newEntityURI)
+        .then()
+        .statusCode(SC_OK);
+
+    //Check successfullness of the change
+    givenJson()
+        .get(newEntityURI)
+        .then()
+        .statusCode(SC_OK)
+        .body("title", equalTo(changedTitle));
 
     //Then try to delete it
     givenJson()

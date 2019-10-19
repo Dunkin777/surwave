@@ -1,8 +1,12 @@
 package epamers.surwave.services;
 
+import static java.util.stream.Collectors.toSet;
+
 import epamers.surwave.entities.Option;
 import epamers.surwave.repos.OptionRepository;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +43,10 @@ public class OptionService {
       throw new IllegalArgumentException();
     }
 
-    optionRepository.findById(id).orElseThrow();
+    if (!optionRepository.existsById(id)) {
+      throw new NoSuchElementException();
+    }
+
     option.setId(id);
     optionRepository.save(option);
   }
@@ -47,7 +54,18 @@ public class OptionService {
   @Transactional
   public void delete(Long id) {
 
-    optionRepository.findById(id).orElseThrow();
+    if (!optionRepository.existsById(id)) {
+      throw new NoSuchElementException();
+    }
+
     optionRepository.deleteById(id);
+  }
+
+  public Set<Option> process(Set<Option> rawOptions) {
+
+    return rawOptions.stream()
+        .map(Option::getId)
+        .map(this::getById)
+        .collect(toSet());
   }
 }

@@ -1,5 +1,6 @@
 package epamers.surwave.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,7 +23,10 @@ public class Option {
 
   private String author;
 
+  @Column(nullable = false)
   private String title;
 
   private String mediaUrl;
+
+  private String comment;
 }
