@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class Option {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue
   private Long id;
 
   private String author;

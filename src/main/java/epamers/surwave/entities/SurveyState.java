@@ -4,5 +4,5 @@ public enum SurveyState {
   CREATED,
   STARTED,
   CLOSED,
-  ENDED;
+  ENDED
 }

@@ -19,8 +19,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING)
+@Inheritance
+@DiscriminatorColumn
 @SuperBuilder
 @NoArgsConstructor
 @Data
