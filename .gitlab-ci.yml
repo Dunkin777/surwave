@@ -1,0 +1,13 @@
+image: gradle:jdk11
+
+stages:
+  - unit-tests
+  - integration-tests
+
+unit-tests:
+  stage: unit-tests
+  script: gradle test --tests 'epamers.surwave.unit.*'
+
+integration-tests:
+  stage: integration-tests
+  script: gradle test --tests 'epamers.surwave.integration.*'
