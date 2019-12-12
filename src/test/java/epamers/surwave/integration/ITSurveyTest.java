@@ -96,7 +96,7 @@ public class ITSurveyTest extends IntegrationTest {
         .body("options", hasSize(0));
 
     //Forcibly end this Survey
-    surveyForm.setState(SurveyState.CLOSED);
+    surveyForm.setState(SurveyState.STOPPED);
 
     givenJson()
         .body(surveyForm)

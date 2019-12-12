@@ -6,6 +6,7 @@ spring:
     database: POSTGRESQL
     show-sql: true
     open-in-view: true
+#    generate-ddl: true
     hibernate:
       ddl-auto: create-drop
     properties:
@@ -19,3 +20,18 @@ spring:
     password: postgres
     driverClassName: org.postgresql.Driver
     initialize: false
+
+security:
+  oauth2:
+    client:
+      clientId: 778041561335-u2utvmf2oc490b83m8hvhof7kirbvej3.apps.googleusercontent.com
+      clientSecret: vlaz2j7bQpnj1OwmbPWiMckQ
+      clientAuthenticationScheme: form
+      scope: openid,email,profile
+      accessTokenUri: https://www.googleapis.com/oauth2/v4/token
+      userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
+    resource:
+      userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
+      preferTokenInfo: true
+
+#  spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true

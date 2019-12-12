@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -47,5 +48,6 @@ public abstract class Survey {
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
-  private SurveyState state;
+  @Builder.Default
+  private SurveyState state = SurveyState.CREATED;
 }
