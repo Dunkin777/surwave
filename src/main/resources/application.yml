@@ -6,7 +6,6 @@ spring:
     database: POSTGRESQL
     show-sql: true
     open-in-view: true
-#    generate-ddl: true
     hibernate:
       ddl-auto: create-drop
     properties:
@@ -33,5 +32,3 @@ security:
     resource:
       userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
       preferTokenInfo: true
-
-#  spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
