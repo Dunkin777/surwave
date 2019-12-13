@@ -7,10 +7,10 @@ Prerequisites: Gradle, Docker and jdk11 installed.
 
 1 - Download project sources
 
-In console in project root:
-2 - run `gradle wrapper`
-3 - run `./gradlew build`
-4 - run `docker-compose build`
+In console in project root:<br/>
+2 - run `gradle wrapper`<br/>
+3 - run `./gradlew build`<br/>
+4 - run `docker-compose build`<br/>
 5 - run `docker-compose up -d`
 
 Swagger should be available after several seconds at http://localhost:8080/swagger-ui.html
