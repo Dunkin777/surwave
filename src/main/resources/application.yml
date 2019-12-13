@@ -14,7 +14,7 @@ spring:
 
   datasource:
     platform: postgres
-    url: jdbc:postgresql://localhost:5432/surwave
+    url: jdbc:postgresql://db:5432/surwave
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
