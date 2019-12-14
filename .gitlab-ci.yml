@@ -1,4 +1,4 @@
-image: gradle:jdk11
+image: openjdk:11-jdk-slim
 
 stages:
   - unit-tests
@@ -6,8 +6,8 @@ stages:
 
 unit-tests:
   stage: unit-tests
-  script: gradle test --tests 'epamers.surwave.unit.*'
+  script: ./gradlew test --tests 'epamers.surwave.unit.*'
 
 integration-tests:
   stage: integration-tests
-  script: gradle test --tests 'epamers.surwave.integration.*'
+  script: ./gradlew test --tests 'epamers.surwave.integration.*'
