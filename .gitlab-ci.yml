@@ -1,4 +1,4 @@
-image: gradle:jre11
+image: gradle:jdk11
 
 stages:
   - unit-tests
