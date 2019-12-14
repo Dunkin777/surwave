@@ -4,7 +4,7 @@ In Idea, please, manually adjust setting 'hard wrap at' to 150 symbols and 'Clas
 #### How to run Surwave-be in Docker:
 
 **Prerequisites:** Gradle, Docker and jdk11 installed (make sure that JAVA_HOME environment variable points to jdk11 path).
-<br/>
+
 1 - Download project sources
 
 Next, in console in project root:<br/>
@@ -15,4 +15,4 @@ Next, in console in project root:<br/>
 
 Swagger should be available after several seconds at http://localhost:8080/swagger-ui.html
 
-**if you want to run backend part without container - change datasource url in application.yml from db to localhost**
+**If you want to run backend part without container - change datasource url in application.yml from db to localhost**
