@@ -3,7 +3,7 @@ In Idea, please, manually adjust setting 'hard wrap at' to 150 symbols and 'Clas
 
 #### How to run Surwave-be in Docker:
 
-**Prerequisites:** Gradle, Docker and jdk11 installed (make sure that JAVA_HOME environment variable points to jdk11 path).
+**Prerequisites:** Docker and JDK 11 installed (make sure that JAVA_HOME environment variable points to JDK 11 path).
 
 1 - Download project sources
 
