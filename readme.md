@@ -8,10 +8,9 @@ In Idea, please, manually adjust setting 'hard wrap at' to 150 symbols and 'Clas
 1 - Download project sources
 
 Next, in console in project root:<br/>
-2 - run `gradle wrapper`<br/>
-3 - run `./gradlew build`<br/>
-4 - run `docker-compose build`<br/>
-5 - run `docker-compose up -d`
+2 - run `./gradlew build`<br/>
+3 - run `docker-compose build`<br/>
+4 - run `docker-compose up -d`
 
 Swagger should be available after several seconds at http://localhost:8080/swagger-ui.html
 
