@@ -14,3 +14,7 @@ In console in project root:<br/>
 5 - run `docker-compose up -d`
 
 Swagger should be available after several seconds at http://localhost:8080/swagger-ui.html
+
+
+
+#####if you want to run backend part without container - change datasource url in application.yml from db to localhost

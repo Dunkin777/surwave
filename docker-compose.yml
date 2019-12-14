@@ -14,7 +14,7 @@ services:
 
   db:
     container_name: db
-    image: postgres
+    image: postgres:alpine
     volumes:
       - ./db:/var/lib/postgresql
     networks:
@@ -24,14 +24,6 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: surwave
-
-  adminer:
-    container_name: adminer
-    image: adminer
-    networks:
-      - surwave_net
-    ports:
-      - 1234:8080
 
 networks:
   surwave_net:
