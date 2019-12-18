@@ -1,10 +1,20 @@
-version: '3.7'
+version: '3.5'
 
 services:
+  core:
+    container_name: surwave
+    build:
+      context: .
+    networks:
+      - surwave_net
+    depends_on:
+      - db
+    ports:
+      - 8080:8080
 
   db:
     container_name: db
-    image: postgres
+    image: postgres:alpine
     volumes:
       - ./db:/var/lib/postgresql
     networks:
@@ -13,14 +23,7 @@ services:
       - 5432:5432
     environment:
       POSTGRES_PASSWORD: postgres
-
-  adminer:
-    container_name: adminer
-    image: adminer
-    networks:
-      - surwave_net
-    ports:
-      - 1234:8080
+      POSTGRES_DB: surwave
 
 networks:
   surwave_net:
