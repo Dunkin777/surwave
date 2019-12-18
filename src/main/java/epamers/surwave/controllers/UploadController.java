@@ -20,6 +20,6 @@ public class UploadController {
     @PostMapping(consumes = {"multipart/form-data"})
     public void write(@RequestParam("file") MultipartFile file){
 
-        uploadService.upload(file);
+//        uploadService.upload(file, option.getTitle());
     }
 }

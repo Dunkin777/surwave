@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 public class ExceptionHandlerController {
 
-    @ExceptionHandler(FileStorageException.class)
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<FileStorageException> handleException(FileStorageException exception) {
+  @ExceptionHandler(FileStorageException.class)
+  @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+  public ResponseEntity<FileStorageException> handleException(FileStorageException exception) {
 
-        return new ResponseEntity<>(exception, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return new ResponseEntity<>(exception, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
 }
