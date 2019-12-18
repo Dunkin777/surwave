@@ -22,16 +22,23 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.11
 targetCompatibility = 1.11
 
+def swagger_ver = '2.9.2'
+def logback_ver = '2.7.1'
+def filesUpload_ver = '1.4'
+def restAssured_ver = '2.9.0'
+
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
-	compile 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
-	compile 'io.springfox:springfox-swagger2:2.9.2'
-	compile 'io.springfox:springfox-swagger-ui:2.9.2'
+	compile "net.rakugakibox.spring.boot:logback-access-spring-boot-starter:$logback_ver"
+	compile "io.springfox:springfox-swagger2:$swagger_ver"
+	compile "io.springfox:springfox-swagger-ui:$swagger_ver"
+	compile group: 'commons-fileupload', name: 'commons-fileupload', version: "$filesUpload_ver"
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntime group: 'com.h2database', name: 'h2', version: '1.4.197'
-	testCompile group: 'com.jayway.restassured', name: 'rest-assured', version: '2.9.0'
+	testCompile "com.jayway.restassured:rest-assured:$restAssured_ver"
 }

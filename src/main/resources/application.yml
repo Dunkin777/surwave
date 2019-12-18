@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8888
 
 spring:
   jpa:
@@ -14,8 +14,16 @@ spring:
 
   datasource:
     platform: postgres
-    url: jdbc:postgresql://localhost:5432/surwave
+    url: jdbc:postgresql://localhost:5432/
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
-    initialize: false
+    initialization-mode: ALWAYS
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+
+app:
+  upload:
+    dir: data
