@@ -45,7 +45,7 @@ public class User implements UserDetails {
   @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
   @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
   @Enumerated(EnumType.STRING)
-  private Set<Role> grantedAuthoritiesList = new HashSet<>();
+  private Set<Role> roles = new HashSet<>();
 
   private String username;
 
@@ -63,7 +63,7 @@ public class User implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return null;
+    return roles;
   }
 
   @Override
