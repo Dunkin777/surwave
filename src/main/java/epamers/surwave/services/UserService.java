@@ -18,7 +18,7 @@ public class UserService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    return null;
+    return userRepository.findByUsername(username).orElseThrow();
   }
 
   public User getOrCreateFromGoogleData(Map<String, Object> googleData) {

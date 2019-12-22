@@ -8,11 +8,10 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.OneToMany;
-import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -46,6 +45,6 @@ public abstract class Survey {
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
-  @Builder.Default
+  @Default
   private SurveyState state = SurveyState.CREATED;
 }

@@ -116,7 +116,7 @@ public class ITSurveyTest extends IntegrationTest {
         .get(newEntityURI)
         .then()
         .statusCode(SC_OK)
-        .body("state", equalTo("CLOSED"))
+        .body("state", equalTo(SurveyState.STOPPED.toString()))
         .body("options", hasSize(1))
         .body("options.title", hasItem(TITLE));
 
