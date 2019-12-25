@@ -55,7 +55,6 @@ public class OptionController {
   public void uploadMediaToOption(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
 
     Option option = optionService.getById(id);
-
     uploadService.upload(file, option.getTitle());
   }
 

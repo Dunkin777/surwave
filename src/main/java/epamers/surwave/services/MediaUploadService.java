@@ -3,16 +3,20 @@ package epamers.surwave.services;
 
 import epamers.surwave.exceptions.FileStorageException;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-
+@Slf4j
 @Service
 public class MediaUploadService {
 
@@ -22,25 +26,24 @@ public class MediaUploadService {
 
   public void upload(MultipartFile file, String title) {
 
-    try {
+    String  fileName = Optional.ofNullable(file.getOriginalFilename()).orElse("defaultFileName.mp3");
+      fileName = title + "." + fileName.substring(fileName.lastIndexOf(".") + 1);
 
-      String fileOriginalFilename = file.getOriginalFilename();
+    Path copyLocation = Paths
+        .get(getWorkDirectory() + File.separator + StringUtils.cleanPath(fileName));
 
-      String filename = title + "." + fileOriginalFilename.substring(fileOriginalFilename.lastIndexOf(".") + 1);
+    try  {
 
-      Path copyLocation = Paths
-          .get(getWorkDirectory() + File.separator + StringUtils.cleanPath(filename));
-      Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
+      file.transferTo(copyLocation);
+    } catch (IOException e) {
 
-    } catch (Exception e) {
-
-      e.printStackTrace();
+      log.error("Failed to load file", e);
       throw new FileStorageException("Could not store file " + file.getOriginalFilename()
           + ". Please try again!");
     }
   }
 
-  public String getWorkDirectory() {
+  private String getWorkDirectory() {
     return System.getProperty("user.dir") + File.separator + uploadPath + File.separator;
   }
 }
