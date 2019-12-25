@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @EnableOAuth2Sso
 @Configuration
-@Profile("default")
+@Profile("prod")
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Override

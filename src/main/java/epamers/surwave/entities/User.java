@@ -38,6 +38,7 @@ public class User implements UserDetails {
     this.email = (String) googleData.get("email");
     this.locale = (String) googleData.get("locale");
     this.avatarUrl = (String) googleData.get("picture");
+    this.roles.add(Role.USER);
   }
 
   @Id
@@ -53,7 +54,7 @@ public class User implements UserDetails {
 
   private String password;
 
-  private boolean active;
+  private Boolean active;
 
   private String email;
 
