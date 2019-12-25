@@ -14,11 +14,11 @@ spring:
 
   datasource:
     platform: postgres
-    url: jdbc:postgresql://localhost:5432/
+    url: jdbc:postgresql://db:5432/surwave
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
-    initialization-mode: ALWAYS
+    initialize: false
 
   servlet:
     multipart:
