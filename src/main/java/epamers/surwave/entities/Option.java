@@ -21,6 +21,7 @@ public class Option {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
+  @Column(nullable = false)
   private String author;
 
   @Column(nullable = false)

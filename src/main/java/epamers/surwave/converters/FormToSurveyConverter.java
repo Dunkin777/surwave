@@ -32,6 +32,7 @@ public class FormToSurveyConverter implements Converter<SurveyForm, Survey> {
     survey.setDescription(surveyForm.getDescription());
     survey.setProposalsByUser(surveyForm.getProposalsByUser());
     survey.setState(surveyForm.getState());
+    survey.setIsHidden(surveyForm.getIsHidden());
 
     return survey;
   }

@@ -28,8 +28,8 @@ public class OptionServiceTest {
 
   private final Long ID = 156L;
   private final Long NONEXISTENT_ID = 36L;
-  private final String AUTHOR = "Some Author";
-  private final String TITLE = "Elton John - Komarinskaya (feat. Ella Fitzgerald)";
+  private final String AUTHOR = "Felix Mendelson";
+  private final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
   private final String COMMENT = "Starts in D#, then sudden change to another religion.";
   private Option option;
 

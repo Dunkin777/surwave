@@ -9,13 +9,13 @@ import static org.hamcrest.Matchers.hasSize;
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
+import epamers.surwave.dtos.OptionForm;
 import epamers.surwave.dtos.SurveyForm;
-import epamers.surwave.entities.Option;
 import epamers.surwave.entities.SurveyState;
 import epamers.surwave.entities.SurveyType;
 import epamers.surwave.repos.OptionRepository;
 import epamers.surwave.repos.SurveyRepository;
-import java.util.List;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +28,11 @@ public class ITSurveyTest extends IntegrationTest {
   @Autowired
   private OptionRepository optionRepository;
 
-  private Option createdOption;
+  private OptionForm optionForm;
   private SurveyForm surveyForm;
 
-  private final String AUTHOR = "Some Author";
-  private final String TITLE = "Elton John Lennon - Korobeiniki (feat. George Gershwin)";
+  private final String AUTHOR = "Elton John Lennon";
+  private final String TITLE = "Korobeiniki (feat. George Gershwin)";
   private final String COMMENT = "Actually, I don't wanna to play this song, adding just for lulz...";
 
   private final String SURVEY_DESCRIPTION = "Please think twice before choosing!";
@@ -42,7 +42,7 @@ public class ITSurveyTest extends IntegrationTest {
 
     RestAssured.port = port;
 
-    Option option = Option.builder()
+    optionForm = OptionForm.builder()
         .author(AUTHOR)
         .title(TITLE)
         .comment(COMMENT)
@@ -53,9 +53,15 @@ public class ITSurveyTest extends IntegrationTest {
         .choicesByUser(5)
         .description(SURVEY_DESCRIPTION)
         .proposalsByUser(4)
+        .isHidden(false)
         .build();
+  }
 
-    createdOption = optionRepository.save(option);
+  @After
+  public void cleanUp() {
+
+    surveyRepository.deleteAll();
+    optionRepository.deleteAll();
   }
 
   @Test
@@ -89,6 +95,7 @@ public class ITSurveyTest extends IntegrationTest {
         .body("choicesByUser", equalTo(5))
         .body("proposalsByUser", equalTo(4))
         .body("state", equalTo("CREATED"))
+        .body("isHidden", equalTo(false))
         .body("options", hasSize(0));
 
     //Forcibly end this Survey
@@ -102,7 +109,7 @@ public class ITSurveyTest extends IntegrationTest {
 
     //Add an Option to our Survey
     givenJson()
-        .body(List.of(createdOption.getId()))
+        .body(optionForm)
         .put(newEntityURI + "/options")
         .then()
         .statusCode(SC_OK);

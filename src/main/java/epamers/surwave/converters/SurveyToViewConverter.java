@@ -32,6 +32,7 @@ public class SurveyToViewConverter implements Converter<Survey, SurveyView> {
         .options(options)
         .state(survey.getState())
         .proposalsByUser(survey.getProposalsByUser())
+        .isHidden(survey.getIsHidden())
         .build();
 
     if (survey instanceof ClassicSurvey) {

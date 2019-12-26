@@ -2,7 +2,6 @@ package epamers.surwave.integration;
 
 import static epamers.surwave.core.Contract.OPTION_URL;
 import static org.apache.http.HttpStatus.SC_CREATED;
-import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -23,8 +22,8 @@ public class ITOptionTest extends IntegrationTest {
 
   private OptionForm optionForm;
 
-  private final String AUTHOR = "Some Author";
-  private final String TITLE = "Elton John - Komarinskaya (feat. Ella Fitzgerald)";
+  private final String AUTHOR = "Brian Wilson";
+  private final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
   private final String COMMENT = "Starts in D#, then sudden change to another religion.";
 
   @Before

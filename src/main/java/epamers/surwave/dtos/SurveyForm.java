@@ -23,6 +23,8 @@ public class SurveyForm {
 
   private Integer choicesByUser;
 
+  private Boolean isHidden;
+
   //From currently unused RangedSurvey. Don't forget to change/remove in the future
   private Boolean logarithmicRatingScale;
 }

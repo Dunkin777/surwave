@@ -36,8 +36,8 @@ public class SurveyServiceTest {
   SurveyRepository surveyRepository;
 
   private final Long OPTION_ID = 156L;
-  private final String AUTHOR = "Some Author";
-  private final String TITLE = "Elton John - Komarinskaya (feat. Ella Fitzgerald)";
+  private final String AUTHOR = "Bee Gees";
+  private final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
   private final String COMMENT = "Starts in D#, then sudden change to another religion.";
 
   private final Long SURVEY_ID = 35L;
