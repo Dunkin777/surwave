@@ -31,7 +31,6 @@ public class SurveyToViewConverter implements Converter<Survey, SurveyView> {
         .description(survey.getDescription())
         .options(options)
         .state(survey.getState())
-        .isUsersSeparated(survey.getIsUsersSeparated())
         .proposalsByUser(survey.getProposalsByUser())
         .build();
 

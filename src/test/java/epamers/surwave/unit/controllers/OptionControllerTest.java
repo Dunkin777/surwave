@@ -36,7 +36,6 @@ public class OptionControllerTest {
 
   private final Long ID = 156L;
   private final String AUTHOR = "Some Author";
-  private final String MEDIA_URL = "http://youtube.com/supervideo256";
   private final String TITLE = "Elton John - Komarinskaya (feat. Ella Fitzgerald)";
   private final String COMMENT = "Starts in D#, then sudden change to another religion.";
 
@@ -50,7 +49,6 @@ public class OptionControllerTest {
     MockitoAnnotations.initMocks(this);
     option = Option.builder()
         .author(AUTHOR)
-        .mediaUrl(MEDIA_URL)
         .title(TITLE)
         .id(ID)
         .comment(COMMENT)
@@ -99,13 +97,5 @@ public class OptionControllerTest {
 
     verify(converter).convert(optionForm, Option.class);
     verify(optionService).update(ID, option);
-  }
-
-  @Test
-  public void deleteOption() {
-
-    optionController.deleteOption(ID);
-
-    verify(optionService).delete(ID);
   }
 }

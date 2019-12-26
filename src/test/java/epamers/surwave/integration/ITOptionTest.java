@@ -24,7 +24,6 @@ public class ITOptionTest extends IntegrationTest {
   private OptionForm optionForm;
 
   private final String AUTHOR = "Some Author";
-  private final String MEDIA_URL = "http://youtube.com/supervideo256";
   private final String TITLE = "Elton John - Komarinskaya (feat. Ella Fitzgerald)";
   private final String COMMENT = "Starts in D#, then sudden change to another religion.";
 
@@ -35,7 +34,6 @@ public class ITOptionTest extends IntegrationTest {
 
     optionForm = OptionForm.builder()
         .author(AUTHOR)
-        .mediaUrl(MEDIA_URL)
         .title(TITLE)
         .comment(COMMENT)
         .build();
@@ -43,7 +41,6 @@ public class ITOptionTest extends IntegrationTest {
 
   @After
   public void cleanUp() {
-
     optionRepository.deleteAll();
   }
 
@@ -74,7 +71,6 @@ public class ITOptionTest extends IntegrationTest {
         .then()
         .statusCode(SC_OK)
         .body("title", equalTo(TITLE))
-        .body("mediaUrl", equalTo(MEDIA_URL))
         .body("comment", equalTo(COMMENT))
         .body("author", equalTo(AUTHOR));
 
@@ -101,24 +97,5 @@ public class ITOptionTest extends IntegrationTest {
         .then()
         .statusCode(SC_OK)
         .body("title", equalTo(changedTitle));
-
-    //Then try to delete it
-    givenJson()
-        .delete(newEntityURI)
-        .then()
-        .statusCode(SC_OK);
-
-    //Check that it's no longer exists
-    givenJson()
-        .get(newEntityURI)
-        .then()
-        .statusCode(SC_NOT_FOUND);
-
-    //Check that we have zero Options in the end
-    givenJson()
-        .get(OPTION_URL + "/all")
-        .then()
-        .statusCode(SC_OK)
-        .body("$", hasSize(0));
   }
 }

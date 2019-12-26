@@ -26,7 +26,5 @@ public class Option {
   @Column(nullable = false)
   private String title;
 
-  private String mediaUrl;
-
   private String comment;
 }

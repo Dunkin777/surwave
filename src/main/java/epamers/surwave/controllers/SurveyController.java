@@ -2,8 +2,10 @@ package epamers.surwave.controllers;
 
 import static epamers.surwave.core.Contract.SURVEY_URL;
 
+import epamers.surwave.dtos.OptionForm;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyView;
+import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.services.SurveyService;
 import java.util.List;
@@ -13,7 +15,6 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,7 +49,8 @@ public class SurveyController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public void createSurvey(@RequestBody @Valid SurveyForm surveyForm, HttpServletResponse response) {
+  public void createSurvey(@RequestBody @Valid SurveyForm surveyForm,
+      HttpServletResponse response) {
 
     Survey survey = surveyService.create(converter.convert(surveyForm, Survey.class));
     response.addHeader("Location", SURVEY_URL + "/" + survey.getId());
@@ -56,19 +58,15 @@ public class SurveyController {
 
   @PutMapping("/{id}")
   public void updateSurvey(@PathVariable Long id, @RequestBody @Valid SurveyForm surveyForm) {
-
     surveyService.update(id, converter.convert(surveyForm, Survey.class));
   }
 
   @PutMapping("/{id}/options")
-  public void addOptionsToSurvey(@PathVariable Long id, @RequestBody List<Long> optionIds) {
+  public void addOptionToSurvey(@PathVariable Long id, @RequestBody OptionForm optionForm) {
 
-    surveyService.addOptions(id, optionIds);
+    Option option = converter.convert(optionForm, Option.class);
+    surveyService.addOption(id, option);
   }
 
-  @DeleteMapping("/{id}")
-  public void deleteSurvey(@PathVariable Long id) {
-
-    surveyService.delete(id);
-  }
+  //TODO: add endpoint to delete option
 }

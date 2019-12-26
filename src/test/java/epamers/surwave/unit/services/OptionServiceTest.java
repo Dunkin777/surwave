@@ -29,7 +29,6 @@ public class OptionServiceTest {
   private final Long ID = 156L;
   private final Long NONEXISTENT_ID = 36L;
   private final String AUTHOR = "Some Author";
-  private final String MEDIA_URL = "http://youtube.com/supervideo256";
   private final String TITLE = "Elton John - Komarinskaya (feat. Ella Fitzgerald)";
   private final String COMMENT = "Starts in D#, then sudden change to another religion.";
   private Option option;
@@ -40,7 +39,6 @@ public class OptionServiceTest {
     MockitoAnnotations.initMocks(this);
     option = Option.builder()
         .author(AUTHOR)
-        .mediaUrl(MEDIA_URL)
         .title(TITLE)
         .id(ID)
         .comment(COMMENT)
@@ -114,21 +112,5 @@ public class OptionServiceTest {
     optionService.update(ID, null);
 
     verify(optionRepository, never()).save(option);
-  }
-
-  @Test
-  public void delete_existingId_success() {
-
-    optionService.delete(ID);
-
-    verify(optionRepository).deleteById(ID);
-  }
-
-  @Test(expected = NoSuchElementException.class)
-  public void delete_nonExistingId_exception() {
-
-    optionService.delete(NONEXISTENT_ID);
-
-    verify(optionRepository, never()).deleteById(NONEXISTENT_ID);
   }
 }

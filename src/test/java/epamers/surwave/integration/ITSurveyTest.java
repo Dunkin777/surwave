@@ -32,7 +32,6 @@ public class ITSurveyTest extends IntegrationTest {
   private SurveyForm surveyForm;
 
   private final String AUTHOR = "Some Author";
-  private final String MEDIA_URL = "http://youtube.com/supervideo256";
   private final String TITLE = "Elton John Lennon - Korobeiniki (feat. George Gershwin)";
   private final String COMMENT = "Actually, I don't wanna to play this song, adding just for lulz...";
 
@@ -45,7 +44,6 @@ public class ITSurveyTest extends IntegrationTest {
 
     Option option = Option.builder()
         .author(AUTHOR)
-        .mediaUrl(MEDIA_URL)
         .title(TITLE)
         .comment(COMMENT)
         .build();
@@ -54,7 +52,6 @@ public class ITSurveyTest extends IntegrationTest {
         .type(SurveyType.CLASSIC)
         .choicesByUser(5)
         .description(SURVEY_DESCRIPTION)
-        .isUsersSeparated(true)
         .proposalsByUser(4)
         .build();
 
@@ -91,7 +88,6 @@ public class ITSurveyTest extends IntegrationTest {
         .body("type", equalTo("CLASSIC"))
         .body("choicesByUser", equalTo(5))
         .body("proposalsByUser", equalTo(4))
-        .body("isUsersSeparated", equalTo(true))
         .body("state", equalTo("CREATED"))
         .body("options", hasSize(0));
 
@@ -119,18 +115,5 @@ public class ITSurveyTest extends IntegrationTest {
         .body("state", equalTo("CLOSED"))
         .body("options", hasSize(1))
         .body("options.title", hasItem(TITLE));
-
-    //Delete it
-    givenJson()
-        .delete(newEntityURI)
-        .then()
-        .statusCode(SC_OK);
-
-    //Check that we have no Surveys at the end
-    givenJson()
-        .get(SURVEY_URL + "/all")
-        .then()
-        .statusCode(SC_OK)
-        .body("$", hasSize(0));
   }
 }

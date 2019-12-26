@@ -13,7 +13,6 @@ public class FormToOptionConverter implements Converter<OptionForm, Option> {
 
     return Option.builder()
         .author(optionForm.getAuthor())
-        .mediaUrl(optionForm.getMediaUrl())
         .title(optionForm.getTitle())
         .comment(optionForm.getComment())
         .build();

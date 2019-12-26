@@ -2,7 +2,6 @@ package epamers.surwave.unit.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -38,7 +37,6 @@ public class SurveyServiceTest {
 
   private final Long OPTION_ID = 156L;
   private final String AUTHOR = "Some Author";
-  private final String MEDIA_URL = "http://youtube.com/supervideo256";
   private final String TITLE = "Elton John - Komarinskaya (feat. Ella Fitzgerald)";
   private final String COMMENT = "Starts in D#, then sudden change to another religion.";
 
@@ -55,7 +53,6 @@ public class SurveyServiceTest {
     MockitoAnnotations.initMocks(this);
     option = Option.builder()
         .author(AUTHOR)
-        .mediaUrl(MEDIA_URL)
         .title(TITLE)
         .id(OPTION_ID)
         .comment(COMMENT)
@@ -72,11 +69,11 @@ public class SurveyServiceTest {
         .options(options)
         .build();
 
-    when(optionService.process(any())).thenReturn(options);
     when(surveyRepository.findById(SURVEY_ID)).thenReturn(Optional.of(survey));
     when(surveyRepository.findAll()).thenReturn(List.of(survey));
     when(surveyRepository.save(survey)).thenReturn(survey);
     when(surveyRepository.existsById(SURVEY_ID)).thenReturn(true);
+    when(optionService.create(option)).thenReturn(option);
   }
 
   @Test
@@ -139,26 +136,12 @@ public class SurveyServiceTest {
   }
 
   @Test
-  public void delete_validId_success() {
-
-    surveyService.delete(SURVEY_ID);
-
-    verify(surveyRepository).deleteById(SURVEY_ID);
-  }
-
-  @Test(expected = NoSuchElementException.class)
-  public void delete_nonexistentId_exception() {
-
-    surveyService.delete(NONEXISTENT_SURVEY_ID);
-  }
-
-  @Test
   public void addOptions_validArguments_success() {
 
     ArgumentCaptor<Survey> arg = ArgumentCaptor.forClass(Survey.class);
     survey.setOptions(new HashSet<>());
 
-    surveyService.addOptions(SURVEY_ID, List.of(OPTION_ID));
+    surveyService.addOption(SURVEY_ID, option);
 
     verify(surveyRepository).save(arg.capture());
     assertEquals(survey, arg.getValue());

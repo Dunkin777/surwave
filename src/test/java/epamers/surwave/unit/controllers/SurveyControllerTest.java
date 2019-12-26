@@ -7,9 +7,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import epamers.surwave.controllers.SurveyController;
+import epamers.surwave.dtos.OptionForm;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.entities.ClassicSurvey;
+import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyType;
 import epamers.surwave.services.SurveyService;
@@ -39,9 +41,11 @@ public class SurveyControllerTest {
   private final Long OPTION_ID = 55L;
   private final Long SURVEY_ID = 77L;
   private Survey survey;
+  private Option option;
   private List<Survey> surveys;
   private SurveyForm surveyForm;
   private SurveyView surveyView;
+  private OptionForm optionForm;
 
   @Before
   public void setUp() {
@@ -49,6 +53,9 @@ public class SurveyControllerTest {
     MockitoAnnotations.initMocks(this);
 
     surveyForm = SurveyForm.builder()
+        .build();
+
+    optionForm = OptionForm.builder()
         .build();
 
     surveyView = SurveyView.builder()
@@ -62,11 +69,16 @@ public class SurveyControllerTest {
 
     surveys = List.of(survey);
 
+    option = Option.builder()
+        .id(OPTION_ID)
+        .build();
+
     when(surveyService.getAll()).thenReturn(surveys);
     when(surveyService.getById(SURVEY_ID)).thenReturn(survey);
     when(surveyService.create(survey)).thenReturn(survey);
     when(converter.convert(survey, SurveyView.class)).thenReturn(surveyView);
     when(converter.convert(surveyForm, Survey.class)).thenReturn(survey);
+    when(converter.convert(optionForm, Option.class)).thenReturn(option);
   }
 
   @Test
@@ -104,18 +116,10 @@ public class SurveyControllerTest {
   }
 
   @Test
-  public void addOptionsToSurvey_success() {
+  public void addOptionToSurvey_success() {
 
-    surveyController.addOptionsToSurvey(SURVEY_ID, List.of(OPTION_ID));
+    surveyController.addOptionToSurvey(SURVEY_ID, optionForm);
 
-    verify(surveyService).addOptions(SURVEY_ID, List.of(OPTION_ID));
-  }
-
-  @Test
-  public void deleteSurvey_success() {
-
-    surveyController.deleteSurvey(SURVEY_ID);
-
-    verify(surveyService).delete(SURVEY_ID);
+    verify(surveyService).addOption(SURVEY_ID, option);
   }
 }
