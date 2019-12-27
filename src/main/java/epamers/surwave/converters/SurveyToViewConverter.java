@@ -20,7 +20,7 @@ public class SurveyToViewConverter implements Converter<Survey, SurveyView> {
 
   @Override
   public SurveyView convert(Survey survey) {
-    Set<SongView> options = survey.getSongs().stream()
+    Set<SongView> songs = survey.getSongs().stream()
         .map(converter::convert)
         .collect(toSet());
 
@@ -28,7 +28,7 @@ public class SurveyToViewConverter implements Converter<Survey, SurveyView> {
         .id(survey.getId())
         .type(survey.getType())
         .description(survey.getDescription())
-        .options(options)
+        .songs(songs)
         .state(survey.getState())
         .proposalsByUser(survey.getProposalsByUser())
         .isHidden(survey.getIsHidden())

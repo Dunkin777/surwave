@@ -51,13 +51,13 @@ public class SurveyService {
   }
 
   @Transactional
-  public void addOption(Long id, Song newSong) {
+  public void addSong(Long id, Song newSong) {
     Survey survey = getById(id);
     newSong = songService.create(newSong);
 
-    Set<Song> optionsToSet = survey.getSongs();
-    optionsToSet.add(newSong);
-    survey.setSongs(optionsToSet);
+    Set<Song> songsToUpdate = survey.getSongs();
+    songsToUpdate.add(newSong);
+    survey.setSongs(songsToUpdate);
 
     surveyRepository.save(survey);
   }

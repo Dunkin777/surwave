@@ -61,12 +61,12 @@ public class SurveyController {
     surveyService.update(id, converter.convert(surveyForm, Survey.class));
   }
 
-  @PutMapping("/{id}/options")
-  public void addOptionToSurvey(@PathVariable Long id, @RequestBody SongForm songForm) {
+  @PutMapping("/{id}/songs")
+  public void addSongToSurvey(@PathVariable Long id, @RequestBody SongForm songForm) {
 
     Song song = converter.convert(songForm, Song.class);
-    surveyService.addOption(id, song);
+    surveyService.addSong(id, song);
   }
 
-  //TODO: add endpoint to delete option
+  //TODO: add endpoint to delete song
 }

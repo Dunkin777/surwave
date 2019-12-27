@@ -1,6 +1,6 @@
 package epamers.surwave.integration;
 
-import static epamers.surwave.core.Contract.OPTION_URL;
+import static epamers.surwave.core.Contract.SONG_URL;
 import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
@@ -22,7 +22,7 @@ public class ITSongTest extends IntegrationTest {
 
   private SongForm songForm;
 
-  private final String AUTHOR = "Brian Wilson";
+  private final String PERFORMER = "Brian Wilson";
   private final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
   private final String COMMENT = "Starts in D#, then sudden change to another religion.";
 
@@ -31,7 +31,7 @@ public class ITSongTest extends IntegrationTest {
     RestAssured.port = port;
 
     songForm = SongForm.builder()
-        .performer(AUTHOR)
+        .performer(PERFORMER)
         .title(TITLE)
         .comment(COMMENT)
         .build();
@@ -43,18 +43,18 @@ public class ITSongTest extends IntegrationTest {
   }
 
   @Test
-  public void optionController_successCase() {
-    //Check that we have zero Options at the start
+  public void songController_successCase() {
+    //Check that we have zero Songs at the start
     givenJson()
-        .get(OPTION_URL + "/all")
+        .get(SONG_URL + "/all")
         .then()
         .statusCode(SC_OK)
         .body("$", hasSize(0));
 
-    //Post a new Option
+    //Post a new Song
     Response response = givenJson()
         .body(songForm)
-        .post(OPTION_URL)
+        .post(SONG_URL)
         .then()
         .statusCode(SC_CREATED)
         .extract()
@@ -62,23 +62,23 @@ public class ITSongTest extends IntegrationTest {
 
     String newEntityURI = response.getHeader("Location");
 
-    //Retrieve and check newly created Option
+    //Retrieve and check newly created Song
     givenJson()
         .get(newEntityURI)
         .then()
         .statusCode(SC_OK)
         .body("title", equalTo(TITLE))
         .body("comment", equalTo(COMMENT))
-        .body("performer", equalTo(AUTHOR));
+        .body("performer", equalTo(PERFORMER));
 
-    //Ensure that we have exactly one Option in repo
+    //Ensure that we have exactly one Song in repo
     givenJson()
-        .get(OPTION_URL + "/all")
+        .get(SONG_URL + "/all")
         .then()
         .statusCode(SC_OK)
         .body("$", hasSize(1));
 
-    //Change some property of created Option
+    //Change some property of created Song
     final String changedTitle = "Oh my!.. Title has changed & now it's even better!";
     songForm.setTitle(changedTitle);
 

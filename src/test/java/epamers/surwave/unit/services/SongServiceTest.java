@@ -72,7 +72,7 @@ public class SongServiceTest {
   }
 
   @Test
-  public void create_validOption_success() {
+  public void create_validSong_success() {
     Song returnedSong = songService.create(song);
 
     verify(songRepository).save(song);
@@ -99,7 +99,7 @@ public class SongServiceTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void update_nullOption_exception() {
+  public void update_nullSong_exception() {
     songService.update(ID, null);
 
     verify(songRepository, never()).save(song);

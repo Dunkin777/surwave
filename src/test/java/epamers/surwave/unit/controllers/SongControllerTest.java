@@ -64,31 +64,31 @@ public class SongControllerTest {
   }
 
   @Test
-  public void getAllOptions_success() {
-    List<SongView> returnedOptions = songController.getAllOptions();
+  public void getAllSongs_success() {
+    List<SongView> returnedSongs = songController.getAllSongs();
 
-    assertEquals(1, returnedOptions.size());
-    assertTrue(returnedOptions.contains(songView));
+    assertEquals(1, returnedSongs.size());
+    assertTrue(returnedSongs.contains(songView));
   }
 
   @Test
-  public void getOption_existingId_success() {
-    SongView returnedOption = songController.getOption(ID);
+  public void getSong_existingId_success() {
+    SongView returnedSong = songController.getSong(ID);
 
-    assertEquals(songView, returnedOption);
+    assertEquals(songView, returnedSong);
   }
 
   @Test
-  public void createOption() {
-    songController.createOption(songForm, response);
+  public void createSong() {
+    songController.createSong(songForm, response);
 
     verify(songService).create(song);
     verify(response).addHeader(any(), any());
   }
 
   @Test
-  public void updateOption() {
-    songController.updateOption(ID, songForm);
+  public void updateSong() {
+    songController.updateSong(ID, songForm);
 
     verify(converter).convert(songForm, Song.class);
     verify(songService).update(ID, song);

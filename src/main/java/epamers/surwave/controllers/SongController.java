@@ -1,6 +1,6 @@
 package epamers.surwave.controllers;
 
-import static epamers.surwave.core.Contract.OPTION_URL;
+import static epamers.surwave.core.Contract.SONG_URL;
 
 import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SongView;
@@ -24,34 +24,34 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(OPTION_URL)
+@RequestMapping(SONG_URL)
 public class SongController {
 
   private final SongService songService;
   private final ConversionService converter;
 
   @GetMapping("/all")
-  public List<SongView> getAllOptions() {
+  public List<SongView> getAllSongs() {
     return songService.getAll().stream()
         .map(o -> converter.convert(o, SongView.class))
         .collect(Collectors.toList());
   }
 
   @GetMapping("/{id}")
-  public SongView getOption(@PathVariable Long id) {
+  public SongView getSong(@PathVariable Long id) {
     Song song = songService.getById(id);
     return converter.convert(song, SongView.class);
   }
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public void createOption(@RequestBody @Valid SongForm songForm, HttpServletResponse response) {
+  public void createSong(@RequestBody @Valid SongForm songForm, HttpServletResponse response) {
     Song song = songService.create(converter.convert(songForm, Song.class));
-    response.addHeader("Location", OPTION_URL + "/" + song.getId());
+    response.addHeader("Location", SONG_URL + "/" + song.getId());
   }
 
   @PutMapping("/{id}")
-  public void updateOption(@PathVariable Long id, @RequestBody @Valid SongForm songForm) {
+  public void updateSong(@PathVariable Long id, @RequestBody @Valid SongForm songForm) {
     songService.update(id, converter.convert(songForm, Song.class));
   }
 }

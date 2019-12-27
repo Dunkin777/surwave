@@ -93,7 +93,7 @@ public class ITSurveyTest extends IntegrationTest {
         .body("proposalsByUser", equalTo(4))
         .body("state", equalTo("CREATED"))
         .body("isHidden", equalTo(false))
-        .body("options", hasSize(0));
+        .body("songs", hasSize(0));
 
     //Forcibly end this Survey
     surveyForm.setState(SurveyState.CLOSED);
@@ -104,10 +104,10 @@ public class ITSurveyTest extends IntegrationTest {
         .then()
         .statusCode(SC_OK);
 
-    //Add an Option to our Survey
+    //Add a Song to our Survey
     givenJson()
         .body(songForm)
-        .put(newEntityURI + "/options")
+        .put(newEntityURI + "/songs")
         .then()
         .statusCode(SC_OK);
 
@@ -117,7 +117,7 @@ public class ITSurveyTest extends IntegrationTest {
         .then()
         .statusCode(SC_OK)
         .body("state", equalTo("CLOSED"))
-        .body("options", hasSize(1))
-        .body("options.title", hasItem(TITLE));
+        .body("songs", hasSize(1))
+        .body("songs.title", hasItem(TITLE));
   }
 }

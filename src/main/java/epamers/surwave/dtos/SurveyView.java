@@ -17,7 +17,7 @@ public class SurveyView {
 
   private SurveyType type;
 
-  private Set<SongView> options;
+  private Set<SongView> songs;
 
   private String description;
 

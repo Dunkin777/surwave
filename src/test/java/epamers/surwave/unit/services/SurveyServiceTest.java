@@ -35,7 +35,7 @@ public class SurveyServiceTest {
   @Mock
   SurveyRepository surveyRepository;
 
-  private final Long OPTION_ID = 156L;
+  private final Long SONG_ID = 156L;
   private final String PERFORMER = "Bee Gees";
   private final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
   private final String COMMENT = "Starts in D#, then sudden change to another religion.";
@@ -53,7 +53,7 @@ public class SurveyServiceTest {
     song = Song.builder()
         .performer(PERFORMER)
         .title(TITLE)
-        .id(OPTION_ID)
+        .id(SONG_ID)
         .comment(COMMENT)
         .build();
 
@@ -127,11 +127,11 @@ public class SurveyServiceTest {
   }
 
   @Test
-  public void addOptions_validArguments_success() {
+  public void addSong_validArguments_success() {
     ArgumentCaptor<Survey> arg = ArgumentCaptor.forClass(Survey.class);
     survey.setSongs(new HashSet<>());
 
-    surveyService.addOption(SURVEY_ID, song);
+    surveyService.addSong(SURVEY_ID, song);
 
     verify(surveyRepository).save(arg.capture());
     assertEquals(survey, arg.getValue());

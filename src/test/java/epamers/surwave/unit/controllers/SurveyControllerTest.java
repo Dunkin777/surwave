@@ -38,7 +38,7 @@ public class SurveyControllerTest {
   @Mock
   HttpServletResponse response;
 
-  private final Long OPTION_ID = 55L;
+  private final Long SONG_ID = 55L;
   private final Long SURVEY_ID = 77L;
   private Survey survey;
   private Song song;
@@ -69,7 +69,7 @@ public class SurveyControllerTest {
     surveys = List.of(survey);
 
     song = Song.builder()
-        .id(OPTION_ID)
+        .id(SONG_ID)
         .build();
 
     when(surveyService.getAll()).thenReturn(surveys);
@@ -111,9 +111,9 @@ public class SurveyControllerTest {
   }
 
   @Test
-  public void addOptionToSurvey_success() {
-    surveyController.addOptionToSurvey(SURVEY_ID, songForm);
+  public void addSongToSurvey_success() {
+    surveyController.addSongToSurvey(SURVEY_ID, songForm);
 
-    verify(surveyService).addOption(SURVEY_ID, song);
+    verify(surveyService).addSong(SURVEY_ID, song);
   }
 }
