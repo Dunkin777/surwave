@@ -21,12 +21,10 @@ public class SurveyService {
   private final OptionService optionService;
 
   public List<Survey> getAll() {
-
     return surveyRepository.findAll();
   }
 
   public Survey getById(Long id) {
-
     return surveyRepository.findById(id).orElseThrow();
   }
 
