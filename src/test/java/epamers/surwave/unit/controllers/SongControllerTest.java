@@ -74,7 +74,7 @@ public class SongControllerTest {
   }
 
   @Test
-  public void updateSong() {
+  public void updateSong_success() {
     songController.updateSong(SONG_ID, songForm);
 
     verify(converter).convert(songForm, Song.class);

@@ -62,12 +62,12 @@ public class SurveyController {
   @PutMapping("/{id}/song")
   public void addSongToSurvey(@PathVariable Long id, @RequestBody @Valid SongForm songForm, HttpServletResponse response) {
     Song song = converter.convert(songForm, Song.class);
-    Song createdSong = surveyService.createSong(id, song);
+    Song createdSong = surveyService.addSong(id, song);
     response.addHeader("Location", SONG_URL + "/" + createdSong.getId());
   }
 
   @DeleteMapping("/{surveyId}" + SONG_URL + "/{songId}")
   public void removeSongFromSurvey(@PathVariable Long surveyId, @PathVariable Long songId) {
-    surveyService.deleteSong(surveyId, songId);
+    surveyService.removeSong(surveyId, songId);
   }
 }

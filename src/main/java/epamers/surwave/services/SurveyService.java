@@ -51,7 +51,7 @@ public class SurveyService {
   }
 
   @Transactional
-  public Song createSong(Long surveyId, Song newSong) {
+  public Song addSong(Long surveyId, Song newSong) {
     Survey survey = getById(surveyId);
     newSong = songService.create(newSong);
 
@@ -64,7 +64,7 @@ public class SurveyService {
   }
 
   @Transactional
-  public void deleteSong(Long surveyId, Long songId) {
+  public void removeSong(Long surveyId, Long songId) {
     Survey survey = getById(surveyId);
     Song song = songService.getById(songId);
 

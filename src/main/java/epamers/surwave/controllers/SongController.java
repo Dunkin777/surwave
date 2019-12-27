@@ -41,6 +41,7 @@ public class SongController {
 
   @PutMapping("/{id}")
   public void updateSong(@PathVariable Long id, @RequestBody @Valid SongForm songForm) {
-    songService.update(id, converter.convert(songForm, Song.class));
+    Song song = converter.convert(songForm, Song.class);
+    songService.update(id, song);
   }
 }

@@ -113,11 +113,11 @@ public class SurveyControllerTest {
 
   @Test
   public void addSongToSurvey_success() {
-    when(surveyService.createSong(SURVEY_ID, song)).thenReturn(song);
+    when(surveyService.addSong(SURVEY_ID, song)).thenReturn(song);
 
     surveyController.addSongToSurvey(SURVEY_ID, songForm, response);
 
-    verify(surveyService).createSong(SURVEY_ID, song);
+    verify(surveyService).addSong(SURVEY_ID, song);
     verify(response).addHeader("Location", SONG_URL + "/" + SONG_ID);
   }
 
@@ -125,6 +125,6 @@ public class SurveyControllerTest {
   public void removeSongFromSurvey_success() {
     surveyController.removeSongFromSurvey(SURVEY_ID, SONG_ID);
 
-    verify(surveyService).deleteSong(SURVEY_ID, SONG_ID);
+    verify(surveyService).removeSong(SURVEY_ID, SONG_ID);
   }
 }

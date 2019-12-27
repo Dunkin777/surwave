@@ -133,7 +133,7 @@ public class SurveyServiceTest {
     ArgumentCaptor<Survey> arg = ArgumentCaptor.forClass(Survey.class);
     survey.setSongs(new HashSet<>());
 
-    surveyService.createSong(SURVEY_ID, song);
+    surveyService.addSong(SURVEY_ID, song);
 
     verify(surveyRepository).save(arg.capture());
     assertEquals(survey, arg.getValue());
@@ -141,11 +141,11 @@ public class SurveyServiceTest {
   }
 
   @Test
-  public void deleteSong_existentSong_songRemovedAndDeleted() {
+  public void removeSong_existentSong_songRemovedAndDeleted() {
     when(songService.getById(SONG_ID)).thenReturn(song);
     ArgumentCaptor<Survey> arg = ArgumentCaptor.forClass(Survey.class);
 
-    surveyService.deleteSong(SURVEY_ID, SONG_ID);
+    surveyService.removeSong(SURVEY_ID, SONG_ID);
 
     verify(surveyRepository).save(arg.capture());
     assertTrue(arg.getValue().getSongs().isEmpty());
@@ -153,14 +153,14 @@ public class SurveyServiceTest {
   }
 
   @Test
-  public void deleteSong_nonExistentSong_nothingRemoved() {
+  public void removeSong_nonExistentSong_nothingRemoved() {
     Long otherSongId = 40L;
     Song otherSong = Song.builder()
         .id(otherSongId)
         .build();
     when(songService.getById(otherSongId)).thenReturn(otherSong);
 
-    surveyService.deleteSong(SURVEY_ID, otherSongId);
+    surveyService.removeSong(SURVEY_ID, otherSongId);
 
     verify(surveyRepository, never()).save(any());
     verify(songService, never()).delete(any());
