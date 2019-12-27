@@ -44,4 +44,11 @@ public class SongService {
     song.setId(id);
     songRepository.save(song);
   }
+
+  @Transactional
+  public void delete(Long id) {
+    if (songRepository.existsById(id)) {
+      songRepository.deleteById(id);
+    }
+  }
 }

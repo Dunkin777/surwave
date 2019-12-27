@@ -1,5 +1,6 @@
 package epamers.surwave.controllers;
 
+import static epamers.surwave.core.Contract.SONG_URL;
 import static epamers.surwave.core.Contract.SURVEY_URL;
 
 import epamers.surwave.dtos.SongForm;
@@ -15,6 +16,7 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +36,6 @@ public class SurveyController {
 
   @GetMapping("/all")
   public List<SurveyView> getAllSurveys() {
-
     return surveyService.getAll().stream()
         .map(s -> converter.convert(s, SurveyView.class))
         .collect(Collectors.toList());
@@ -42,16 +43,13 @@ public class SurveyController {
 
   @GetMapping("/{id}")
   public SurveyView getSurvey(@PathVariable Long id) {
-
     Survey survey = surveyService.getById(id);
     return converter.convert(survey, SurveyView.class);
   }
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public void createSurvey(@RequestBody @Valid SurveyForm surveyForm,
-      HttpServletResponse response) {
-
+  public void createSurvey(@RequestBody @Valid SurveyForm surveyForm, HttpServletResponse response) {
     Survey survey = surveyService.create(converter.convert(surveyForm, Survey.class));
     response.addHeader("Location", SURVEY_URL + "/" + survey.getId());
   }
@@ -61,12 +59,15 @@ public class SurveyController {
     surveyService.update(id, converter.convert(surveyForm, Survey.class));
   }
 
-  @PutMapping("/{id}/songs")
-  public void addSongToSurvey(@PathVariable Long id, @RequestBody SongForm songForm) {
-
+  @PutMapping("/{id}/song")
+  public void addSongToSurvey(@PathVariable Long id, @RequestBody @Valid SongForm songForm, HttpServletResponse response) {
     Song song = converter.convert(songForm, Song.class);
-    surveyService.addSong(id, song);
+    Song createdSong = surveyService.createSong(id, song);
+    response.addHeader("Location", SONG_URL + "/" + createdSong.getId());
   }
 
-  //TODO: add endpoint to delete song
+  @DeleteMapping("/{surveyId}" + SONG_URL + "/{songId}")
+  public void removeSongFromSurvey(@PathVariable Long surveyId, @PathVariable Long songId) {
+    surveyService.deleteSong(surveyId, songId);
+  }
 }

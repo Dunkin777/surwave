@@ -6,6 +6,7 @@ import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertTrue;
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
@@ -31,10 +32,9 @@ public class ITSurveyTest extends IntegrationTest {
   private SongForm songForm;
   private SurveyForm surveyForm;
 
-  private final String AUTHOR = "Elton John Lennon";
+  private final String PERFORMER = "Elton John Lennon";
   private final String TITLE = "Korobeiniki (feat. George Gershwin)";
   private final String COMMENT = "Actually, I don't wanna to play this song, adding just for lulz...";
-
   private final String SURVEY_DESCRIPTION = "Please think twice before choosing!";
 
   @Before
@@ -42,7 +42,7 @@ public class ITSurveyTest extends IntegrationTest {
     RestAssured.port = port;
 
     songForm = SongForm.builder()
-        .performer(AUTHOR)
+        .performer(PERFORMER)
         .title(TITLE)
         .comment(COMMENT)
         .build();
@@ -80,11 +80,11 @@ public class ITSurveyTest extends IntegrationTest {
         .extract()
         .response();
 
-    String newEntityURI = response.getHeader("Location");
+    String newSurveyURI = response.getHeader("Location");
 
     //Retrieve and check newly created Survey
     givenJson()
-        .get(newEntityURI)
+        .get(newSurveyURI)
         .then()
         .statusCode(SC_OK)
         .body("description", equalTo(SURVEY_DESCRIPTION))
@@ -100,24 +100,46 @@ public class ITSurveyTest extends IntegrationTest {
 
     givenJson()
         .body(surveyForm)
-        .put(newEntityURI)
+        .put(newSurveyURI)
         .then()
         .statusCode(SC_OK);
 
     //Add a Song to our Survey
-    givenJson()
+    response = givenJson()
         .body(songForm)
-        .put(newEntityURI + "/songs")
+        .put(newSurveyURI + "/song")
         .then()
-        .statusCode(SC_OK);
+        .statusCode(SC_OK)
+        .extract()
+        .response();
+
+    String newSongURI = response.getHeader("Location");
 
     //Check that all changes are saved successfully
     givenJson()
-        .get(newEntityURI)
+        .get(newSurveyURI)
         .then()
         .statusCode(SC_OK)
         .body("state", equalTo("CLOSED"))
         .body("songs", hasSize(1))
-        .body("songs.title", hasItem(TITLE));
+        .body("songs.performer", hasItem(PERFORMER))
+        .body("songs.title", hasItem(TITLE))
+        .body("songs.comment", hasItem(COMMENT));
+
+    //Remove Song from Survey
+    givenJson()
+        .body(songForm)
+        .delete(newSurveyURI + newSongURI)
+        .then()
+        .statusCode(SC_OK);
+
+    //Check it
+    givenJson()
+        .get(newSurveyURI)
+        .then()
+        .statusCode(SC_OK)
+        .body("songs", hasSize(0));
+
+    assertTrue(songRepository.findAll().isEmpty());
   }
 }

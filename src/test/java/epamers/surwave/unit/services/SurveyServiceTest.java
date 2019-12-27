@@ -2,6 +2,8 @@ package epamers.surwave.unit.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -72,7 +74,6 @@ public class SurveyServiceTest {
     when(surveyRepository.findAll()).thenReturn(List.of(survey));
     when(surveyRepository.save(survey)).thenReturn(survey);
     when(surveyRepository.existsById(SURVEY_ID)).thenReturn(true);
-    when(songService.create(song)).thenReturn(song);
   }
 
   @Test
@@ -128,14 +129,41 @@ public class SurveyServiceTest {
 
   @Test
   public void addSong_validArguments_success() {
+    when(songService.create(song)).thenReturn(song);
     ArgumentCaptor<Survey> arg = ArgumentCaptor.forClass(Survey.class);
     survey.setSongs(new HashSet<>());
 
-    surveyService.addSong(SURVEY_ID, song);
+    surveyService.createSong(SURVEY_ID, song);
 
     verify(surveyRepository).save(arg.capture());
     assertEquals(survey, arg.getValue());
     assertTrue(arg.getValue().getSongs().contains(song));
+  }
+
+  @Test
+  public void deleteSong_existentSong_songRemovedAndDeleted() {
+    when(songService.getById(SONG_ID)).thenReturn(song);
+    ArgumentCaptor<Survey> arg = ArgumentCaptor.forClass(Survey.class);
+
+    surveyService.deleteSong(SURVEY_ID, SONG_ID);
+
+    verify(surveyRepository).save(arg.capture());
+    assertTrue(arg.getValue().getSongs().isEmpty());
+    verify(songService).delete(SONG_ID);
+  }
+
+  @Test
+  public void deleteSong_nonExistentSong_nothingRemoved() {
+    Long otherSongId = 40L;
+    Song otherSong = Song.builder()
+        .id(otherSongId)
+        .build();
+    when(songService.getById(otherSongId)).thenReturn(otherSong);
+
+    surveyService.deleteSong(SURVEY_ID, otherSongId);
+
+    verify(surveyRepository, never()).save(any());
+    verify(songService, never()).delete(any());
   }
 
   @Test

@@ -2,7 +2,6 @@ package epamers.surwave.unit.controllers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -12,7 +11,6 @@ import epamers.surwave.dtos.SongView;
 import epamers.surwave.entities.Song;
 import epamers.surwave.services.SongService;
 import java.util.List;
-import javax.servlet.http.HttpServletResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -31,12 +29,9 @@ public class SongControllerTest {
   @Mock
   ConversionService converter;
 
-  @Mock
-  HttpServletResponse response;
-
-  private final Long ID = 156L;
+  private final Long SONG_ID = 156L;
   private final String PERFORMER = "Some Author";
-  private final String TITLE = "Elton John - Komarinskaya (feat. Ella Fitzgerald)";
+  private final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
   private final String COMMENT = "Starts in D#, then sudden change to another religion.";
 
   private Song song;
@@ -49,7 +44,7 @@ public class SongControllerTest {
     song = Song.builder()
         .performer(PERFORMER)
         .title(TITLE)
-        .id(ID)
+        .id(SONG_ID)
         .comment(COMMENT)
         .build();
 
@@ -57,7 +52,7 @@ public class SongControllerTest {
     songView = SongView.builder().build();
 
     when(songService.getAll()).thenReturn(List.of(song));
-    when(songService.getById(ID)).thenReturn(song);
+    when(songService.getById(SONG_ID)).thenReturn(song);
     when(songService.create(song)).thenReturn(song);
     when(converter.convert(song, SongView.class)).thenReturn(songView);
     when(converter.convert(songForm, Song.class)).thenReturn(song);
@@ -73,24 +68,16 @@ public class SongControllerTest {
 
   @Test
   public void getSong_existingId_success() {
-    SongView returnedSong = songController.getSong(ID);
+    SongView returnedSong = songController.getSong(SONG_ID);
 
     assertEquals(songView, returnedSong);
   }
 
   @Test
-  public void createSong() {
-    songController.createSong(songForm, response);
-
-    verify(songService).create(song);
-    verify(response).addHeader(any(), any());
-  }
-
-  @Test
   public void updateSong() {
-    songController.updateSong(ID, songForm);
+    songController.updateSong(SONG_ID, songForm);
 
     verify(converter).convert(songForm, Song.class);
-    verify(songService).update(ID, song);
+    verify(songService).update(SONG_ID, song);
   }
 }

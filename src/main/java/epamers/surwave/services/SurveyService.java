@@ -51,8 +51,8 @@ public class SurveyService {
   }
 
   @Transactional
-  public void addSong(Long id, Song newSong) {
-    Survey survey = getById(id);
+  public Song createSong(Long surveyId, Song newSong) {
+    Survey survey = getById(surveyId);
     newSong = songService.create(newSong);
 
     Set<Song> songsToUpdate = survey.getSongs();
@@ -60,6 +60,21 @@ public class SurveyService {
     survey.setSongs(songsToUpdate);
 
     surveyRepository.save(survey);
+    return newSong;
+  }
+
+  @Transactional
+  public void deleteSong(Long surveyId, Long songId) {
+    Survey survey = getById(surveyId);
+    Song song = songService.getById(songId);
+
+    Set<Song> songs = survey.getSongs();
+
+    if (songs.remove(song)) {
+      survey.setSongs(songs);
+      surveyRepository.save(survey);
+      songService.delete(songId);
+    }
   }
 
   @Transactional

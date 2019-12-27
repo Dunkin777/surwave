@@ -26,7 +26,7 @@ public class SongServiceTest {
   @Mock
   SongRepository songRepository;
 
-  private final Long ID = 156L;
+  private final Long SONG_ID = 156L;
   private final Long NONEXISTENT_ID = 36L;
   private final String PERFORMER = "Felix Mendelson";
   private final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
@@ -39,12 +39,13 @@ public class SongServiceTest {
     song = Song.builder()
         .performer(PERFORMER)
         .title(TITLE)
-        .id(ID)
+        .id(SONG_ID)
         .comment(COMMENT)
         .build();
 
-    when(songRepository.existsById(ID)).thenReturn(true);
-    when(songRepository.findById(ID)).thenReturn(Optional.of(song));
+    when(songRepository.existsById(SONG_ID)).thenReturn(true);
+    when(songRepository.existsById(NONEXISTENT_ID)).thenReturn(false);
+    when(songRepository.findById(SONG_ID)).thenReturn(Optional.of(song));
     when(songRepository.findAll()).thenReturn(List.of(song));
     when(songRepository.save(song)).thenReturn(song);
   }
@@ -59,14 +60,14 @@ public class SongServiceTest {
 
   @Test
   public void getById_existingId_success() {
-    Song returnedSong = songService.getById(ID);
+    Song returnedSong = songService.getById(SONG_ID);
 
     assertEquals(song, returnedSong);
   }
 
   @Test(expected = NoSuchElementException.class)
   public void getById_nonExistingId_exception() {
-    when(songRepository.existsById(ID)).thenReturn(false);
+    when(songRepository.existsById(SONG_ID)).thenReturn(false);
 
     songService.getById(13L);
   }
@@ -86,7 +87,7 @@ public class SongServiceTest {
 
   @Test
   public void update_validCase_success() {
-    songService.update(ID, song);
+    songService.update(SONG_ID, song);
 
     verify(songRepository).save(song);
   }
@@ -100,8 +101,22 @@ public class SongServiceTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void update_nullSong_exception() {
-    songService.update(ID, null);
+    songService.update(SONG_ID, null);
 
     verify(songRepository, never()).save(song);
+  }
+
+  @Test
+  public void delete_existingId_success() {
+    songService.delete(SONG_ID);
+
+    verify(songRepository).deleteById(SONG_ID);
+  }
+
+  @Test
+  public void delete_nonExistingId_exception() {
+    songService.delete(NONEXISTENT_ID);
+
+    verify(songRepository, never()).deleteById(NONEXISTENT_ID);
   }
 }

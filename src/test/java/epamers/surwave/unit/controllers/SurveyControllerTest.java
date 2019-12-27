@@ -1,8 +1,9 @@
 package epamers.surwave.unit.controllers;
 
+import static epamers.surwave.core.Contract.SONG_URL;
+import static epamers.surwave.core.Contract.SURVEY_URL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -100,7 +101,7 @@ public class SurveyControllerTest {
     surveyController.createSurvey(surveyForm, response);
 
     verify(surveyService).create(survey);
-    verify(response).addHeader(any(), any());
+    verify(response).addHeader("Location", SURVEY_URL + "/" + SURVEY_ID);
   }
 
   @Test
@@ -112,8 +113,18 @@ public class SurveyControllerTest {
 
   @Test
   public void addSongToSurvey_success() {
-    surveyController.addSongToSurvey(SURVEY_ID, songForm);
+    when(surveyService.createSong(SURVEY_ID, song)).thenReturn(song);
 
-    verify(surveyService).addSong(SURVEY_ID, song);
+    surveyController.addSongToSurvey(SURVEY_ID, songForm, response);
+
+    verify(surveyService).createSong(SURVEY_ID, song);
+    verify(response).addHeader("Location", SONG_URL + "/" + SONG_ID);
+  }
+
+  @Test
+  public void removeSongFromSurvey_success() {
+    surveyController.removeSongFromSurvey(SURVEY_ID, SONG_ID);
+
+    verify(surveyService).deleteSong(SURVEY_ID, SONG_ID);
   }
 }

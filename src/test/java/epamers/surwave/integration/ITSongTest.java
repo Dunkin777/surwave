@@ -1,14 +1,13 @@
 package epamers.surwave.integration;
 
 import static epamers.surwave.core.Contract.SONG_URL;
-import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
 import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.response.Response;
 import epamers.surwave.dtos.SongForm;
+import epamers.surwave.entities.Song;
 import epamers.surwave.repos.SongRepository;
 import org.junit.After;
 import org.junit.Before;
@@ -21,6 +20,7 @@ public class ITSongTest extends IntegrationTest {
   private SongRepository songRepository;
 
   private SongForm songForm;
+  private Song song;
 
   private final String PERFORMER = "Brian Wilson";
   private final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
@@ -34,6 +34,13 @@ public class ITSongTest extends IntegrationTest {
         .performer(PERFORMER)
         .title(TITLE)
         .comment(COMMENT)
+        .build();
+
+    song = Song.builder()
+        .comment(COMMENT)
+        .performer(PERFORMER)
+        .mediaPath("")
+        .title(TITLE)
         .build();
   }
 
@@ -51,16 +58,9 @@ public class ITSongTest extends IntegrationTest {
         .statusCode(SC_OK)
         .body("$", hasSize(0));
 
-    //Post a new Song
-    Response response = givenJson()
-        .body(songForm)
-        .post(SONG_URL)
-        .then()
-        .statusCode(SC_CREATED)
-        .extract()
-        .response();
-
-    String newEntityURI = response.getHeader("Location");
+    //Create a new Song (somehow)
+    Long newEntityId = songRepository.save(song).getId();
+    String newEntityURI = SONG_URL + "/" + newEntityId;
 
     //Retrieve and check newly created Song
     givenJson()
