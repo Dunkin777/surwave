@@ -2,6 +2,8 @@ package epamers.surwave.unit.controllers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -9,6 +11,7 @@ import epamers.surwave.controllers.SongController;
 import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SongView;
 import epamers.surwave.entities.Song;
+import epamers.surwave.services.MediaUploadService;
 import epamers.surwave.services.SongService;
 import java.util.List;
 import org.junit.Before;
@@ -25,6 +28,9 @@ public class SongControllerTest {
 
   @Mock
   SongService songService;
+
+  @Mock
+  MediaUploadService uploadService;
 
   @Mock
   ConversionService converter;
@@ -79,5 +85,13 @@ public class SongControllerTest {
 
     verify(converter).convert(songForm, Song.class);
     verify(songService).update(SONG_ID, song);
+  }
+
+  @Test
+  public void uploadMediaToOptionTest() {
+    songController.uploadMediaToSong(SONG_ID, any());
+
+    verify(songService).getById(SONG_ID);
+    verify(uploadService).upload(any(), eq(TITLE));
   }
 }
