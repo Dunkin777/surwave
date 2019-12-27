@@ -56,19 +56,16 @@ public class SurveyController {
 
   @PutMapping("/{id}")
   public void updateSurvey(@PathVariable Long id, @RequestBody @Valid SurveyForm surveyForm) {
-
     surveyService.update(id, converter.convert(surveyForm, Survey.class));
   }
 
   @PutMapping("/{id}/options")
   public void addOptionsToSurvey(@PathVariable Long id, @RequestBody List<Long> optionIds) {
-
     surveyService.addOptions(id, optionIds);
   }
 
   @DeleteMapping("/{id}")
   public void deleteSurvey(@PathVariable Long id) {
-
     surveyService.delete(id);
   }
 }

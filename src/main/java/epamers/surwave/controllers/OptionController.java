@@ -60,13 +60,11 @@ public class OptionController {
 
   @PutMapping("/{id}")
   public void updateOption(@PathVariable Long id, @RequestBody @Valid OptionForm optionForm) {
-
     optionService.update(id, converter.convert(optionForm, Option.class));
   }
 
   @DeleteMapping("/{id}")
   public void deleteOption(@PathVariable Long id) {
-
     optionService.delete(id);
   }
 }

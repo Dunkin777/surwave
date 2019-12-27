@@ -18,12 +18,10 @@ public class OptionService {
   private final OptionRepository optionRepository;
 
   public List<Option> getAll() {
-
     return optionRepository.findAll();
   }
 
   public Option getById(Long id) {
-
     return optionRepository.findById(id).orElseThrow();
   }
 
