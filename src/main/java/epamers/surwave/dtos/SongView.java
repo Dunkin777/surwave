@@ -5,15 +5,15 @@ import lombok.Data;
 
 @Builder
 @Data
-public class OptionView {
+public class SongView {
 
   private Long id;
 
-  private String author;
+  private String performer;
 
   private String title;
 
-  private String mediaUrl;
+  private String mediaPath;
 
   private String comment;
 }

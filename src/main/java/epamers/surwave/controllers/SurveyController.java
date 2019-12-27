@@ -2,10 +2,10 @@ package epamers.surwave.controllers;
 
 import static epamers.surwave.core.Contract.SURVEY_URL;
 
-import epamers.surwave.dtos.OptionForm;
+import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyView;
-import epamers.surwave.entities.Option;
+import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.services.SurveyService;
 import java.util.List;
@@ -62,10 +62,10 @@ public class SurveyController {
   }
 
   @PutMapping("/{id}/options")
-  public void addOptionToSurvey(@PathVariable Long id, @RequestBody OptionForm optionForm) {
+  public void addOptionToSurvey(@PathVariable Long id, @RequestBody SongForm songForm) {
 
-    Option option = converter.convert(optionForm, Option.class);
-    surveyService.addOption(id, option);
+    Song song = converter.convert(songForm, Song.class);
+    surveyService.addOption(id, song);
   }
 
   //TODO: add endpoint to delete option

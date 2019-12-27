@@ -2,7 +2,7 @@ package epamers.surwave.converters;
 
 import static java.util.stream.Collectors.toSet;
 
-import epamers.surwave.dtos.OptionView;
+import epamers.surwave.dtos.SongView;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.entities.ClassicSurvey;
 import epamers.surwave.entities.RangedSurvey;
@@ -16,12 +16,11 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class SurveyToViewConverter implements Converter<Survey, SurveyView> {
 
-  private final OptionToViewConverter converter;
+  private final SongToViewConverter converter;
 
   @Override
   public SurveyView convert(Survey survey) {
-
-    Set<OptionView> options = survey.getOptions().stream()
+    Set<SongView> options = survey.getSongs().stream()
         .map(converter::convert)
         .collect(toSet());
 

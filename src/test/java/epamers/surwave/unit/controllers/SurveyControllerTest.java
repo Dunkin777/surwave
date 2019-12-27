@@ -7,11 +7,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import epamers.surwave.controllers.SurveyController;
-import epamers.surwave.dtos.OptionForm;
+import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.entities.ClassicSurvey;
-import epamers.surwave.entities.Option;
+import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyType;
 import epamers.surwave.services.SurveyService;
@@ -41,21 +41,20 @@ public class SurveyControllerTest {
   private final Long OPTION_ID = 55L;
   private final Long SURVEY_ID = 77L;
   private Survey survey;
-  private Option option;
+  private Song song;
   private List<Survey> surveys;
   private SurveyForm surveyForm;
   private SurveyView surveyView;
-  private OptionForm optionForm;
+  private SongForm songForm;
 
   @Before
   public void setUp() {
-
     MockitoAnnotations.initMocks(this);
 
     surveyForm = SurveyForm.builder()
         .build();
 
-    optionForm = OptionForm.builder()
+    songForm = SongForm.builder()
         .build();
 
     surveyView = SurveyView.builder()
@@ -69,7 +68,7 @@ public class SurveyControllerTest {
 
     surveys = List.of(survey);
 
-    option = Option.builder()
+    song = Song.builder()
         .id(OPTION_ID)
         .build();
 
@@ -78,12 +77,11 @@ public class SurveyControllerTest {
     when(surveyService.create(survey)).thenReturn(survey);
     when(converter.convert(survey, SurveyView.class)).thenReturn(surveyView);
     when(converter.convert(surveyForm, Survey.class)).thenReturn(survey);
-    when(converter.convert(optionForm, Option.class)).thenReturn(option);
+    when(converter.convert(songForm, Song.class)).thenReturn(song);
   }
 
   @Test
   public void getAllSurveys_success() {
-
     List<SurveyView> returnedSurveys = surveyController.getAllSurveys();
 
     assertEquals(1, returnedSurveys.size());
@@ -92,7 +90,6 @@ public class SurveyControllerTest {
 
   @Test
   public void getSurvey_success() {
-
     SurveyView returnedSurvey = surveyController.getSurvey(SURVEY_ID);
 
     assertEquals(surveyView, returnedSurvey);
@@ -100,7 +97,6 @@ public class SurveyControllerTest {
 
   @Test
   public void createSurvey_success() {
-
     surveyController.createSurvey(surveyForm, response);
 
     verify(surveyService).create(survey);
@@ -109,7 +105,6 @@ public class SurveyControllerTest {
 
   @Test
   public void updateSurvey_success() {
-
     surveyController.updateSurvey(SURVEY_ID, surveyForm);
 
     verify(surveyService).update(SURVEY_ID, survey);
@@ -117,9 +112,8 @@ public class SurveyControllerTest {
 
   @Test
   public void addOptionToSurvey_success() {
+    surveyController.addOptionToSurvey(SURVEY_ID, songForm);
 
-    surveyController.addOptionToSurvey(SURVEY_ID, optionForm);
-
-    verify(surveyService).addOption(SURVEY_ID, option);
+    verify(surveyService).addOption(SURVEY_ID, song);
   }
 }

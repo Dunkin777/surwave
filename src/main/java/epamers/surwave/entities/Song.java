@@ -15,17 +15,19 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Option {
+public class Song {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
   @Column(nullable = false)
-  private String author;
+  private String performer;
 
   @Column(nullable = false)
   private String title;
 
   private String comment;
+
+  private String mediaPath;
 }

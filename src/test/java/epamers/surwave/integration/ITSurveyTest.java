@@ -9,11 +9,11 @@ import static org.hamcrest.Matchers.hasSize;
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
-import epamers.surwave.dtos.OptionForm;
+import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.entities.SurveyState;
 import epamers.surwave.entities.SurveyType;
-import epamers.surwave.repos.OptionRepository;
+import epamers.surwave.repos.SongRepository;
 import epamers.surwave.repos.SurveyRepository;
 import org.junit.After;
 import org.junit.Before;
@@ -26,9 +26,9 @@ public class ITSurveyTest extends IntegrationTest {
   private SurveyRepository surveyRepository;
 
   @Autowired
-  private OptionRepository optionRepository;
+  private SongRepository songRepository;
 
-  private OptionForm optionForm;
+  private SongForm songForm;
   private SurveyForm surveyForm;
 
   private final String AUTHOR = "Elton John Lennon";
@@ -39,11 +39,10 @@ public class ITSurveyTest extends IntegrationTest {
 
   @Before
   public void setUp() {
-
     RestAssured.port = port;
 
-    optionForm = OptionForm.builder()
-        .author(AUTHOR)
+    songForm = SongForm.builder()
+        .performer(AUTHOR)
         .title(TITLE)
         .comment(COMMENT)
         .build();
@@ -59,14 +58,12 @@ public class ITSurveyTest extends IntegrationTest {
 
   @After
   public void cleanUp() {
-
     surveyRepository.deleteAll();
-    optionRepository.deleteAll();
+    songRepository.deleteAll();
   }
 
   @Test
   public void surveyController_successCase() {
-
     //Check that we have no Surveys at the start
     givenJson()
         .get(SURVEY_URL + "/all")
@@ -109,7 +106,7 @@ public class ITSurveyTest extends IntegrationTest {
 
     //Add an Option to our Survey
     givenJson()
-        .body(optionForm)
+        .body(songForm)
         .put(newEntityURI + "/options")
         .then()
         .statusCode(SC_OK);

@@ -8,19 +8,19 @@ import static org.hamcrest.Matchers.hasSize;
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
-import epamers.surwave.dtos.OptionForm;
-import epamers.surwave.repos.OptionRepository;
+import epamers.surwave.dtos.SongForm;
+import epamers.surwave.repos.SongRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class ITOptionTest extends IntegrationTest {
+public class ITSongTest extends IntegrationTest {
 
   @Autowired
-  private OptionRepository optionRepository;
+  private SongRepository songRepository;
 
-  private OptionForm optionForm;
+  private SongForm songForm;
 
   private final String AUTHOR = "Brian Wilson";
   private final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
@@ -28,11 +28,10 @@ public class ITOptionTest extends IntegrationTest {
 
   @Before
   public void setUp() {
-
     RestAssured.port = port;
 
-    optionForm = OptionForm.builder()
-        .author(AUTHOR)
+    songForm = SongForm.builder()
+        .performer(AUTHOR)
         .title(TITLE)
         .comment(COMMENT)
         .build();
@@ -40,12 +39,11 @@ public class ITOptionTest extends IntegrationTest {
 
   @After
   public void cleanUp() {
-    optionRepository.deleteAll();
+    songRepository.deleteAll();
   }
 
   @Test
   public void optionController_successCase() {
-
     //Check that we have zero Options at the start
     givenJson()
         .get(OPTION_URL + "/all")
@@ -55,7 +53,7 @@ public class ITOptionTest extends IntegrationTest {
 
     //Post a new Option
     Response response = givenJson()
-        .body(optionForm)
+        .body(songForm)
         .post(OPTION_URL)
         .then()
         .statusCode(SC_CREATED)
@@ -71,7 +69,7 @@ public class ITOptionTest extends IntegrationTest {
         .statusCode(SC_OK)
         .body("title", equalTo(TITLE))
         .body("comment", equalTo(COMMENT))
-        .body("author", equalTo(AUTHOR));
+        .body("performer", equalTo(AUTHOR));
 
     //Ensure that we have exactly one Option in repo
     givenJson()
@@ -82,10 +80,10 @@ public class ITOptionTest extends IntegrationTest {
 
     //Change some property of created Option
     final String changedTitle = "Oh my!.. Title has changed & now it's even better!";
-    optionForm.setTitle(changedTitle);
+    songForm.setTitle(changedTitle);
 
     givenJson()
-        .body(optionForm)
+        .body(songForm)
         .put(newEntityURI)
         .then()
         .statusCode(SC_OK);

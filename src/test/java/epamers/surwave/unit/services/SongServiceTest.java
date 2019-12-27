@@ -6,9 +6,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import epamers.surwave.entities.Option;
-import epamers.surwave.repos.OptionRepository;
-import epamers.surwave.services.OptionService;
+import epamers.surwave.entities.Song;
+import epamers.surwave.repos.SongRepository;
+import epamers.surwave.services.SongService;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -18,99 +18,90 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class OptionServiceTest {
+public class SongServiceTest {
 
   @InjectMocks
-  OptionService optionService;
+  SongService songService;
 
   @Mock
-  OptionRepository optionRepository;
+  SongRepository songRepository;
 
   private final Long ID = 156L;
   private final Long NONEXISTENT_ID = 36L;
-  private final String AUTHOR = "Felix Mendelson";
+  private final String PERFORMER = "Felix Mendelson";
   private final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
   private final String COMMENT = "Starts in D#, then sudden change to another religion.";
-  private Option option;
+  private Song song;
 
   @Before
   public void setUp() {
-
     MockitoAnnotations.initMocks(this);
-    option = Option.builder()
-        .author(AUTHOR)
+    song = Song.builder()
+        .performer(PERFORMER)
         .title(TITLE)
         .id(ID)
         .comment(COMMENT)
         .build();
 
-    when(optionRepository.existsById(ID)).thenReturn(true);
-    when(optionRepository.findById(ID)).thenReturn(Optional.of(option));
-    when(optionRepository.findAll()).thenReturn(List.of(option));
-    when(optionRepository.save(option)).thenReturn(option);
+    when(songRepository.existsById(ID)).thenReturn(true);
+    when(songRepository.findById(ID)).thenReturn(Optional.of(song));
+    when(songRepository.findAll()).thenReturn(List.of(song));
+    when(songRepository.save(song)).thenReturn(song);
   }
 
   @Test
   public void getAll_success() {
+    List<Song> songs = songService.getAll();
 
-    List<Option> options = optionService.getAll();
-
-    assertEquals(1, options.size());
-    assertTrue(options.contains(option));
+    assertEquals(1, songs.size());
+    assertTrue(songs.contains(song));
   }
 
   @Test
   public void getById_existingId_success() {
+    Song returnedSong = songService.getById(ID);
 
-    Option returnedOption = optionService.getById(ID);
-
-    assertEquals(option, returnedOption);
+    assertEquals(song, returnedSong);
   }
 
   @Test(expected = NoSuchElementException.class)
   public void getById_nonExistingId_exception() {
+    when(songRepository.existsById(ID)).thenReturn(false);
 
-    when(optionRepository.existsById(ID)).thenReturn(false);
-
-    optionService.getById(13L);
+    songService.getById(13L);
   }
 
   @Test
   public void create_validOption_success() {
+    Song returnedSong = songService.create(song);
 
-    Option returnedOption = optionService.create(option);
-
-    verify(optionRepository).save(option);
-    assertEquals(option, returnedOption);
+    verify(songRepository).save(song);
+    assertEquals(song, returnedSong);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void create_nullArgument_exception() {
-
-    optionService.create(null);
+    songService.create(null);
   }
 
   @Test
   public void update_validCase_success() {
+    songService.update(ID, song);
 
-    optionService.update(ID, option);
-
-    verify(optionRepository).save(option);
+    verify(songRepository).save(song);
   }
 
   @Test(expected = NoSuchElementException.class)
   public void update_nonExistingId_exception() {
+    songService.update(NONEXISTENT_ID, song);
 
-    optionService.update(NONEXISTENT_ID, option);
-
-    verify(optionRepository, never()).save(option);
+    verify(songRepository, never()).save(song);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void update_nullOption_exception() {
+    songService.update(ID, null);
 
-    optionService.update(ID, null);
-
-    verify(optionRepository, never()).save(option);
+    verify(songRepository, never()).save(song);
   }
 }

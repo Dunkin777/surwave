@@ -1,6 +1,6 @@
 package epamers.surwave.services;
 
-import epamers.surwave.entities.Option;
+import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyState;
 import epamers.surwave.repos.SurveyRepository;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class SurveyService {
 
   private final SurveyRepository surveyRepository;
-  private final OptionService optionService;
+  private final SongService songService;
 
   public List<Survey> getAll() {
     return surveyRepository.findAll();
@@ -27,47 +27,46 @@ public class SurveyService {
 
   @Transactional
   public Survey create(Survey survey) {
-
     if (survey == null) {
       throw new IllegalArgumentException();
     }
 
     survey.setState(SurveyState.CREATED);
+
     return surveyRepository.save(survey);
   }
 
   @Transactional
   public void update(Long id, Survey survey) {
-
     if (survey == null) {
       throw new IllegalArgumentException();
     }
 
-    Set<Option> storedOptions = getById(id).getOptions();
+    Set<Song> storedSongs = getById(id).getSongs();
 
     survey.setId(id);
-    survey.setOptions(storedOptions);
+    survey.setSongs(storedSongs);
+
     surveyRepository.save(survey);
   }
 
   @Transactional
-  public void addOption(Long id, Option newOption) {
-
+  public void addOption(Long id, Song newSong) {
     Survey survey = getById(id);
-    newOption = optionService.create(newOption);
+    newSong = songService.create(newSong);
 
-    Set<Option> optionsToSet = survey.getOptions();
-    optionsToSet.add(newOption);
-    survey.setOptions(optionsToSet);
+    Set<Song> optionsToSet = survey.getSongs();
+    optionsToSet.add(newSong);
+    survey.setSongs(optionsToSet);
 
     surveyRepository.save(survey);
   }
 
   @Transactional
   public void updateState(Long id, SurveyState surveyState) {
-
     Survey survey = getById(id);
     survey.setState(surveyState);
+
     surveyRepository.save(survey);
   }
 }

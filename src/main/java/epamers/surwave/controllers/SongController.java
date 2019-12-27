@@ -2,10 +2,10 @@ package epamers.surwave.controllers;
 
 import static epamers.surwave.core.Contract.OPTION_URL;
 
-import epamers.surwave.dtos.OptionForm;
-import epamers.surwave.dtos.OptionView;
-import epamers.surwave.entities.Option;
-import epamers.surwave.services.OptionService;
+import epamers.surwave.dtos.SongForm;
+import epamers.surwave.dtos.SongView;
+import epamers.surwave.entities.Song;
+import epamers.surwave.services.SongService;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
@@ -13,7 +13,6 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,36 +25,33 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(OPTION_URL)
-public class OptionController {
+public class SongController {
 
-  private final OptionService optionService;
+  private final SongService songService;
   private final ConversionService converter;
 
   @GetMapping("/all")
-  public List<OptionView> getAllOptions() {
-
-    return optionService.getAll().stream()
-        .map(o -> converter.convert(o, OptionView.class))
+  public List<SongView> getAllOptions() {
+    return songService.getAll().stream()
+        .map(o -> converter.convert(o, SongView.class))
         .collect(Collectors.toList());
   }
 
   @GetMapping("/{id}")
-  public OptionView getOption(@PathVariable Long id) {
-
-    Option option = optionService.getById(id);
-    return converter.convert(option, OptionView.class);
+  public SongView getOption(@PathVariable Long id) {
+    Song song = songService.getById(id);
+    return converter.convert(song, SongView.class);
   }
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public void createOption(@RequestBody @Valid OptionForm optionForm, HttpServletResponse response) {
-
-    Option option = optionService.create(converter.convert(optionForm, Option.class));
-    response.addHeader("Location", OPTION_URL + "/" + option.getId());
+  public void createOption(@RequestBody @Valid SongForm songForm, HttpServletResponse response) {
+    Song song = songService.create(converter.convert(songForm, Song.class));
+    response.addHeader("Location", OPTION_URL + "/" + song.getId());
   }
 
   @PutMapping("/{id}")
-  public void updateOption(@PathVariable Long id, @RequestBody @Valid OptionForm optionForm) {
-    optionService.update(id, converter.convert(optionForm, Option.class));
+  public void updateOption(@PathVariable Long id, @RequestBody @Valid SongForm songForm) {
+    songService.update(id, converter.convert(songForm, Song.class));
   }
 }

@@ -38,7 +38,7 @@ public abstract class Survey {
 
   @OneToMany(fetch = FetchType.EAGER)
   @Default
-  private Set<Option> options = new HashSet<>();
+  private Set<Song> songs = new HashSet<>();
 
   private String description;
 

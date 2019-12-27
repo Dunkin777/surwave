@@ -2,7 +2,6 @@ package epamers.surwave.dtos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import epamers.surwave.entities.Option;
 import epamers.surwave.entities.SurveyState;
 import epamers.surwave.entities.SurveyType;
 import java.util.Set;
@@ -18,7 +17,7 @@ public class SurveyView {
 
   private SurveyType type;
 
-  private Set<OptionView> options;
+  private Set<SongView> options;
 
   private String description;
 

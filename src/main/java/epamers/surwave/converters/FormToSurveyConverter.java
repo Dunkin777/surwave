@@ -15,8 +15,8 @@ public class FormToSurveyConverter implements Converter<SurveyForm, Survey> {
 
   @Override
   public Survey convert(SurveyForm surveyForm) {
-
     Survey survey;
+
     if (surveyForm.getType() == SurveyType.CLASSIC) {
       survey = ClassicSurvey.builder()
           .choicesByUser(surveyForm.getChoicesByUser())
