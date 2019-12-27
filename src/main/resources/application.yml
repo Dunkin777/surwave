@@ -22,6 +22,14 @@ spring:
     driverClassName: org.postgresql.Driver
     initialize: false
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+
+app:
+  upload:
+    dir: data
+
 security:
   oauth2:
     client:

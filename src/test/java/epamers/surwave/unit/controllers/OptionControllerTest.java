@@ -3,6 +3,7 @@ package epamers.surwave.unit.controllers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -10,6 +11,7 @@ import epamers.surwave.controllers.OptionController;
 import epamers.surwave.dtos.OptionForm;
 import epamers.surwave.dtos.OptionView;
 import epamers.surwave.entities.Option;
+import epamers.surwave.services.MediaUploadService;
 import epamers.surwave.services.OptionService;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +29,9 @@ public class OptionControllerTest {
 
   @Mock
   OptionService optionService;
+
+  @Mock
+  MediaUploadService uploadService;
 
   @Mock
   ConversionService converter;
@@ -90,6 +95,15 @@ public class OptionControllerTest {
 
     verify(optionService).create(option);
     verify(response).addHeader(any(), any());
+  }
+
+  @Test
+  public void uploadMediaToOptionTest() {
+
+    optionController.uploadMediaToOption(ID, any());
+
+    verify(optionService).getById(ID);
+    verify(uploadService).upload(any(), eq(TITLE));
   }
 
   @Test

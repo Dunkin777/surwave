@@ -98,7 +98,6 @@ public class SurveyServiceTest {
 
   @Test(expected = NoSuchElementException.class)
   public void getById_nonexistentID_exception() {
-
     surveyService.getById(NONEXISTENT_SURVEY_ID);
   }
 
@@ -114,7 +113,6 @@ public class SurveyServiceTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void create_nullSurvey_success() {
-
     surveyService.create(null);
   }
 
@@ -128,13 +126,11 @@ public class SurveyServiceTest {
 
   @Test(expected = NoSuchElementException.class)
   public void update_nonexistentId_exception() {
-
     surveyService.update(NONEXISTENT_SURVEY_ID, survey);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void update_nullSurvey_exception() {
-
     surveyService.update(SURVEY_ID, null);
   }
 
@@ -148,7 +144,6 @@ public class SurveyServiceTest {
 
   @Test(expected = NoSuchElementException.class)
   public void delete_nonexistentId_exception() {
-
     surveyService.delete(NONEXISTENT_SURVEY_ID);
   }
 

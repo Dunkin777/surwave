@@ -88,7 +88,6 @@ public class OptionServiceTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void create_nullArgument_exception() {
-
     optionService.create(null);
   }
 
