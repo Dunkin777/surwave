@@ -4,7 +4,7 @@ services:
 
   db:
     container_name: db
-    image: postgres
+    image: postgres:11
     volumes:
       - ./db:/var/lib/postgresql
     networks:
@@ -12,7 +12,9 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_PASSWORD: postgres
+      - POSTGRES_USER
+      - POSTGRES_DB
+      - POSTGRES_PASSWORD
 
   adminer:
     container_name: adminer
