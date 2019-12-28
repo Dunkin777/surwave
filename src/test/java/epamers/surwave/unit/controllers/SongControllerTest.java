@@ -73,13 +73,6 @@ public class SongControllerTest {
   }
 
   @Test
-  public void getSong_existingId_success() {
-    SongView returnedSong = songController.getSong(SONG_ID);
-
-    assertEquals(songView, returnedSong);
-  }
-
-  @Test
   public void updateSong_success() {
     songController.updateSong(SONG_ID, songForm);
 

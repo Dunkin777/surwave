@@ -2,7 +2,7 @@ package epamers.surwave.integration;
 
 import static epamers.surwave.core.Contract.SONG_URL;
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 
 import com.jayway.restassured.RestAssured;
@@ -62,21 +62,15 @@ public class ITSongTest extends IntegrationTest {
     Long newEntityId = songRepository.save(song).getId();
     String newEntityURI = SONG_URL + "/" + newEntityId;
 
-    //Retrieve and check newly created Song
-    givenJson()
-        .get(newEntityURI)
-        .then()
-        .statusCode(SC_OK)
-        .body("title", equalTo(TITLE))
-        .body("comment", equalTo(COMMENT))
-        .body("performer", equalTo(PERFORMER));
-
     //Ensure that we have exactly one Song in repo
     givenJson()
         .get(SONG_URL + "/all")
         .then()
         .statusCode(SC_OK)
-        .body("$", hasSize(1));
+        .body("$", hasSize(1))
+        .body("title", hasItem(TITLE))
+        .body("comment", hasItem(COMMENT))
+        .body("performer", hasItem(PERFORMER));
 
     //Change some property of created Song
     final String changedTitle = "Oh my!.. Title has changed & now it's even better!";
@@ -90,9 +84,10 @@ public class ITSongTest extends IntegrationTest {
 
     //Check successfullness of the change
     givenJson()
-        .get(newEntityURI)
+        .get(SONG_URL + "/all")
         .then()
         .statusCode(SC_OK)
-        .body("title", equalTo(changedTitle));
+        .body("$", hasSize(1))
+        .body("title", hasItem(changedTitle));
   }
 }

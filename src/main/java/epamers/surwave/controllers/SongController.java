@@ -41,12 +41,6 @@ public class SongController {
         .collect(Collectors.toList());
   }
 
-  @GetMapping("/{id}")
-  public SongView getSong(@PathVariable Long id) {
-    Song song = songService.getById(id);
-    return converter.convert(song, SongView.class);
-  }
-
   @PutMapping("/{id}")
   public void updateSong(@PathVariable Long id, @RequestBody @Valid SongForm songForm) {
     Song song = converter.convert(songForm, Song.class);
