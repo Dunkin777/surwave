@@ -49,6 +49,5 @@ public abstract class Survey {
   @Column(nullable = false)
   private SurveyState state;
 
-  @Default
-  private Boolean isHidden = false;
+  private Boolean isHidden;
 }
