@@ -23,8 +23,6 @@ public class SurveyView {
 
   private Integer proposalsByUser;
 
-  private Boolean isUsersSeparated;
-
   private SurveyState state;
 
   private Integer choicesByUser;
