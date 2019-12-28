@@ -170,10 +170,10 @@ public class SurveyServiceTest {
   public void updateState_validArguments_success() {
     ArgumentCaptor<Survey> arg = ArgumentCaptor.forClass(Survey.class);
 
-    surveyService.updateState(SURVEY_ID, SurveyState.ENDED);
+    surveyService.updateState(SURVEY_ID, SurveyState.STOPPED);
 
     verify(surveyRepository).save(arg.capture());
     assertEquals(survey, arg.getValue());
-    assertEquals(SurveyState.ENDED, arg.getValue().getState());
+    assertEquals(SurveyState.STOPPED, arg.getValue().getState());
   }
 }

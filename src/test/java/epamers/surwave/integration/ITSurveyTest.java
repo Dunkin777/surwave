@@ -1,6 +1,9 @@
 package epamers.surwave.integration;
 
 import static epamers.surwave.core.Contract.SURVEY_URL;
+import static epamers.surwave.entities.SurveyState.CREATED;
+import static epamers.surwave.entities.SurveyState.STOPPED;
+import static epamers.surwave.entities.SurveyType.CLASSIC;
 import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
@@ -48,7 +51,7 @@ public class ITSurveyTest extends IntegrationTest {
         .build();
 
     surveyForm = SurveyForm.builder()
-        .type(SurveyType.CLASSIC)
+        .type(CLASSIC)
         .choicesByUser(5)
         .description(SURVEY_DESCRIPTION)
         .proposalsByUser(4)
@@ -88,15 +91,15 @@ public class ITSurveyTest extends IntegrationTest {
         .then()
         .statusCode(SC_OK)
         .body("description", equalTo(SURVEY_DESCRIPTION))
-        .body("type", equalTo("CLASSIC"))
+        .body("type", equalTo(CLASSIC.toString()))
         .body("choicesByUser", equalTo(5))
         .body("proposalsByUser", equalTo(4))
-        .body("state", equalTo("CREATED"))
+        .body("state", equalTo(CREATED.toString()))
         .body("isHidden", equalTo(false))
         .body("songs", hasSize(0));
 
     //Forcibly end this Survey
-    surveyForm.setState(SurveyState.CLOSED);
+    surveyForm.setState(STOPPED);
 
     givenJson()
         .body(surveyForm)
@@ -120,7 +123,7 @@ public class ITSurveyTest extends IntegrationTest {
         .get(newSurveyURI)
         .then()
         .statusCode(SC_OK)
-        .body("state", equalTo("CLOSED"))
+        .body("state", equalTo(STOPPED.toString()))
         .body("songs", hasSize(1))
         .body("songs.performer", hasItem(PERFORMER))
         .body("songs.title", hasItem(TITLE))
