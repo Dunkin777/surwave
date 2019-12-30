@@ -1,9 +1,12 @@
 package epamers.surwave.controllers;
 
+import static epamers.surwave.core.Contract.SONG_URL;
 import static epamers.surwave.core.Contract.SURVEY_URL;
 
+import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyView;
+import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.services.SurveyService;
 import java.util.List;
@@ -33,7 +36,6 @@ public class SurveyController {
 
   @GetMapping("/all")
   public List<SurveyView> getAllSurveys() {
-
     return surveyService.getAll().stream()
         .map(s -> converter.convert(s, SurveyView.class))
         .collect(Collectors.toList());
@@ -41,7 +43,6 @@ public class SurveyController {
 
   @GetMapping("/{id}")
   public SurveyView getSurvey(@PathVariable Long id) {
-
     Survey survey = surveyService.getById(id);
     return converter.convert(survey, SurveyView.class);
   }
@@ -49,7 +50,6 @@ public class SurveyController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public void createSurvey(@RequestBody @Valid SurveyForm surveyForm, HttpServletResponse response) {
-
     Survey survey = surveyService.create(converter.convert(surveyForm, Survey.class));
     response.addHeader("Location", SURVEY_URL + "/" + survey.getId());
   }
@@ -59,13 +59,15 @@ public class SurveyController {
     surveyService.update(id, converter.convert(surveyForm, Survey.class));
   }
 
-  @PutMapping("/{id}/options")
-  public void addOptionsToSurvey(@PathVariable Long id, @RequestBody List<Long> optionIds) {
-    surveyService.addOptions(id, optionIds);
+  @PutMapping("/{id}/song")
+  public void addSongToSurvey(@PathVariable Long id, @RequestBody @Valid SongForm songForm, HttpServletResponse response) {
+    Song song = converter.convert(songForm, Song.class);
+    Song createdSong = surveyService.addSong(id, song);
+    response.addHeader("Location", SONG_URL + "/" + createdSong.getId());
   }
 
-  @DeleteMapping("/{id}")
-  public void deleteSurvey(@PathVariable Long id) {
-    surveyService.delete(id);
+  @DeleteMapping("/{surveyId}" + SONG_URL + "/{songId}")
+  public void removeSongFromSurvey(@PathVariable Long surveyId, @PathVariable Long songId) {
+    surveyService.removeSong(surveyId, songId);
   }
 }

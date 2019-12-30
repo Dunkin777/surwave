@@ -2,7 +2,6 @@ package epamers.surwave.dtos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import epamers.surwave.entities.Option;
 import epamers.surwave.entities.SurveyState;
 import epamers.surwave.entities.SurveyType;
 import java.util.Set;
@@ -18,17 +17,17 @@ public class SurveyView {
 
   private SurveyType type;
 
-  private Set<OptionView> options;
+  private Set<SongView> songs;
 
   private String description;
 
   private Integer proposalsByUser;
 
-  private Boolean isUsersSeparated;
-
   private SurveyState state;
 
   private Integer choicesByUser;
+
+  private Boolean isHidden;
 
   //From currently unused RangedSurvey. Don't forget to change/remove in the future
   private Boolean logarithmicRatingScale;

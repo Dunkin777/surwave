@@ -10,14 +10,13 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OptionForm {
+public class SongForm {
 
-  private String author;
+  @NotNull
+  private String performer;
 
   @NotNull
   private String title;
-
-  private String mediaUrl;
 
   private String comment;
 }
