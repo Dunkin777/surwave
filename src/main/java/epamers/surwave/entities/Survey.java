@@ -1,5 +1,6 @@
 package epamers.surwave.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -33,18 +34,17 @@ public abstract class Survey {
   private SurveyType type;
 
   @OneToMany(fetch = FetchType.EAGER)
-  private Set<Option> options;
+  @Default
+  private Set<Song> songs = new HashSet<>();
 
   private String description;
 
   @Column(nullable = false)
   private Integer proposalsByUser;
 
-  @Column(nullable = false)
-  private Boolean isUsersSeparated;
-
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
-  @Default
-  private SurveyState state = SurveyState.CREATED;
+  private SurveyState state;
+
+  private Boolean isHidden;
 }

@@ -1,15 +1,18 @@
 package epamers.surwave.unit.controllers;
 
+import static epamers.surwave.core.Contract.SONG_URL;
+import static epamers.surwave.core.Contract.SURVEY_URL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import epamers.surwave.controllers.SurveyController;
+import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.entities.ClassicSurvey;
+import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyType;
 import epamers.surwave.services.SurveyService;
@@ -36,19 +39,23 @@ public class SurveyControllerTest {
   @Mock
   HttpServletResponse response;
 
-  private final Long OPTION_ID = 55L;
+  private final Long SONG_ID = 55L;
   private final Long SURVEY_ID = 77L;
   private Survey survey;
+  private Song song;
   private List<Survey> surveys;
   private SurveyForm surveyForm;
   private SurveyView surveyView;
+  private SongForm songForm;
 
   @Before
   public void setUp() {
-
     MockitoAnnotations.initMocks(this);
 
     surveyForm = SurveyForm.builder()
+        .build();
+
+    songForm = SongForm.builder()
         .build();
 
     surveyView = SurveyView.builder()
@@ -62,16 +69,20 @@ public class SurveyControllerTest {
 
     surveys = List.of(survey);
 
+    song = Song.builder()
+        .id(SONG_ID)
+        .build();
+
     when(surveyService.getAll()).thenReturn(surveys);
     when(surveyService.getById(SURVEY_ID)).thenReturn(survey);
     when(surveyService.create(survey)).thenReturn(survey);
     when(converter.convert(survey, SurveyView.class)).thenReturn(surveyView);
     when(converter.convert(surveyForm, Survey.class)).thenReturn(survey);
+    when(converter.convert(songForm, Song.class)).thenReturn(song);
   }
 
   @Test
   public void getAllSurveys_success() {
-
     List<SurveyView> returnedSurveys = surveyController.getAllSurveys();
 
     assertEquals(1, returnedSurveys.size());
@@ -80,7 +91,6 @@ public class SurveyControllerTest {
 
   @Test
   public void getSurvey_success() {
-
     SurveyView returnedSurvey = surveyController.getSurvey(SURVEY_ID);
 
     assertEquals(surveyView, returnedSurvey);
@@ -88,34 +98,33 @@ public class SurveyControllerTest {
 
   @Test
   public void createSurvey_success() {
-
     surveyController.createSurvey(surveyForm, response);
 
     verify(surveyService).create(survey);
-    verify(response).addHeader(any(), any());
+    verify(response).addHeader("Location", SURVEY_URL + "/" + SURVEY_ID);
   }
 
   @Test
   public void updateSurvey_success() {
-
     surveyController.updateSurvey(SURVEY_ID, surveyForm);
 
     verify(surveyService).update(SURVEY_ID, survey);
   }
 
   @Test
-  public void addOptionsToSurvey_success() {
+  public void addSongToSurvey_success() {
+    when(surveyService.addSong(SURVEY_ID, song)).thenReturn(song);
 
-    surveyController.addOptionsToSurvey(SURVEY_ID, List.of(OPTION_ID));
+    surveyController.addSongToSurvey(SURVEY_ID, songForm, response);
 
-    verify(surveyService).addOptions(SURVEY_ID, List.of(OPTION_ID));
+    verify(surveyService).addSong(SURVEY_ID, song);
+    verify(response).addHeader("Location", SONG_URL + "/" + SONG_ID);
   }
 
   @Test
-  public void deleteSurvey_success() {
+  public void removeSongFromSurvey_success() {
+    surveyController.removeSongFromSurvey(SURVEY_ID, SONG_ID);
 
-    surveyController.deleteSurvey(SURVEY_ID);
-
-    verify(surveyService).delete(SURVEY_ID);
+    verify(surveyService).removeSong(SURVEY_ID, SONG_ID);
   }
 }
