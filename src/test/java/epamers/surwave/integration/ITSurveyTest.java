@@ -15,8 +15,6 @@ import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SurveyForm;
-import epamers.surwave.entities.SurveyState;
-import epamers.surwave.entities.SurveyType;
 import epamers.surwave.repos.SongRepository;
 import epamers.surwave.repos.SurveyRepository;
 import org.junit.After;
