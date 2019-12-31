@@ -1,13 +1,10 @@
 package epamers.surwave.services;
 
-import static java.util.stream.Collectors.toSet;
-
-import epamers.surwave.entities.Option;
+import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyState;
 import epamers.surwave.repos.SurveyRepository;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class SurveyService {
 
   private final SurveyRepository surveyRepository;
-  private final OptionService optionService;
+  private final SongService songService;
 
   public List<Survey> getAll() {
     return surveyRepository.findAll();
@@ -30,64 +27,61 @@ public class SurveyService {
 
   @Transactional
   public Survey create(Survey survey) {
-
     if (survey == null) {
       throw new IllegalArgumentException();
     }
 
-    Set<Option> processedOptions = optionService.process(survey.getOptions());
-    survey.setOptions(processedOptions);
     survey.setState(SurveyState.CREATED);
+
     return surveyRepository.save(survey);
   }
 
   @Transactional
   public void update(Long id, Survey survey) {
-
-    if (!surveyRepository.existsById(id)) {
-      throw new NoSuchElementException();
-    }
-
     if (survey == null) {
       throw new IllegalArgumentException();
     }
 
-    survey.setId(id);
+    Set<Song> storedSongs = getById(id).getSongs();
 
-    Set<Option> processedOptions = optionService.process(survey.getOptions());
-    survey.setOptions(processedOptions);
+    survey.setId(id);
+    survey.setSongs(storedSongs);
+
     surveyRepository.save(survey);
   }
 
   @Transactional
-  public void delete(Long id) {
+  public Song addSong(Long surveyId, Song newSong) {
+    Survey survey = getById(surveyId);
+    newSong = songService.create(newSong);
 
-    if (!surveyRepository.existsById(id)) {
-      throw new NoSuchElementException();
-    }
-    surveyRepository.deleteById(id);
-  }
-
-  public void addOptions(Long id, List<Long> optionIds) {
-
-    Survey survey = getById(id);
-    Set<Option> options = optionIds.stream()
-        .map(i -> Option.builder()
-            .id(i)
-            .build())
-        .collect(toSet());
-
-    Set<Option> optionsToSet = survey.getOptions();
-    optionsToSet.addAll(optionService.process(options));
-    survey.setOptions(optionsToSet);
+    Set<Song> songsToUpdate = survey.getSongs();
+    songsToUpdate.add(newSong);
+    survey.setSongs(songsToUpdate);
 
     surveyRepository.save(survey);
+    return newSong;
   }
 
-  public void updateState(Long id, SurveyState surveyState) {
+  @Transactional
+  public void removeSong(Long surveyId, Long songId) {
+    Survey survey = getById(surveyId);
+    Song song = songService.getById(songId);
 
+    Set<Song> songs = survey.getSongs();
+
+    if (songs.remove(song)) {
+      survey.setSongs(songs);
+      surveyRepository.save(survey);
+      songService.delete(songId);
+    }
+  }
+
+  @Transactional
+  public void updateState(Long id, SurveyState surveyState) {
     Survey survey = getById(id);
     survey.setState(surveyState);
+
     surveyRepository.save(survey);
   }
 }
