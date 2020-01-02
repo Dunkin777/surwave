@@ -5,20 +5,9 @@ spring:
   jpa:
     database: POSTGRESQL
     show-sql: true
-    open-in-view: true
-    hibernate:
-      ddl-auto: create-drop
     properties:
       dialect: org.hibernate.dialect.PostgreSQLDialect
       hibernate.temp.use_jdbc_metadata_defaults: false
-
-  datasource:
-    platform: postgres
-    url: jdbc:postgresql://db:5432/surwave
-    username: postgres
-    password: postgres
-    driverClassName: org.postgresql.Driver
-    initialize: false
 
   servlet:
     multipart:

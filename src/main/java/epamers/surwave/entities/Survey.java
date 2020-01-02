@@ -1,44 +1,30 @@
 package epamers.surwave.entities;
 
-import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.OneToMany;
-import lombok.Builder.Default;
+import javax.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "survey_type")
 @SuperBuilder
 @NoArgsConstructor
 @Data
+@EqualsAndHashCode(exclude = {"songs"})
 public abstract class Survey {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private SurveyType type;
-
-  @OneToMany(fetch = FetchType.EAGER)
-  @Default
-  private Set<Song> songs = new HashSet<>();
 
   private String description;
 
@@ -50,4 +36,8 @@ public abstract class Survey {
   private SurveyState state;
 
   private Boolean isHidden;
+
+  @OneToMany(fetch = FetchType.EAGER, mappedBy = "survey")
+  @Fetch(FetchMode.JOIN)
+  private Set<Song> songs;
 }
