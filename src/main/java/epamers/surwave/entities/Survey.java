@@ -1,16 +1,8 @@
 package epamers.surwave.entities;
 
+import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,18 +25,17 @@ public abstract class Survey {
   private SurveyType type;
 
   @OneToMany(fetch = FetchType.EAGER)
-  private Set<Option> options;
+  @Default
+  private Set<Song> songs = new HashSet<>();
 
   private String description;
 
   @Column(nullable = false)
   private Integer proposalsByUser;
 
-  @Column(nullable = false)
-  private Boolean isUsersSeparated;
-
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
-  @Default
-  private SurveyState state = SurveyState.CREATED;
+  private SurveyState state;
+
+  private Boolean isHidden;
 }
