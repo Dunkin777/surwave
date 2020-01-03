@@ -1,14 +1,18 @@
 package epamers.surwave.integration;
 
 import static epamers.surwave.core.Contract.SONG_URL;
+import static epamers.surwave.entities.SurveyState.CREATED;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 
 import com.jayway.restassured.RestAssured;
 import epamers.surwave.dtos.SongForm;
+import epamers.surwave.entities.ClassicSurvey;
 import epamers.surwave.entities.Song;
+import epamers.surwave.entities.Survey;
 import epamers.surwave.repos.SongRepository;
+import epamers.surwave.repos.SurveyRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,15 +20,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class ITSongTest extends IntegrationTest {
 
-  @Autowired
-  private SongRepository songRepository;
-
-  private SongForm songForm;
-  private Song song;
-
   private final String PERFORMER = "Brian Wilson";
   private final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
   private final String COMMENT = "Starts in D#, then sudden change to another religion.";
+
+  @Autowired
+  private SongRepository songRepository;
+
+  @Autowired
+  private SurveyRepository surveyRepository;
+
+  private SongForm songForm;
+  private Song song;
+  private Survey survey;
 
   @Before
   public void setUp() {
@@ -36,17 +44,30 @@ public class ITSongTest extends IntegrationTest {
         .comment(COMMENT)
         .build();
 
+    survey = ClassicSurvey.builder()
+        .choicesByUser(2)
+        .proposalsByUser(2)
+        .description(COMMENT)
+        .isHidden(false)
+        .state(CREATED)
+        .build();
+
     song = Song.builder()
         .comment(COMMENT)
         .performer(PERFORMER)
         .mediaPath("")
         .title(TITLE)
         .build();
+
+    survey = surveyRepository.save(survey);
+    song.setSurveyId(survey.getId());
+    songForm.setSurveyId(survey.getId());
   }
 
   @After
   public void cleanUp() {
     songRepository.deleteAll();
+    surveyRepository.deleteAll();
   }
 
   @Test

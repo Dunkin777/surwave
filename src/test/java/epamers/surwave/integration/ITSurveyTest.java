@@ -15,8 +15,6 @@ import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SurveyForm;
-import epamers.surwave.entities.SurveyState;
-import epamers.surwave.entities.SurveyType;
 import epamers.surwave.repos.SongRepository;
 import epamers.surwave.repos.SurveyRepository;
 import org.junit.After;
@@ -26,6 +24,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class ITSurveyTest extends IntegrationTest {
 
+  private final String PERFORMER = "Elton John Lennon";
+  private final String TITLE = "Korobeiniki (feat. George Gershwin)";
+  private final String COMMENT = "Actually, I don't wanna to play this song, adding just for lulz...";
+  private final String SURVEY_DESCRIPTION = "Please think twice before choosing!";
+
   @Autowired
   private SurveyRepository surveyRepository;
 
@@ -34,11 +37,6 @@ public class ITSurveyTest extends IntegrationTest {
 
   private SongForm songForm;
   private SurveyForm surveyForm;
-
-  private final String PERFORMER = "Elton John Lennon";
-  private final String TITLE = "Korobeiniki (feat. George Gershwin)";
-  private final String COMMENT = "Actually, I don't wanna to play this song, adding just for lulz...";
-  private final String SURVEY_DESCRIPTION = "Please think twice before choosing!";
 
   @Before
   public void setUp() {
@@ -84,6 +82,9 @@ public class ITSurveyTest extends IntegrationTest {
         .response();
 
     String newSurveyURI = response.getHeader("Location");
+    String[] split = newSurveyURI.split("/");
+    Long surveyId = Long.parseLong(split[2]);
+    songForm.setSurveyId(surveyId);
 
     //Retrieve and check newly created Survey
     givenJson()
@@ -131,7 +132,6 @@ public class ITSurveyTest extends IntegrationTest {
 
     //Remove Song from Survey
     givenJson()
-        .body(songForm)
         .delete(newSurveyURI + newSongURI)
         .then()
         .statusCode(SC_OK);

@@ -71,7 +71,6 @@ public class SurveyService {
     Set<Song> songs = survey.getSongs();
 
     if (songs.remove(song)) {
-      survey.setSongs(songs);
       surveyRepository.save(survey);
       songService.delete(songId);
     }

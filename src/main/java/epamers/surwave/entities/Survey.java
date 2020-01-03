@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -37,7 +35,6 @@ public abstract class Survey {
 
   private Boolean isHidden;
 
-  @OneToMany(fetch = FetchType.EAGER, mappedBy = "survey")
-  @Fetch(FetchMode.JOIN)
+  @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
   private Set<Song> songs;
 }
