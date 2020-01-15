@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class Song {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue
   private Long id;
 
   @Column(nullable = false)
