@@ -25,12 +25,11 @@ create table if not exists song
     primary key (id)
 );
 
-drop table if exists survey_song_user;
-create table if not exists survey_song_user
+drop table if exists survey_song;
+create table if not exists survey_song
 (
     survey_id bigint not null,
     song_id   bigint not null,
     foreign key (survey_id) references survey (id),
-    foreign key (song_id) references song (id),
-    primary key (survey_id, song_id)
+    foreign key (song_id) references song (id)
 );

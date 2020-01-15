@@ -37,12 +37,9 @@ public abstract class Survey {
 
   @ManyToMany(cascade = CascadeType.PERSIST)
   @JoinTable(
-      name = "survey_song_user",
+      name = "survey_song",
       joinColumns = {@JoinColumn(name = "survey_id")},
       inverseJoinColumns = {@JoinColumn(name = "song_id")}
   )
   private Set<Song> songs;
-
-//  @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-//  private Set<Song> songs;
 }
