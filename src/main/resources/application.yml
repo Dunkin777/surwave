@@ -8,6 +8,7 @@ spring:
     properties:
       dialect: org.hibernate.dialect.PostgreSQLDialect
       hibernate.temp.use_jdbc_metadata_defaults: false
+#      hibernate.hbm2ddl.auto: create-drop
 
   servlet:
     multipart:

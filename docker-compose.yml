@@ -26,14 +26,6 @@ services:
       - POSTGRES_DB
       - POSTGRES_PASSWORD
 
-  adminer:
-    container_name: adminer
-    image: adminer
-    networks:
-      - surwave_net
-    ports:
-      - 1234:8080
-
 networks:
   surwave_net:
     driver: bridge

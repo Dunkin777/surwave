@@ -16,12 +16,21 @@ create table if not exists survey
 drop table if exists song;
 create table if not exists song
 (
-    id         bigserial unique not null,
-    performer  varchar(255)     not null,
-    title      varchar(255)     not null,
-    comment    text,
+    id         bigserial  unique  not null,
+    comment    varchar(255),
     media_path varchar(255),
-    survey_id  bigint           not null,
-    primary key (id),
-    foreign key (survey_id) references survey (id)
-)
+    performer  varchar(255) not null,
+    survey_id  bigint,
+    title      varchar(255) not null,
+    primary key (id)
+);
+
+drop table if exists survey_song_user;
+create table if not exists survey_song_user
+(
+    survey_id bigint not null,
+    song_id   bigint not null,
+    foreign key (survey_id) references survey (id),
+    foreign key (song_id) references song (id),
+    primary key (survey_id, song_id)
+);

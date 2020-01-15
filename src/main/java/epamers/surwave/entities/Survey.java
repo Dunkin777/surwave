@@ -35,6 +35,14 @@ public abstract class Survey {
 
   private Boolean isHidden;
 
-  @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+  @ManyToMany(cascade = CascadeType.PERSIST)
+  @JoinTable(
+      name = "survey_song_user",
+      joinColumns = {@JoinColumn(name = "survey_id")},
+      inverseJoinColumns = {@JoinColumn(name = "song_id")}
+  )
   private Set<Song> songs;
+
+//  @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+//  private Set<Song> songs;
 }

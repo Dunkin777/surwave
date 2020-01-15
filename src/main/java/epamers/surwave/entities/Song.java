@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = {"survey"})
+//@EqualsAndHashCode(exclude = {"survey"})
 public class Song {
 
   @Id
@@ -36,9 +36,9 @@ public class Song {
 
   private String mediaPath;
 
-  private Long surveyId;
+//  private Long surveyId;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "surveyId", insertable = false, updatable = false)
-  private Survey survey;
+//  @ManyToOne(fetch = FetchType.LAZY)
+//  @JoinColumn(name = "surveyId", insertable = false, updatable = false)
+//  private Survey survey;
 }
