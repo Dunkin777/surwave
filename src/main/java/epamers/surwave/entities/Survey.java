@@ -17,7 +17,7 @@ import lombok.experimental.SuperBuilder;
 public abstract class Survey {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue
   private Long id;
 
   @Enumerated(EnumType.STRING)

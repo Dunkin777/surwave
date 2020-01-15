@@ -19,14 +19,15 @@ apply plugin: "io.spring.dependency-management"
 group = "epamers"
 version = "0.0.1"
 
-sourceCompatibility = 1.11
-targetCompatibility = 1.11
+sourceCompatibility = 11
+targetCompatibility = 11
 
 def swagger_ver = "2.9.2"
 def logback_ver = "2.7.1"
 def filesUpload_ver = "1.4"
 def restAssured_ver = "2.9.0"
 def h2_ver = "1.4.197"
+def oauth2_ver = "2.1.8.RELEASE"
 
 dependencies {
 	implementation "org.springframework.boot:spring-boot-starter-data-jpa"
@@ -36,7 +37,9 @@ dependencies {
 	implementation "net.rakugakibox.spring.boot:logback-access-spring-boot-starter:$logback_ver"
 	implementation "io.springfox:springfox-swagger2:$swagger_ver"
 	implementation "io.springfox:springfox-swagger-ui:$swagger_ver"
-	implementation group: "commons-fileupload", name: "commons-fileupload", version: "$filesUpload_ver"
+	implementation "org.springframework.boot:spring-boot-starter-security"
+	implementation "org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:$oauth2_ver"
+	implementation "commons-fileupload:commons-fileupload:$filesUpload_ver"
 	runtimeOnly "org.postgresql:postgresql"
 	annotationProcessor "org.projectlombok:lombok"
 	testImplementation "org.springframework.boot:spring-boot-starter-test"

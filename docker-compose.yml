@@ -5,6 +5,8 @@ services:
     container_name: surwave
     build:
       context: .
+    environment:
+      - CORE_PROFILES
     networks:
       - surwave_net
     depends_on:
