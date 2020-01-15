@@ -27,7 +27,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Getter
 @Setter
 @Table(name = "app_user")
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class User implements UserDetails {
@@ -47,14 +46,13 @@ public class User implements UserDetails {
   @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
   @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
   @Enumerated(EnumType.STRING)
-  @Default
   private Set<Role> roles = new HashSet<>();
 
   private String username;
 
   private String password;
 
-  private Boolean active;
+  private Boolean active = true;
 
   private String email;
 
