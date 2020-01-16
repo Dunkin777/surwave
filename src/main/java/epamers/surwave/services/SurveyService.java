@@ -3,6 +3,7 @@ package epamers.surwave.services;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyState;
+import epamers.surwave.entities.User;
 import epamers.surwave.repos.SurveyRepository;
 import java.util.List;
 import java.util.Set;
@@ -16,6 +17,7 @@ public class SurveyService {
 
   private final SurveyRepository surveyRepository;
   private final SongService songService;
+  private final UserService userService;
 
   public List<Survey> getAll() {
     return surveyRepository.findAll();
@@ -51,14 +53,18 @@ public class SurveyService {
   }
 
   @Transactional
-  public Song addSong(Long surveyId, Song newSong) {
+  public Song addSong(Long surveyId, Song newSong, User user) {
     Survey survey = getById(surveyId);
     newSong = songService.create(newSong);
 
+    User currentUser = userService.getById(user.getId());
+    Set<Song> proposedSongs = currentUser.getProposedSongs();
+    proposedSongs.add(newSong);
+
     Set<Song> songsToUpdate = survey.getSongs();
     songsToUpdate.add(newSong);
-    survey.setSongs(songsToUpdate);
 
+    userService.update(currentUser);
     surveyRepository.save(survey);
     return newSong;
   }

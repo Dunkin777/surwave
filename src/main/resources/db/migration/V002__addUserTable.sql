@@ -27,5 +27,6 @@ create table if not exists user_song
     user_id varchar(255) not null,
     song_id   bigint not null,
     foreign key (user_id) references app_user (id),
-    foreign key (song_id) references song (id)
+    foreign key (song_id) references song (id),
+    primary key (user_id, song_id)
 );

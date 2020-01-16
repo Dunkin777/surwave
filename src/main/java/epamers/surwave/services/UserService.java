@@ -4,6 +4,7 @@ import epamers.surwave.entities.User;
 import epamers.surwave.repos.UserRepository;
 import java.time.LocalDateTime;
 import java.util.Map;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,5 +28,15 @@ public class UserService implements UserDetailsService {
 
     user.setLastVisit(LocalDateTime.now());
     return userRepository.save(user);
+  }
+
+  @Transactional
+  public User getById(String id) {
+    return userRepository.findById(id).orElseThrow();
+  }
+
+  @Transactional
+  public void update(User user) {
+    userRepository.save(user);
   }
 }

@@ -31,5 +31,6 @@ create table if not exists survey_song
     survey_id bigint not null,
     song_id   bigint not null,
     foreign key (survey_id) references survey (id),
-    foreign key (song_id) references song (id)
+    foreign key (song_id) references song (id),
+    primary key (survey_id, song_id)
 );
