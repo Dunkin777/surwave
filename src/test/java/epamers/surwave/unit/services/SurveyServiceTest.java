@@ -163,7 +163,6 @@ public class SurveyServiceTest {
 
     verify(surveyRepository).save(arg.capture());
     assertTrue(arg.getValue().getSongs().isEmpty());
-    verify(songService).delete(SONG_ID);
   }
 
   @Test
