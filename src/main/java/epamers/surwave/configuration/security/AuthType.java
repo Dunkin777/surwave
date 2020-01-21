@@ -1,9 +1,9 @@
 package epamers.surwave.configuration.security;
 
-public class AuthType {
+import lombok.NoArgsConstructor;
 
-  private AuthType() {
-  }
+@NoArgsConstructor
+public class AuthType {
 
   public static final String NONE = "none";
   public static final String BASIC = "basic";

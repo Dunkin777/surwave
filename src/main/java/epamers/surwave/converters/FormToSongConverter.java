@@ -14,7 +14,6 @@ public class FormToSongConverter implements Converter<SongForm, Song> {
         .performer(songForm.getPerformer())
         .title(songForm.getTitle())
         .comment(songForm.getComment())
-//        .surveyId(songForm.getSurveyId())
         .build();
   }
 }

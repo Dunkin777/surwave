@@ -60,7 +60,6 @@ public class ITSongTest extends IntegrationTest {
         .build();
 
     survey = surveyRepository.save(survey);
-//    song.setSurveyId(survey.getId());
     songForm.setSurveyId(survey.getId());
   }
 

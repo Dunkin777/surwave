@@ -5,6 +5,7 @@ import epamers.surwave.entities.Role;
 import epamers.surwave.entities.User;
 import epamers.surwave.repos.UserRepository;
 import java.util.HashMap;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -20,8 +21,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 
-
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSecurity
 @EnableAutoConfiguration(exclude = SecurityAutoConfiguration.class)
 @ConditionalOnProperty(prefix = "surwave", name = "authType", havingValue = AuthType.BASIC)
@@ -30,18 +31,11 @@ public class BasicSecurityConfiguration extends WebSecurityConfigurerAdapter {
   private final BasicAuthenticationEntryPoint authEntryPoint;
   private final UserRepository userRepository;
 
-  public BasicSecurityConfiguration(BasicAuthenticationEntryPoint authEntryPoint, UserRepository userRepository) {
-    this.authEntryPoint = authEntryPoint;
-    this.userRepository = userRepository;
-  }
-
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http
-        .csrf().disable()
-        .antMatcher("/**")
+    http.csrf().disable()
         .authorizeRequests()
-        .antMatchers("/**")
+        .anyRequest()
         .hasAnyAuthority(Role.getAllowedAuthorities())
         .and()
         .httpBasic().authenticationEntryPoint(authEntryPoint)
@@ -49,7 +43,6 @@ public class BasicSecurityConfiguration extends WebSecurityConfigurerAdapter {
         .logout().logoutUrl("/logout").clearAuthentication(true).invalidateHttpSession(true);
 
     http.headers().frameOptions().disable();
-
   }
 
   @Autowired

@@ -14,9 +14,6 @@ public enum Role implements GrantedAuthority {
         .toArray(String[]::new);
   }
 
-//  public String getAuthorityTitle() {
-//    return "ROLE_" + this.getAuthority();
-//  }
   @Override
   public String getAuthority() {
     return name();

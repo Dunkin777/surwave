@@ -6,10 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.UserDetailsManager;
 
-
 @RequiredArgsConstructor
 public class BasicUserDetailsManager implements UserDetailsManager {
-
 
   private final UserRepository userRepository;
 
