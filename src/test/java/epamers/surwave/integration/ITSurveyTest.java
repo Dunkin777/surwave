@@ -9,7 +9,6 @@ import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertTrue;
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
@@ -17,12 +16,13 @@ import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.repos.SongRepository;
 import epamers.surwave.repos.SurveyRepository;
+import epamers.surwave.repos.UserRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class ITSurveyTest extends IntegrationTest {
+public class ITSurveyTest extends SecurityTest {
 
   private final String PERFORMER = "Elton John Lennon";
   private final String TITLE = "Korobeiniki (feat. George Gershwin)";
@@ -34,6 +34,9 @@ public class ITSurveyTest extends IntegrationTest {
 
   @Autowired
   private SongRepository songRepository;
+
+  @Autowired
+  private UserRepository userRepository;
 
   private SongForm songForm;
   private SurveyForm surveyForm;
@@ -59,8 +62,9 @@ public class ITSurveyTest extends IntegrationTest {
 
   @After
   public void cleanUp() {
-    surveyRepository.deleteAll();
+    userRepository.deleteAll();
     songRepository.deleteAll();
+    surveyRepository.deleteAll();
   }
 
   @Test
@@ -142,7 +146,5 @@ public class ITSurveyTest extends IntegrationTest {
         .then()
         .statusCode(SC_OK)
         .body("songs", hasSize(0));
-
-    assertTrue(songRepository.findAll().isEmpty());
   }
 }

@@ -78,7 +78,6 @@ public class SurveyService {
 
     if (songs.remove(song)) {
       surveyRepository.save(survey);
-      songService.delete(songId);
     }
   }
 

@@ -45,4 +45,5 @@ dependencies {
 	testImplementation "org.springframework.boot:spring-boot-starter-test"
 	testRuntime "com.h2database:h2:$h2_ver"
 	testCompile "com.jayway.restassured:rest-assured:$restAssured_ver"
+	testCompile "org.springframework.security:spring-security-test"
 }

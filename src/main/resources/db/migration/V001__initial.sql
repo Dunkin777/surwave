@@ -42,7 +42,7 @@ create table if not exists app_user
 (
     id         varchar(100) unique not null,
     username   varchar(40)         not null,
-    password   varchar(40),
+    password   varchar(255),
     active     boolean             not null,
     email      varchar(40)         not null,
     avatar_url varchar(255)        not null,

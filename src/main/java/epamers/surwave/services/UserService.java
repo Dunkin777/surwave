@@ -39,4 +39,9 @@ public class UserService implements UserDetailsService {
   public void update(User user) {
     userRepository.save(user);
   }
+
+  @Transactional
+  public void save(User user) {
+    userRepository.save(user);
+  }
 }

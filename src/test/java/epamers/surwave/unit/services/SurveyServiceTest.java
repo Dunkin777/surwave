@@ -11,9 +11,12 @@ import epamers.surwave.entities.ClassicSurvey;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyState;
+import epamers.surwave.entities.User;
 import epamers.surwave.repos.SurveyRepository;
 import epamers.surwave.services.SongService;
 import epamers.surwave.services.SurveyService;
+import epamers.surwave.services.UserService;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -35,7 +38,13 @@ public class SurveyServiceTest {
   SongService songService;
 
   @Mock
+  UserService userService;
+
+  @Mock
   SurveyRepository surveyRepository;
+
+  @Mock
+  User user;
 
   private final Long SONG_ID = 156L;
   private final String PERFORMER = "Bee Gees";
@@ -46,6 +55,8 @@ public class SurveyServiceTest {
   private final Long NONEXISTENT_SURVEY_ID = 100L;
   private final String SURVEY_DESCRIPTION = "Please think twice before choosing!";
   private Song song;
+
+  private String USER_ID = "someGoogleId";
 
   private Survey survey;
 
@@ -74,6 +85,8 @@ public class SurveyServiceTest {
     when(surveyRepository.findAll()).thenReturn(List.of(survey));
     when(surveyRepository.save(survey)).thenReturn(survey);
     when(surveyRepository.existsById(SURVEY_ID)).thenReturn(true);
+    when(user.getId()).thenReturn(USER_ID);
+    when(user.getProposedSongs()).thenReturn(new HashSet<>());
   }
 
   @Test
@@ -130,10 +143,11 @@ public class SurveyServiceTest {
   @Test
   public void addSong_validArguments_success() {
     when(songService.create(song)).thenReturn(song);
+    when(userService.getById(USER_ID)).thenReturn(user);
     ArgumentCaptor<Survey> arg = ArgumentCaptor.forClass(Survey.class);
     survey.setSongs(new HashSet<>());
 
-    surveyService.addSong(SURVEY_ID, song);
+    surveyService.addSong(SURVEY_ID, song, user);
 
     verify(surveyRepository).save(arg.capture());
     assertEquals(survey, arg.getValue());

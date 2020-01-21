@@ -30,10 +30,4 @@ public class Song {
   private String comment;
 
   private String mediaPath;
-
-//  private Long surveyId;
-
-//  @ManyToOne(fetch = FetchType.LAZY)
-//  @JoinColumn(name = "surveyId", insertable = false, updatable = false)
-//  private Survey survey;
 }
