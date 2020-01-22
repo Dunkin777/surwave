@@ -1,4 +1,10 @@
+drop table if exists user_role;
+drop table if exists survey_song;
+drop table if exists user_song;
+drop table if exists app_user;
+drop table if exists song;
 drop table if exists survey;
+
 create table if not exists survey
 (
     id                       bigserial unique not null,
@@ -13,7 +19,6 @@ create table if not exists survey
     primary key (id)
 );
 
-drop table if exists song;
 create table if not exists song
 (
     id         bigserial  unique  not null,
@@ -25,7 +30,6 @@ create table if not exists song
     primary key (id)
 );
 
-drop table if exists survey_song;
 create table if not exists survey_song
 (
     survey_id bigint not null,
@@ -34,9 +38,6 @@ create table if not exists survey_song
     foreign key (song_id) references song (id),
     primary key (survey_id, song_id)
 );
-
-drop table if exists user_role;
-drop table if exists app_user;
 
 create table if not exists app_user
 (
@@ -58,7 +59,6 @@ create table if not exists user_role
     foreign key (user_id) references app_user (id)
 );
 
-drop table if exists user_song;
 create table if not exists user_song
 (
     user_id varchar(255) not null,
