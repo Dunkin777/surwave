@@ -8,7 +8,6 @@ public enum Role implements GrantedAuthority {
   USER;
 
   public static String[] getAllowedAuthorities() {
-
     return Stream.of(Role.USER, Role.ADMIN)
         .map(Role::getAuthority)
         .toArray(String[]::new);

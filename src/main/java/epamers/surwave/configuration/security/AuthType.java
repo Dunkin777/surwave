@@ -1,8 +1,9 @@
 package epamers.surwave.configuration.security;
 
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthType {
 
   public static final String DISABLED = "disabled";
