@@ -44,7 +44,7 @@ public class User implements UserDetails {
       joinColumns = {@JoinColumn(name = "user_id")},
       inverseJoinColumns = {@JoinColumn(name = "song_id")}
   )
-  private Set<Song> proposedSongs = new HashSet<>();
+  private Set<Song> proposedSongs;
 
   private String username;
 

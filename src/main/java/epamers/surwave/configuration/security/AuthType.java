@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuthType {
 
+  public static final String DISABLED = "disabled";
   public static final String BASIC = "basic";
   public static final String OAUTH2 = "oauth2";
 }
