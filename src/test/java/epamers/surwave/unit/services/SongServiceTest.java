@@ -80,6 +80,26 @@ public class SongServiceTest {
     assertEquals(song, returnedSong);
   }
 
+  @Test
+  public void getOrCreate_existingSong() {
+    when(songRepository.findByTitleAndPerformer(TITLE, PERFORMER)).thenReturn(Optional.of(song));
+
+    Song returnedSong = songService.getOrCreate(song);
+
+    assertEquals(song, returnedSong);
+  }
+
+  @Test
+  public void getOrCreate_newSong() {
+    when(songRepository.findByTitleAndPerformer(TITLE, PERFORMER)).thenReturn(Optional.empty());
+
+    Song returnedSong = songService.getOrCreate(song);
+
+    verify(songRepository).findByTitleAndPerformer(TITLE, PERFORMER);
+    verify(songRepository).save(song);
+    assertEquals(song, returnedSong);
+  }
+
   @Test(expected = IllegalArgumentException.class)
   public void create_nullArgument_exception() {
     songService.create(null);

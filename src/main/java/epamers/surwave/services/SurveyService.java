@@ -55,7 +55,7 @@ public class SurveyService {
   @Transactional
   public Song addSong(Long surveyId, Song newSong, User user) {
     Survey survey = getById(surveyId);
-    newSong = songService.create(newSong);
+    newSong = songService.getOrCreate(newSong);
 
     User currentUser = userService.getById(user.getId());
     Set<Song> proposedSongs = currentUser.getProposedSongs();
