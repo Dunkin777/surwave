@@ -8,7 +8,9 @@ import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
+import epamers.surwave.entities.User;
 import epamers.surwave.services.SurveyService;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +18,7 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,9 +63,9 @@ public class SurveyController {
   }
 
   @PutMapping("/{id}/song")
-  public void addSongToSurvey(@PathVariable Long id, @RequestBody @Valid SongForm songForm, HttpServletResponse response) {
+  public void addSongToSurvey(@AuthenticationPrincipal User user, @PathVariable Long id, @RequestBody @Valid SongForm songForm, HttpServletResponse response) {
     Song song = converter.convert(songForm, Song.class);
-    Song createdSong = surveyService.addSong(id, song);
+    Song createdSong = surveyService.addSong(id, song, user);
     response.addHeader("Location", SONG_URL + "/" + createdSong.getId());
   }
 

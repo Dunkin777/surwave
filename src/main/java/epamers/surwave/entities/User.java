@@ -5,18 +5,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Table;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,7 +17,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Getter
 @Setter
 @Table(name = "app_user")
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class User implements UserDetails {
@@ -47,14 +36,21 @@ public class User implements UserDetails {
   @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
   @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
   @Enumerated(EnumType.STRING)
-  @Default
   private Set<Role> roles = new HashSet<>();
+
+  @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+  @JoinTable(
+      name = "user_song",
+      joinColumns = {@JoinColumn(name = "user_id")},
+      inverseJoinColumns = {@JoinColumn(name = "song_id")}
+  )
+  private Set<Song> proposedSongs;
 
   private String username;
 
   private String password;
 
-  private Boolean active;
+  private Boolean active = true;
 
   private String email;
 

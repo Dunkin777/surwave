@@ -1,32 +1,28 @@
 package epamers.surwave.entities;
 
-import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
-import lombok.Builder.Default;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Inheritance
-@DiscriminatorColumn
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "survey_type")
 @SuperBuilder
 @NoArgsConstructor
 @Data
+@EqualsAndHashCode(exclude = {"songs"})
 public abstract class Survey {
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private SurveyType type;
-
-  @OneToMany(fetch = FetchType.EAGER)
-  @Default
-  private Set<Song> songs = new HashSet<>();
 
   private String description;
 
@@ -38,4 +34,12 @@ public abstract class Survey {
   private SurveyState state;
 
   private Boolean isHidden;
+
+  @ManyToMany(cascade = CascadeType.PERSIST)
+  @JoinTable(
+      name = "survey_song",
+      joinColumns = {@JoinColumn(name = "survey_id")},
+      inverseJoinColumns = {@JoinColumn(name = "song_id")}
+  )
+  private Set<Song> songs;
 }

@@ -24,8 +24,9 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: surwave
+      - POSTGRES_USER
+      - POSTGRES_DB
+      - POSTGRES_PASSWORD
 
 networks:
   surwave_net:

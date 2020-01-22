@@ -2,25 +2,12 @@ server:
   port: 8080
 
 spring:
-  profiles:
-    active: prod
   jpa:
     database: POSTGRESQL
     show-sql: true
-    open-in-view: true
-    hibernate:
-      ddl-auto: create-drop
     properties:
       dialect: org.hibernate.dialect.PostgreSQLDialect
       hibernate.temp.use_jdbc_metadata_defaults: false
-
-  datasource:
-    platform: postgres
-    url: jdbc:postgresql://db:5432/surwave
-    username: postgres
-    password: postgres
-    driverClassName: org.postgresql.Driver
-    initialize: false
 
   servlet:
     multipart:
@@ -29,6 +16,9 @@ spring:
 app:
   upload:
     dir: data
+
+surwave:
+  authType: oauth2
 
 security:
   oauth2:

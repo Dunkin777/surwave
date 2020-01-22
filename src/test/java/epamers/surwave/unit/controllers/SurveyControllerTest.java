@@ -15,6 +15,7 @@ import epamers.surwave.entities.ClassicSurvey;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyType;
+import epamers.surwave.entities.User;
 import epamers.surwave.services.SurveyService;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
@@ -38,6 +39,9 @@ public class SurveyControllerTest {
 
   @Mock
   HttpServletResponse response;
+
+  @Mock
+  private User user;
 
   private final Long SONG_ID = 55L;
   private final Long SURVEY_ID = 77L;
@@ -113,11 +117,11 @@ public class SurveyControllerTest {
 
   @Test
   public void addSongToSurvey_success() {
-    when(surveyService.addSong(SURVEY_ID, song)).thenReturn(song);
+    when(surveyService.addSong(SURVEY_ID, song, user)).thenReturn(song);
 
-    surveyController.addSongToSurvey(SURVEY_ID, songForm, response);
+    surveyController.addSongToSurvey(user, SURVEY_ID, songForm, response);
 
-    verify(surveyService).addSong(SURVEY_ID, song);
+    verify(surveyService).addSong(SURVEY_ID, song, user);
     verify(response).addHeader("Location", SONG_URL + "/" + SONG_ID);
   }
 
