@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SongRepository extends JpaRepository<Song, Long> {
 
-  Optional<Song> findByTitleAndPerformer(String title, String performer);
+  Optional<Song> findByTitleIgnoreCaseAndPerformerIgnoreCase(String title, String performer);
 }

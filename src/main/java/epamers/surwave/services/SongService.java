@@ -33,7 +33,7 @@ public class SongService {
 
   @Transactional
   public Song getOrCreate(Song song) {
-    return songRepository.findByTitleAndPerformer(song.getTitle(), song.getPerformer())
+    return songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(song.getTitle(), song.getPerformer())
         .orElseGet(() -> songRepository.save(song));
   }
 

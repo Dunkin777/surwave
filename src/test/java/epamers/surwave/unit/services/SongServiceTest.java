@@ -81,8 +81,8 @@ public class SongServiceTest {
   }
 
   @Test
-  public void getOrCreate_existingSong() {
-    when(songRepository.findByTitleAndPerformer(TITLE, PERFORMER)).thenReturn(Optional.of(song));
+  public void getOrCreate_existingSong_success() {
+    when(songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(TITLE, PERFORMER)).thenReturn(Optional.of(song));
 
     Song returnedSong = songService.getOrCreate(song);
 
@@ -90,12 +90,12 @@ public class SongServiceTest {
   }
 
   @Test
-  public void getOrCreate_newSong() {
-    when(songRepository.findByTitleAndPerformer(TITLE, PERFORMER)).thenReturn(Optional.empty());
+  public void getOrCreate_newSong_success() {
+    when(songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(TITLE, PERFORMER)).thenReturn(Optional.empty());
 
     Song returnedSong = songService.getOrCreate(song);
 
-    verify(songRepository).findByTitleAndPerformer(TITLE, PERFORMER);
+    verify(songRepository).findByTitleIgnoreCaseAndPerformerIgnoreCase(TITLE, PERFORMER);
     verify(songRepository).save(song);
     assertEquals(song, returnedSong);
   }
