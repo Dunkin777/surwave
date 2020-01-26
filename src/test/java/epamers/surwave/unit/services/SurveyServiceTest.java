@@ -16,7 +16,6 @@ import epamers.surwave.repos.SurveyRepository;
 import epamers.surwave.services.SongService;
 import epamers.surwave.services.SurveyService;
 import epamers.surwave.services.UserService;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -142,7 +141,7 @@ public class SurveyServiceTest {
 
   @Test
   public void addSong_validArguments_success() {
-    when(songService.create(song)).thenReturn(song);
+    when(songService.getOrCreate(song)).thenReturn(song);
     when(userService.getById(USER_ID)).thenReturn(user);
     ArgumentCaptor<Survey> arg = ArgumentCaptor.forClass(Survey.class);
     survey.setSongs(new HashSet<>());

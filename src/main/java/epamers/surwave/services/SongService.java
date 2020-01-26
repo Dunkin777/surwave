@@ -32,6 +32,12 @@ public class SongService {
   }
 
   @Transactional
+  public Song getOrCreate(Song song) {
+    return songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(song.getTitle(), song.getPerformer())
+        .orElseGet(() -> songRepository.save(song));
+  }
+
+  @Transactional
   public void update(Long id, Song song) {
     if (song == null) {
       throw new IllegalArgumentException();
