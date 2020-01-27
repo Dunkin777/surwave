@@ -1,5 +1,7 @@
 package epamers.surwave.entities;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import javax.persistence.*;
 import lombok.Data;
