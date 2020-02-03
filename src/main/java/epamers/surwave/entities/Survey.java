@@ -1,7 +1,5 @@
 package epamers.surwave.entities;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import javax.persistence.*;
 import lombok.Data;
@@ -36,6 +34,14 @@ public abstract class Survey {
   private SurveyState state;
 
   private Boolean isHidden;
+
+  @ManyToMany(cascade = CascadeType.PERSIST)
+  @JoinTable(
+      name = "survey_user",
+      joinColumns = {@JoinColumn(name = "survey_id")},
+      inverseJoinColumns = {@JoinColumn(name = "user_id")}
+  )
+  private Set<User> users;
 
   @ManyToMany(cascade = CascadeType.PERSIST)
   @JoinTable(

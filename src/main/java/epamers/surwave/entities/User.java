@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,6 +47,9 @@ public class User implements UserDetails {
   )
   private Set<Song> proposedSongs;
 
+  @ManyToMany(mappedBy = "users")
+  private Set<Survey> surveys;
+
   private String username;
 
   private String password;
@@ -59,6 +63,10 @@ public class User implements UserDetails {
   private String locale;
 
   private LocalDateTime lastVisit;
+
+  public Set<Song> getSongsBySurvey(Survey survey) {
+    return proposedSongs.stream().filter(song -> song.getSurveys().contains(survey)).collect(Collectors.toSet());
+  }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

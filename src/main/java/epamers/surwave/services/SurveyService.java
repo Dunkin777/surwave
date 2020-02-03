@@ -6,9 +6,7 @@ import epamers.surwave.entities.SurveyState;
 import epamers.surwave.entities.User;
 import epamers.surwave.repos.SurveyRepository;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,10 +61,13 @@ public class SurveyService {
     Set<Song> proposedSongs = currentUser.getProposedSongs();
     proposedSongs.add(newSong);
 
+    Set<User> users = survey.getUsers();
+    users.add(currentUser);
+
     Set<Song> songsToUpdate = survey.getSongs();
     songsToUpdate.add(newSong);
 
-    userService.update(currentUser);
+    userService.save(currentUser);
     surveyRepository.save(survey);
     return newSong;
   }
@@ -89,15 +90,5 @@ public class SurveyService {
     survey.setState(surveyState);
 
     surveyRepository.save(survey);
-  }
-
-  @Transactional(readOnly = true)
-  public Map<Song, User> getSongUserMapBySurveyId(Long id) {
-    Map<Long, String> songIDsWithUserIDsBySurveyId = surveyRepository.getSongIDsWithUserIDsBySurveyId(id);
-
-    return songIDsWithUserIDsBySurveyId.entrySet().stream().collect(Collectors.toMap(
-        entry -> songService.getById(entry.getKey()),
-        entry -> userService.getById(entry.getValue())
-    ));
   }
 }

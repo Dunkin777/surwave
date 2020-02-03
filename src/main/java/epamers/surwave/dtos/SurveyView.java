@@ -32,6 +32,4 @@ public class SurveyView {
 
   //From currently unused RangedSurvey. Don't forget to change/remove in the future
   private Boolean logarithmicRatingScale;
-
-  private Map<SongView, String> songToUserID;
 }

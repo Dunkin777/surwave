@@ -1,6 +1,6 @@
 package epamers.surwave.entities;
 
-import java.util.List;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,8 +34,8 @@ public class Song {
   private String mediaPath;
 
   @ManyToMany(mappedBy = "songs")
-  private List<Survey> surveys;
+  private Set<Survey> surveys;
 
   @ManyToMany(mappedBy = "proposedSongs")
-  private List<User> users;
+  private Set<User> users;
 }

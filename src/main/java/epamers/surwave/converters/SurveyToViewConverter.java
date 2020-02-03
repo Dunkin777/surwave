@@ -25,8 +25,6 @@ public abstract class SurveyToViewConverter {
         .map(songConverter::convert)
         .collect(toSet());
 
-    Map<Song, User> songUserMapBySurveyId = surveyService.getSongUserMapBySurveyId(survey.getId());
-
     return SurveyView.builder()
         .id(survey.getId())
         .type(survey.getType())
@@ -35,10 +33,6 @@ public abstract class SurveyToViewConverter {
         .state(survey.getState())
         .proposalsByUser(survey.getProposalsByUser())
         .isHidden(survey.getIsHidden())
-        .songToUserID(songUserMapBySurveyId.entrySet().stream().collect(Collectors.toMap(
-            entry -> (SongView) songConverter.convert(entry.getKey()),
-            entry -> (String) entry.getValue().getId()
-        )))
         .build();
   }
 }

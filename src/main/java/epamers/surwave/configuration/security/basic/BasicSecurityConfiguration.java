@@ -63,8 +63,19 @@ public class BasicSecurityConfiguration extends WebSecurityConfigurerAdapter {
       put("picture", "nopicture");
     }});
 
+    User anotherUser = new User(new HashMap<>() {{
+      put("sub", "coolID2");
+      put("name", "guest2");
+      put("email", "GuestEmail2@mail.dut");
+      put("locale", "native");
+      put("picture", "nopicture");
+    }});
+
     user.setPassword("$2a$10$of1z7we8YS4xth0a.S71WOzIOqJ7ms/XVASVCjtl8el1psQLLq.0K");
     detailsManager.createUser(user);
+
+    anotherUser.setPassword("$2a$10$of1z7we8YS4xth0a.S71WOzIOqJ7ms/XVASVCjtl8el1psQLLq.0K");
+    detailsManager.createUser(anotherUser);
     return detailsManager;
   }
 
