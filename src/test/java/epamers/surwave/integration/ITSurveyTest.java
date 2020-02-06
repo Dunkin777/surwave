@@ -134,6 +134,13 @@ public class ITSurveyTest extends SecurityTest {
         .body("songs.title", hasItem(TITLE))
         .body("songs.comment", hasItem(COMMENT));
 
+    //Check that user cant see his own songs
+    givenJson()
+        .get(newSurveyURI + "/filtered")
+        .then()
+        .statusCode(SC_OK)
+        .body("songs", hasSize(0));
+
     //Remove Song from Survey
     givenJson()
         .delete(newSurveyURI + newSongURI)
