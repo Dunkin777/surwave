@@ -1,6 +1,7 @@
 package epamers.surwave.entities;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,7 +14,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(exclude = {"songs"})
 public abstract class Survey {
 
   @Id
@@ -35,19 +35,14 @@ public abstract class Survey {
 
   private Boolean isHidden;
 
-  @ManyToMany(cascade = CascadeType.PERSIST)
-  @JoinTable(
-      name = "survey_user",
-      joinColumns = {@JoinColumn(name = "survey_id")},
-      inverseJoinColumns = {@JoinColumn(name = "user_id")}
-  )
-  private Set<User> users;
+  @OneToMany(mappedBy = "survey", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  private Set<SurveyUserSongLink> surveyUserSongLink;
 
-  @ManyToMany(cascade = CascadeType.PERSIST)
-  @JoinTable(
-      name = "survey_song",
-      joinColumns = {@JoinColumn(name = "survey_id")},
-      inverseJoinColumns = {@JoinColumn(name = "song_id")}
-  )
-  private Set<Song> songs;
+  public void addSong(SurveyUserSongLink songLink) {
+    surveyUserSongLink.add(songLink);
+  }
+
+  public Set<Song> getSongs() {
+    return surveyUserSongLink.stream().map(SurveyUserSongLink::getSong).collect(Collectors.toSet());
+  }
 }

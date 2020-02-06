@@ -39,16 +39,8 @@ public class User implements UserDetails {
   @Enumerated(EnumType.STRING)
   private Set<Role> roles = new HashSet<>();
 
-  @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-  @JoinTable(
-      name = "user_song",
-      joinColumns = {@JoinColumn(name = "user_id")},
-      inverseJoinColumns = {@JoinColumn(name = "song_id")}
-  )
-  private Set<Song> proposedSongs;
-
-  @ManyToMany(mappedBy = "users")
-  private Set<Survey> surveys;
+  @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  private Set<SurveyUserSongLink> surveyUserSongLink;
 
   private String username;
 
@@ -64,8 +56,8 @@ public class User implements UserDetails {
 
   private LocalDateTime lastVisit;
 
-  public Set<Song> getSongsBySurvey(Survey survey) {
-    return proposedSongs.stream().filter(song -> song.getSurveys().contains(survey)).collect(Collectors.toSet());
+  public Set<Song> getProposedSongs() {
+    return surveyUserSongLink.stream().map(SurveyUserSongLink::getSong).collect(Collectors.toSet());
   }
 
   @Override

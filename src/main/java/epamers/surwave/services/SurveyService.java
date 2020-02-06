@@ -3,10 +3,13 @@ package epamers.surwave.services;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyState;
+import epamers.surwave.entities.SurveyUserSongLink;
 import epamers.surwave.entities.User;
 import epamers.surwave.repos.SurveyRepository;
+import epamers.surwave.repos.SurveyUserSongLinkRepository;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +21,7 @@ public class SurveyService {
   private final SurveyRepository surveyRepository;
   private final SongService songService;
   private final UserService userService;
+  private final SurveyUserSongLinkRepository surveyUserSongLinkRepository;
 
   public List<Survey> getAll() {
     return surveyRepository.findAll();
@@ -25,6 +29,18 @@ public class SurveyService {
 
   public Survey getById(Long id) {
     return surveyRepository.findById(id).orElseThrow();
+  }
+
+  public Survey getByIdForCurrentUser(Long id, User user) {
+    Survey survey = surveyRepository.findById(id).orElseThrow();
+    User currentUser = userService.getById(user.getId());
+
+    Set<SurveyUserSongLink> susls = survey.getSurveyUserSongLink().stream().filter(susl -> !susl.getUser().equals(currentUser))
+        .collect(Collectors.toSet());
+
+    survey.setSurveyUserSongLink(susls);
+
+    return survey;
   }
 
   @Transactional
@@ -44,10 +60,10 @@ public class SurveyService {
       throw new IllegalArgumentException();
     }
 
-    Set<Song> storedSongs = getById(id).getSongs();
+    Set<SurveyUserSongLink> susl = getById(id).getSurveyUserSongLink();
 
     survey.setId(id);
-    survey.setSongs(storedSongs);
+    survey.setSurveyUserSongLink(susl);
 
     surveyRepository.save(survey);
   }
@@ -61,11 +77,11 @@ public class SurveyService {
     Set<Song> proposedSongs = currentUser.getProposedSongs();
     proposedSongs.add(newSong);
 
-    Set<User> users = survey.getUsers();
-    users.add(currentUser);
-
-    Set<Song> songsToUpdate = survey.getSongs();
-    songsToUpdate.add(newSong);
+    SurveyUserSongLink susl = new SurveyUserSongLink();
+    susl.setUser(currentUser);
+    susl.setSong(newSong);
+    susl.setSurvey(survey);
+    survey.addSong(susl);
 
     userService.save(currentUser);
     surveyRepository.save(survey);
@@ -77,10 +93,12 @@ public class SurveyService {
     Survey survey = getById(surveyId);
     Song song = songService.getById(songId);
 
-    Set<Song> songs = survey.getSongs();
+    SurveyUserSongLink suslToRemove = survey.getSurveyUserSongLink().stream().filter(susl -> susl.getSong().equals(song)).findFirst()
+        .orElseThrow();
 
-    if (songs.remove(song)) {
+    if (survey.getSurveyUserSongLink().remove(suslToRemove)){
       surveyRepository.save(survey);
+      surveyUserSongLinkRepository.delete(suslToRemove);
     }
   }
 

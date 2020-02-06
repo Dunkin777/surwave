@@ -1,12 +1,15 @@
 package epamers.surwave.entities;
 
 import java.util.Set;
+import java.util.stream.Collectors;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,9 +36,10 @@ public class Song {
 
   private String mediaPath;
 
-  @ManyToMany(mappedBy = "songs")
-  private Set<Survey> surveys;
+  @OneToMany(mappedBy = "song", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  private Set<SurveyUserSongLink> surveyUserSongLink;
 
-  @ManyToMany(mappedBy = "proposedSongs")
-  private Set<User> users;
+  public Set<Survey> getSurveys(){
+    return surveyUserSongLink.stream().map(SurveyUserSongLink::getSurvey).collect(Collectors.toSet());
+  }
 }

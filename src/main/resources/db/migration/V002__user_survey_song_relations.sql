@@ -1,10 +1,13 @@
-drop table if exists survey_user;
-create table if not exists survey_user
+drop table if exists survey_user_song_link;
+create table survey_user_song_link
 (
-    survey_id bigint       not null,
-    user_id   varchar(255) not null,
+    id        bigserial not null,
+    song_id   bigint,
+    survey_id bigint,
+    user_id   varchar(255),
 
+    primary key (id),
+    foreign key (song_id) references song (id),
     foreign key (survey_id) references survey (id),
-    foreign key (user_id) references app_user (id),
-    primary key (user_id, survey_id)
+    foreign key (user_id) references app_user (id)
 );

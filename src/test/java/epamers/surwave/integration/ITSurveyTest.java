@@ -62,9 +62,9 @@ public class ITSurveyTest extends SecurityTest {
 
   @After
   public void cleanUp() {
+    surveyRepository.deleteAll();
     userRepository.deleteAll();
     songRepository.deleteAll();
-    surveyRepository.deleteAll();
   }
 
   @Test
