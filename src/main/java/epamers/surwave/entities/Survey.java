@@ -4,7 +4,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.*;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -36,13 +35,13 @@ public abstract class Survey {
   private Boolean isHidden;
 
   @OneToMany(mappedBy = "survey", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  private Set<SurveyUserSongLink> surveyUserSongLink;
+  private Set<SurveyUserSongLink> surveyUserSongLinks;
 
   public void addSong(SurveyUserSongLink songLink) {
-    surveyUserSongLink.add(songLink);
+    surveyUserSongLinks.add(songLink);
   }
 
   public Set<Song> getSongs() {
-    return surveyUserSongLink.stream().map(SurveyUserSongLink::getSong).collect(Collectors.toSet());
+    return surveyUserSongLinks.stream().map(SurveyUserSongLink::getSong).collect(Collectors.toSet());
   }
 }

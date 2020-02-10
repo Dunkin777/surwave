@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import epamers.surwave.entities.SurveyState;
 import epamers.surwave.entities.SurveyType;
-import java.util.Map;
 import java.util.Set;
 import lombok.Builder;
 import lombok.Data;

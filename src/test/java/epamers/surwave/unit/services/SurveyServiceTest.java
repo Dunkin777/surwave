@@ -90,7 +90,7 @@ public class SurveyServiceTest {
         .description(SURVEY_DESCRIPTION)
         .id(SURVEY_ID)
         .proposalsByUser(3)
-        .surveyUserSongLink(susls)
+        .surveyUserSongLinks(susls)
         .build();
 
     when(surveyRepository.findById(SURVEY_ID)).thenReturn(Optional.of(survey));
@@ -157,7 +157,7 @@ public class SurveyServiceTest {
     when(songService.getOrCreate(song)).thenReturn(song);
     when(userService.getById(USER_ID)).thenReturn(user);
     ArgumentCaptor<Survey> arg = ArgumentCaptor.forClass(Survey.class);
-    survey.setSurveyUserSongLink(new HashSet<>());
+    survey.setSurveyUserSongLinks(new HashSet<>());
 
     surveyService.addSong(SURVEY_ID, song, user);
 

@@ -35,10 +35,10 @@ public class SurveyService {
     Survey survey = surveyRepository.findById(id).orElseThrow();
     User currentUser = userService.getById(user.getId());
 
-    Set<SurveyUserSongLink> susls = survey.getSurveyUserSongLink().stream().filter(susl -> !susl.getUser().equals(currentUser))
+    Set<SurveyUserSongLink> susls = survey.getSurveyUserSongLinks().stream().filter(susl -> !susl.getUser().equals(currentUser))
         .collect(Collectors.toSet());
 
-    survey.setSurveyUserSongLink(susls);
+    survey.setSurveyUserSongLinks(susls);
 
     return survey;
   }
@@ -60,10 +60,10 @@ public class SurveyService {
       throw new IllegalArgumentException();
     }
 
-    Set<SurveyUserSongLink> susl = getById(id).getSurveyUserSongLink();
+    Set<SurveyUserSongLink> susl = getById(id).getSurveyUserSongLinks();
 
     survey.setId(id);
-    survey.setSurveyUserSongLink(susl);
+    survey.setSurveyUserSongLinks(susl);
 
     surveyRepository.save(survey);
   }
@@ -93,10 +93,10 @@ public class SurveyService {
     Survey survey = getById(surveyId);
     Song song = songService.getById(songId);
 
-    SurveyUserSongLink suslToRemove = survey.getSurveyUserSongLink().stream().filter(susl -> susl.getSong().equals(song)).findFirst()
+    SurveyUserSongLink suslToRemove = survey.getSurveyUserSongLinks().stream().filter(susl -> susl.getSong().equals(song)).findFirst()
         .orElseThrow();
 
-    if (survey.getSurveyUserSongLink().remove(suslToRemove)){
+    if (survey.getSurveyUserSongLinks().remove(suslToRemove)){
       surveyRepository.save(survey);
       surveyUserSongLinkRepository.delete(suslToRemove);
     }
