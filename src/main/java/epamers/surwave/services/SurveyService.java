@@ -35,7 +35,8 @@ public class SurveyService {
     Survey survey = surveyRepository.findById(id).orElseThrow();
     User currentUser = userService.getById(user.getId());
 
-    Set<SurveyUserSongLink> susls = survey.getSurveyUserSongLinks().stream().filter(susl -> !susl.getUser().equals(currentUser))
+    Set<SurveyUserSongLink> susls = survey.getSurveyUserSongLinks().stream()
+        .filter(susl -> !susl.getUser().equals(currentUser))
         .collect(Collectors.toSet());
 
     survey.setSurveyUserSongLinks(susls);
@@ -93,10 +94,12 @@ public class SurveyService {
     Survey survey = getById(surveyId);
     Song song = songService.getById(songId);
 
-    SurveyUserSongLink suslToRemove = survey.getSurveyUserSongLinks().stream().filter(susl -> susl.getSong().equals(song)).findFirst()
+    SurveyUserSongLink suslToRemove = survey.getSurveyUserSongLinks().stream()
+        .filter(susl -> susl.getSong().equals(song))
+        .findFirst()
         .orElseThrow();
 
-    if (survey.getSurveyUserSongLinks().remove(suslToRemove)){
+    if (survey.getSurveyUserSongLinks().remove(suslToRemove)) {
       surveyRepository.save(survey);
       surveyUserSongLinkRepository.delete(suslToRemove);
     }

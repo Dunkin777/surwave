@@ -57,7 +57,9 @@ public class User implements UserDetails {
   private LocalDateTime lastVisit;
 
   public Set<Song> getProposedSongs() {
-    return surveyUserSongLinks.stream().map(SurveyUserSongLink::getSong).collect(Collectors.toSet());
+    return surveyUserSongLinks.stream()
+        .map(SurveyUserSongLink::getSong)
+        .collect(Collectors.toSet());
   }
 
   @Override

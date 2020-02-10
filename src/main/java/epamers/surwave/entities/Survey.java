@@ -42,6 +42,8 @@ public abstract class Survey {
   }
 
   public Set<Song> getSongs() {
-    return surveyUserSongLinks.stream().map(SurveyUserSongLink::getSong).collect(Collectors.toSet());
+    return surveyUserSongLinks.stream()
+        .map(SurveyUserSongLink::getSong)
+        .collect(Collectors.toSet());
   }
 }

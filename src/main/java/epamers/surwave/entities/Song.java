@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,7 +38,9 @@ public class Song {
   @OneToMany(mappedBy = "song", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private Set<SurveyUserSongLink> surveyUserSongLink;
 
-  public Set<Survey> getSurveys(){
-    return surveyUserSongLink.stream().map(SurveyUserSongLink::getSurvey).collect(Collectors.toSet());
+  public Set<Survey> getSurveys() {
+    return surveyUserSongLink.stream()
+        .map(SurveyUserSongLink::getSurvey)
+        .collect(Collectors.toSet());
   }
 }
