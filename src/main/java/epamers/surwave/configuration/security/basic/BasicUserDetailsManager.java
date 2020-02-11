@@ -13,6 +13,10 @@ public class BasicUserDetailsManager implements UserDetailsManager {
 
   @Override
   public void createUser(UserDetails user) {
+    String username = user.getUsername();
+    if (userRepository.existsByUsername(username)) {
+      userRepository.deleteByUsername(username);
+    }
     userRepository.save((User) user);
   }
 

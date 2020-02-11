@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,13 +39,8 @@ public class User implements UserDetails {
   @Enumerated(EnumType.STRING)
   private Set<Role> roles = new HashSet<>();
 
-  @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-  @JoinTable(
-      name = "user_song",
-      joinColumns = {@JoinColumn(name = "user_id")},
-      inverseJoinColumns = {@JoinColumn(name = "song_id")}
-  )
-  private Set<Song> proposedSongs;
+  @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  private Set<SurveyUserSong> surveyUserSongs;
 
   private String username;
 
@@ -59,6 +55,12 @@ public class User implements UserDetails {
   private String locale;
 
   private LocalDateTime lastVisit;
+
+  public Set<Song> getProposedSongs() {
+    return surveyUserSongs.stream()
+        .map(SurveyUserSong::getSong)
+        .collect(Collectors.toSet());
+  }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -62,9 +62,9 @@ public class ITSurveyTest extends SecurityTest {
 
   @After
   public void cleanUp() {
+    surveyRepository.deleteAll();
     userRepository.deleteAll();
     songRepository.deleteAll();
-    surveyRepository.deleteAll();
   }
 
   @Test
@@ -133,6 +133,13 @@ public class ITSurveyTest extends SecurityTest {
         .body("songs.performer", hasItem(PERFORMER))
         .body("songs.title", hasItem(TITLE))
         .body("songs.comment", hasItem(COMMENT));
+
+    //Check that user cant see his own songs
+    givenJson()
+        .get(newSurveyURI + "/filtered")
+        .then()
+        .statusCode(SC_OK)
+        .body("songs", hasSize(0));
 
     //Remove Song from Survey
     givenJson()

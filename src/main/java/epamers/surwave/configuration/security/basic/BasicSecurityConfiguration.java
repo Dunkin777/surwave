@@ -4,7 +4,7 @@ import epamers.surwave.configuration.security.AuthType;
 import epamers.surwave.entities.Role;
 import epamers.surwave.entities.User;
 import epamers.surwave.repos.UserRepository;
-import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -55,16 +55,25 @@ public class BasicSecurityConfiguration extends WebSecurityConfigurerAdapter {
   public UserDetailsManager basicUserDetailsManager() {
     BasicUserDetailsManager detailsManager = new BasicUserDetailsManager(userRepository);
 
-    User user = new User(new HashMap<>() {{
-      put("sub", "coolID");
-      put("name", "guest");
-      put("email", "GuestEmail@mail.dut");
-      put("locale", "native");
-      put("picture", "nopicture");
-    }});
+    User user = new User(Map.of(
+        "sub", "coolID",
+        "name", "guest",
+        "email", "GuestEmail@mail.dut",
+        "locale", "native",
+        "picture", "nopicture"));
+
+    User anotherUser = new User(Map.of(
+        "sub", "coolID2",
+        "name", "guest2",
+        "email", "GuestEmail2@mail.dut",
+        "locale", "native",
+        "picture", "nopicture"));
 
     user.setPassword("$2a$10$of1z7we8YS4xth0a.S71WOzIOqJ7ms/XVASVCjtl8el1psQLLq.0K");
     detailsManager.createUser(user);
+
+    anotherUser.setPassword("$2a$10$of1z7we8YS4xth0a.S71WOzIOqJ7ms/XVASVCjtl8el1psQLLq.0K");
+    detailsManager.createUser(anotherUser);
     return detailsManager;
   }
 

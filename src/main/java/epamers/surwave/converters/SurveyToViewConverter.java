@@ -4,18 +4,25 @@ import static java.util.stream.Collectors.toSet;
 
 import epamers.surwave.dtos.SongView;
 import epamers.surwave.dtos.SurveyView;
+import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
+import epamers.surwave.entities.User;
+import epamers.surwave.services.SurveyService;
+import java.util.Map;
 import java.util.Set;
-import lombok.AllArgsConstructor;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public abstract class SurveyToViewConverter {
 
-  private final SongToViewConverter converter;
+  private final SongToViewConverter songConverter;
+  private final SurveyService surveyService;
 
   public SurveyView convert(Survey survey) {
     Set<SongView> songs = survey.getSongs().stream()
-        .map(converter::convert)
+        .map(songConverter::convert)
         .collect(toSet());
 
     return SurveyView.builder()
