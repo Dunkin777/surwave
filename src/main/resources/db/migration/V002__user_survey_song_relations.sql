@@ -1,5 +1,5 @@
-drop table if exists survey_user_song_link;
-create table survey_user_song_link
+drop table if exists survey_user_song;
+create table survey_user_song
 (
     id        bigserial not null,
     song_id   bigint,

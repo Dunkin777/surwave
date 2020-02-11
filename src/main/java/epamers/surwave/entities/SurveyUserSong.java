@@ -16,7 +16,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SurveyUserSongLink {
+public class SurveyUserSong {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

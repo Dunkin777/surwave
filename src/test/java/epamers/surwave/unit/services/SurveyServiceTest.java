@@ -11,14 +11,13 @@ import epamers.surwave.entities.ClassicSurvey;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyState;
-import epamers.surwave.entities.SurveyUserSongLink;
+import epamers.surwave.entities.SurveyUserSong;
 import epamers.surwave.entities.User;
 import epamers.surwave.repos.SurveyRepository;
-import epamers.surwave.repos.SurveyUserSongLinkRepository;
+import epamers.surwave.repos.SurveyUserSongRepository;
 import epamers.surwave.services.SongService;
 import epamers.surwave.services.SurveyService;
 import epamers.surwave.services.UserService;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -46,7 +45,7 @@ public class SurveyServiceTest {
   SurveyRepository surveyRepository;
 
   @Mock
-  SurveyUserSongLinkRepository surveyUserSongLinkRepository;
+  SurveyUserSongRepository surveyUserSongRepository;
 
   @Mock
   User user;
@@ -65,7 +64,7 @@ public class SurveyServiceTest {
 
   private Survey survey;
 
-  private SurveyUserSongLink susl;
+  private SurveyUserSong surveyUserSong;
 
   @Before
   public void setUp() {
@@ -77,20 +76,20 @@ public class SurveyServiceTest {
         .comment(COMMENT)
         .build();
 
-    susl = new SurveyUserSongLink();
-    susl.setSong(song);
-    susl.setUser(user);
-    susl.setSurvey(survey);
+    surveyUserSong = new SurveyUserSong();
+    surveyUserSong.setSong(song);
+    surveyUserSong.setUser(user);
+    surveyUserSong.setSurvey(survey);
 
-    Set<SurveyUserSongLink> susls = new HashSet<>();
-    susls.add(susl);
+    Set<SurveyUserSong> surveyUserSongs = new HashSet<>();
+    surveyUserSongs.add(surveyUserSong);
 
     survey = ClassicSurvey.builder()
         .choicesByUser(3)
         .description(SURVEY_DESCRIPTION)
         .id(SURVEY_ID)
         .proposalsByUser(3)
-        .surveyUserSongLinks(susls)
+        .surveyUserSongs(surveyUserSongs)
         .build();
 
     when(surveyRepository.findById(SURVEY_ID)).thenReturn(Optional.of(survey));
@@ -157,7 +156,7 @@ public class SurveyServiceTest {
     when(songService.getOrCreate(song)).thenReturn(song);
     when(userService.getById(USER_ID)).thenReturn(user);
     ArgumentCaptor<Survey> arg = ArgumentCaptor.forClass(Survey.class);
-    survey.setSurveyUserSongLinks(new HashSet<>());
+    survey.setSurveyUserSongs(new HashSet<>());
 
     surveyService.addSong(SURVEY_ID, song, user);
 
@@ -170,12 +169,12 @@ public class SurveyServiceTest {
   public void removeSong_existentSong_songRemovedAndDeleted() {
     when(songService.getById(SONG_ID)).thenReturn(song);
     ArgumentCaptor<Survey> arg = ArgumentCaptor.forClass(Survey.class);
-    ArgumentCaptor<SurveyUserSongLink> agr2 = ArgumentCaptor.forClass(SurveyUserSongLink.class);
+    ArgumentCaptor<SurveyUserSong> agr2 = ArgumentCaptor.forClass(SurveyUserSong.class);
 
     surveyService.removeSong(SURVEY_ID, SONG_ID);
 
     verify(surveyRepository).save(arg.capture());
-    verify(surveyUserSongLinkRepository).delete(agr2.capture());
+    verify(surveyUserSongRepository).delete(agr2.capture());
     assertTrue(arg.getValue().getSongs().isEmpty());
   }
 
@@ -191,7 +190,7 @@ public class SurveyServiceTest {
 
     verify(surveyRepository, never()).save(any());
     verify(songService, never()).delete(any());
-    verify(surveyUserSongLinkRepository, never()).delete(any());
+    verify(surveyUserSongRepository, never()).delete(any());
   }
 
   @Test

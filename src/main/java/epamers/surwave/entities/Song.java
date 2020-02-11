@@ -36,11 +36,11 @@ public class Song {
   private String mediaPath;
 
   @OneToMany(mappedBy = "song", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  private Set<SurveyUserSongLink> surveyUserSongLink;
+  private Set<SurveyUserSong> surveyUserSong;
 
   public Set<Survey> getSurveys() {
-    return surveyUserSongLink.stream()
-        .map(SurveyUserSongLink::getSurvey)
+    return surveyUserSong.stream()
+        .map(SurveyUserSong::getSurvey)
         .collect(Collectors.toSet());
   }
 }

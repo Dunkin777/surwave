@@ -3,10 +3,10 @@ package epamers.surwave.services;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyState;
-import epamers.surwave.entities.SurveyUserSongLink;
+import epamers.surwave.entities.SurveyUserSong;
 import epamers.surwave.entities.User;
 import epamers.surwave.repos.SurveyRepository;
-import epamers.surwave.repos.SurveyUserSongLinkRepository;
+import epamers.surwave.repos.SurveyUserSongRepository;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,7 +21,7 @@ public class SurveyService {
   private final SurveyRepository surveyRepository;
   private final SongService songService;
   private final UserService userService;
-  private final SurveyUserSongLinkRepository surveyUserSongLinkRepository;
+  private final SurveyUserSongRepository surveyUserSongRepository;
 
   public List<Survey> getAll() {
     return surveyRepository.findAll();
@@ -35,11 +35,11 @@ public class SurveyService {
     Survey survey = surveyRepository.findById(id).orElseThrow();
     User currentUser = userService.getById(user.getId());
 
-    Set<SurveyUserSongLink> susls = survey.getSurveyUserSongLinks().stream()
-        .filter(susl -> !susl.getUser().equals(currentUser))
+    Set<SurveyUserSong> surveyUserSongs = survey.getSurveyUserSongs().stream()
+        .filter(surveyUserSong -> !surveyUserSong.getUser().equals(currentUser))
         .collect(Collectors.toSet());
 
-    survey.setSurveyUserSongLinks(susls);
+    survey.setSurveyUserSongs(surveyUserSongs);
 
     return survey;
   }
@@ -61,10 +61,10 @@ public class SurveyService {
       throw new IllegalArgumentException();
     }
 
-    Set<SurveyUserSongLink> susl = getById(id).getSurveyUserSongLinks();
+    Set<SurveyUserSong> surveyUserSong = getById(id).getSurveyUserSongs();
 
     survey.setId(id);
-    survey.setSurveyUserSongLinks(susl);
+    survey.setSurveyUserSongs(surveyUserSong);
 
     surveyRepository.save(survey);
   }
@@ -78,11 +78,11 @@ public class SurveyService {
     Set<Song> proposedSongs = currentUser.getProposedSongs();
     proposedSongs.add(newSong);
 
-    SurveyUserSongLink susl = new SurveyUserSongLink();
-    susl.setUser(currentUser);
-    susl.setSong(newSong);
-    susl.setSurvey(survey);
-    survey.addSong(susl);
+    SurveyUserSong surveyUserSong = new SurveyUserSong();
+    surveyUserSong.setUser(currentUser);
+    surveyUserSong.setSong(newSong);
+    surveyUserSong.setSurvey(survey);
+    survey.addSong(surveyUserSong);
 
     userService.save(currentUser);
     surveyRepository.save(survey);
@@ -94,14 +94,14 @@ public class SurveyService {
     Survey survey = getById(surveyId);
     Song song = songService.getById(songId);
 
-    SurveyUserSongLink suslToRemove = survey.getSurveyUserSongLinks().stream()
-        .filter(susl -> susl.getSong().equals(song))
+    SurveyUserSong surveyUserSongToRemove = survey.getSurveyUserSongs().stream()
+        .filter(surveyUserSong -> surveyUserSong.getSong().equals(song))
         .findFirst()
         .orElseThrow();
 
-    if (survey.getSurveyUserSongLinks().remove(suslToRemove)) {
+    if (survey.getSurveyUserSongs().remove(surveyUserSongToRemove)) {
       surveyRepository.save(survey);
-      surveyUserSongLinkRepository.delete(suslToRemove);
+      surveyUserSongRepository.delete(surveyUserSongToRemove);
     }
   }
 
