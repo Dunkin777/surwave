@@ -37,6 +37,9 @@ public abstract class Survey {
   @OneToMany(mappedBy = "survey", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private Set<SurveyUserSong> surveyUserSongs;
 
+  @OneToMany(mappedBy = "survey")
+  private Set<Answer> answers;
+
   public void addSong(SurveyUserSong songLink) {
     surveyUserSongs.add(songLink);
   }
