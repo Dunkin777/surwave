@@ -42,9 +42,6 @@ public class User implements UserDetails {
   @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private Set<SurveyUserSong> surveyUserSongs;
 
-  @OneToMany(mappedBy = "user")
-  private Set<Vote> votes;
-
   private String username;
 
   private String password;

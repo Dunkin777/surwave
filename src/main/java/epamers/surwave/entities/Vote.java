@@ -19,16 +19,12 @@ public class Vote {
   private Long id;
 
   @ManyToOne
-  @JoinColumn(name = "survey_id")
-  private Survey survey;
+  @JoinColumn(name = "survey_user_song_id")
+  private SurveyUserSong surveyUserSong;
 
   @ManyToOne
   @JoinColumn(name = "user_id")
-  private User user;
-
-  @ManyToOne
-  @JoinColumn(name = "song_id")
-  private Song song;
+  private User participant;
 
   private Integer rating;
 }
