@@ -38,7 +38,7 @@ public abstract class Survey {
   private Set<SurveyUserSong> surveyUserSongs;
 
   @OneToMany(mappedBy = "survey")
-  private Set<Answer> answers;
+  private Set<Vote> votes;
 
   public void addSong(SurveyUserSong songLink) {
     surveyUserSongs.add(songLink);

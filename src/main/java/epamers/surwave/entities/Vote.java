@@ -1,14 +1,18 @@
 package epamers.surwave.entities;
 
-import java.util.Map;
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @NoArgsConstructor
-public class Answer {
+public class Vote {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,10 +26,9 @@ public class Answer {
   @JoinColumn(name = "user_id")
   private User user;
 
-  @ElementCollection
-  @CollectionTable(name = "song_rating",
-      joinColumns = @JoinColumn(name = "answer_id"))
-  @MapKeyJoinColumn(name = "song_id")
-  @Column(name = "rating")
-  private Map<Song, Integer> votes;
+  @ManyToOne
+  @JoinColumn(name = "song_id")
+  private Song song;
+
+  private Integer rating;
 }

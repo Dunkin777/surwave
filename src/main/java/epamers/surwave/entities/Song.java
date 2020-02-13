@@ -38,6 +38,9 @@ public class Song {
   @OneToMany(mappedBy = "song", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private Set<SurveyUserSong> surveyUserSong;
 
+  @OneToMany(mappedBy = "song")
+  private Set<Vote> votes;
+
   public Set<Survey> getSurveys() {
     return surveyUserSong.stream()
         .map(SurveyUserSong::getSurvey)

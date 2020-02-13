@@ -1,10 +1,10 @@
 package epamers.surwave.repos;
 
-import epamers.surwave.entities.Answer;
+import epamers.surwave.entities.Vote;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AnswerRepository extends JpaRepository<Answer, Long> {
+public interface VoteRepository extends JpaRepository<Vote, Long> {
 
 }

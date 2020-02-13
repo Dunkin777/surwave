@@ -43,7 +43,7 @@ public class User implements UserDetails {
   private Set<SurveyUserSong> surveyUserSongs;
 
   @OneToMany(mappedBy = "user")
-  private Set<Answer> answers;
+  private Set<Vote> votes;
 
   private String username;
 
