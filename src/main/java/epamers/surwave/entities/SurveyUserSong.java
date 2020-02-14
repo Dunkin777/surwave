@@ -35,4 +35,7 @@ public class SurveyUserSong {
   @ManyToOne
   @JoinColumn(name = "song_id")
   private Song song;
+
+  @OneToMany(mappedBy = "surveyUserSong")
+  private Set<Vote> votes;
 }
