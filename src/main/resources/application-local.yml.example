@@ -19,3 +19,6 @@ spring:
     password: postgres
     driverClassName: org.postgresql.Driver
     initialize: false
+
+surwave:
+  authType: basic
