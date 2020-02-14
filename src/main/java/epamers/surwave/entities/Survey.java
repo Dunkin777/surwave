@@ -46,10 +46,4 @@ public abstract class Survey {
         .map(SurveyUserSong::getSong)
         .collect(Collectors.toSet());
   }
-
-  public Set<Vote> getVotes() {
-    return surveyUserSongs.stream()
-        .flatMap(surveyUserSong -> surveyUserSong.getVotes().stream())
-        .collect(Collectors.toSet());
-  }
 }
