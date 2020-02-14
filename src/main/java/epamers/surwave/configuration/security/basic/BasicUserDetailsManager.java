@@ -15,7 +15,7 @@ public class BasicUserDetailsManager implements UserDetailsManager {
   public void createUser(UserDetails user) {
     String username = user.getUsername();
     if (userRepository.existsByUsername(username)) {
-      userRepository.deleteByUsername(username);
+      userRepository.delete((User) user);
     }
     userRepository.save((User) user);
   }
