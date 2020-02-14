@@ -6,9 +6,11 @@ services:
     build:
       context: .
     environment:
+      - POSTGRES_DB_HOST
+      - POSTGRES_USER
+      - POSTGRES_DB
+      - POSTGRES_PASSWORD
       - CORE_PROFILES
-    networks:
-      - surwave_net
     depends_on:
       - db
     ports:
@@ -16,19 +18,12 @@ services:
 
   db:
     container_name: db
-    image: postgres:alpine
+    image: postgres:12.1-alpine
     volumes:
       - ./db:/var/lib/postgresql
-    networks:
-      - surwave_net
     ports:
       - 5432:5432
     environment:
       - POSTGRES_USER
       - POSTGRES_DB
       - POSTGRES_PASSWORD
-
-networks:
-  surwave_net:
-    driver: bridge
-    name: surwave_net
