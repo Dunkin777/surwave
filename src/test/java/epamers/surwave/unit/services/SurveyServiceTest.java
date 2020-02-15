@@ -168,14 +168,14 @@ public class SurveyServiceTest {
   @Test
   public void removeSong_existentSong_songRemovedAndDeleted() {
     when(songService.getById(SONG_ID)).thenReturn(song);
-    ArgumentCaptor<Survey> arg = ArgumentCaptor.forClass(Survey.class);
-    ArgumentCaptor<Option> agr2 = ArgumentCaptor.forClass(Option.class);
+    ArgumentCaptor<Survey> capturedSurvey = ArgumentCaptor.forClass(Survey.class);
+    ArgumentCaptor<Option> capturedOption = ArgumentCaptor.forClass(Option.class);
 
     surveyService.removeSong(SURVEY_ID, SONG_ID);
 
-    verify(surveyRepository).save(arg.capture());
-    verify(optionRepository).delete(agr2.capture());
-    assertTrue(arg.getValue().getSongs().isEmpty());
+    verify(surveyRepository).save(capturedSurvey.capture());
+    verify(optionRepository).delete(capturedOption.capture());
+    assertTrue(capturedSurvey.getValue().getSongs().isEmpty());
   }
 
   @Test(expected = NoSuchElementException.class)

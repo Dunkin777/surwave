@@ -37,8 +37,8 @@ public abstract class Survey {
   @OneToMany(mappedBy = "survey", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private Set<Option> options;
 
-  public void addSong(Option songLink) {
-    options.add(songLink);
+  public void addSong(Option option) {
+    options.add(option);
   }
 
   public Set<Song> getSongs() {
