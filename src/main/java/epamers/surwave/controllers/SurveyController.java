@@ -53,7 +53,7 @@ public class SurveyController {
   @GetMapping("/{id}")
   @ApiOperation(
       value = "Get Survey",
-      notes = "Awaits Survey ID as a path variable. Returns Survey. Requested Survey will contain "
+      notes = "Awaits Survey ID as path variable. Returns SurveyView. "
           + "Songs for all users, without filtration."
   )
   public SurveyView getSurvey(@ApiParam(value = "Survey ID") @PathVariable Long id) {
@@ -65,8 +65,8 @@ public class SurveyController {
   @GetMapping("/{id}/filtered")
   @ApiOperation(
       value = "Get Survey for current User",
-      notes = "Awaits Survey ID as a path variable. Returns SurveyView. List of Songs in it will "
-          + "contain only available voting options for the current user."
+      notes = "Awaits Survey ID as a path variable. Returns SurveyView. Requested Survey will "
+          + "contain only Songs that can be used as voting options for the current user."
   )
   public SurveyView getSurveyForUser(@ApiIgnore @AuthenticationPrincipal User user,
       @ApiParam(value = "Survey ID") @PathVariable Long id) {
@@ -80,7 +80,7 @@ public class SurveyController {
   @ApiOperation(
       value = "Create Survey",
       notes = "Awaits SongForm as body. Returns new entity url in 'Location' header. "
-          + "Allows to create new Survey. It will contain no Songs."
+          + "Creates new Survey with 0 Songs."
   )
   public void createSurvey(@ApiParam(value = "Data for new Survey") @RequestBody @Valid SurveyForm surveyForm,
       @ApiIgnore HttpServletResponse response) {
@@ -92,7 +92,7 @@ public class SurveyController {
   @ApiOperation(
       value = "Update Survey",
       notes = "Awaits Survey ID as a path variable and SurveyForm as body. Allows to change "
-          + "basic Survey information."
+          + "basic Survey properties."
   )
   public void updateSurvey(@ApiParam(value = "Survey ID") @PathVariable Long id,
       @ApiParam(value = "Updated Survey data") @RequestBody @Valid SurveyForm surveyForm) {
@@ -103,7 +103,7 @@ public class SurveyController {
   @ApiOperation(
       value = "Add Song to Survey",
       notes = "Awaits Survey ID as a path variable and SongForm as body. Returns new entity url "
-          + "in 'Location' header. Allows to create new Song and add it to certain Survey."
+          + "in 'Location' header. Allows to create new Song and add it to specified Survey."
   )
   public void addSongToSurvey(@ApiIgnore @AuthenticationPrincipal User user,
       @ApiParam(value = "Survey ID") @PathVariable Long id,
@@ -118,7 +118,7 @@ public class SurveyController {
   @ApiOperation(
       value = "Remove Song from Survey",
       notes = "Awaits Survey ID and Song ID as path variables. Allows to remove certain song from "
-          + "certain survey."
+          + "specified survey."
   )
   public void removeSongFromSurvey(@ApiParam(value = "Survey ID") @PathVariable Long surveyId, @ApiParam(value = "Song ID") @PathVariable Long songId) {
     surveyService.removeSong(surveyId, songId);

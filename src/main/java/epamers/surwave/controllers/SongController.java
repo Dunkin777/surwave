@@ -39,8 +39,8 @@ public class SongController {
   @GetMapping("/all")
   @ApiOperation(
       value = "Get all songs",
-      notes = "Returns a collection of SongViews. Basically, it's all Songs that ever were created "
-          + "in our application."
+      notes = "Returns a collection of SongViews, which will contain all Songs that were ever "
+          + "created in Surwave."
   )
   public List<SongView> getAllSongs() {
     return songService.getAll().stream()
@@ -66,7 +66,7 @@ public class SongController {
   @ApiOperation(
       value = "Upload media to Song",
       notes = "Awaits Song ID as a path variable and file that you want to upload. File will be "
-          + "saved for further examination and retrieval (e.g. for Survey page)."
+          + "stored and processed in Surwave and can be retrieved later."
   )
   public void uploadMediaToSong(@ApiParam(value = "Song ID") @PathVariable Long id, @RequestParam("file") MultipartFile file) {
     Song song = songService.getById(id);

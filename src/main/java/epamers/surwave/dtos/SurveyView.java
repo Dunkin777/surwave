@@ -13,7 +13,7 @@ import lombok.Data;
 @Builder
 @Data
 @JsonInclude(Include.NON_NULL)
-@ApiModel(description = "Resembles Survey with its settings, songs and current state.")
+@ApiModel(description = "Resembles Survey with its properties, songs and current state.")
 public class SurveyView {
 
   private Long id;
@@ -21,26 +21,25 @@ public class SurveyView {
   @ApiModelProperty(notes = "Type of Survey.")
   private SurveyType type;
 
+  @ApiModelProperty(notes = "Stage of Survey's lifecycle.")
+  private SurveyState state;
+
+  @ApiModelProperty(notes = "Message left by Survey creator for every user who wants to vote.",
+      example = "Please, propose only sad songs. And not too famous, or we will get sued.")
+  private String description;
+
   @ApiModelProperty(notes = "Collection of Song objects, each can be voted for.")
   private Set<SongView> songs;
 
-  @ApiModelProperty(notes = "Message left by Survey creator for every user who wants to vote.",
-      example = "We need to pick some fast songs! And please, have mercy on drummer this time!")
-  private String description;
-
-  @ApiModelProperty(notes = "How many songs user allowed(should) to add to this survey.",
+  @ApiModelProperty(notes = "How many songs one user should add to this survey.",
       example = "5")
   private Integer proposalsByUser;
 
-  @ApiModelProperty(notes = "Stages of Survey's life.")
-  private SurveyState state;
-
-  @ApiModelProperty(notes = "How many songs user should pick in this survey when voting.",
+  @ApiModelProperty(notes = "How many songs user should pick when voting. Only for CLASSIC surveys.",
       example = "1")
   private Integer choicesByUser;
 
-  @ApiModelProperty(notes = "If equals 'true' then this survey should be hidden on the main page "
-      + "from non-admins.")
+  @ApiModelProperty(notes = "If 'true' then survey should not be visible for non-admins.")
   private Boolean isHidden;
 
   @ApiModelProperty(notes = "Setting only for RANGED Survey type. Currently unused.")

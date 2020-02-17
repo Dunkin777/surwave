@@ -12,22 +12,21 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(description = "Resembles one Song that can be used as option in some survey.")
+@ApiModel(description = "Resembles one Song that can be used as voting option in some survey.")
 public class SongForm {
 
   @NotNull
-  @ApiModelProperty(required = true, notes = "Band name, if you wish.", example = "John Lennon")
+  @ApiModelProperty(required = true, notes = "Who performed song on given record. Usually, band or singer name.", example = "John Lennon")
   private String performer;
 
   @NotNull
-  @ApiModelProperty(required = true, notes = "Name of the composition.", example = "Fly As A Bird")
+  @ApiModelProperty(required = true, notes = "Name of the composition/track.", example = "Fly As A Bird")
   private String title;
 
-  @ApiModelProperty(notes = "e.g. How to play, what you planned to change from original version...",
-      example = "I love this song! Let's play it 2 times faster!")
+  @ApiModelProperty(notes = "Notes from user who suggested this song for other voters.",
+      example = "We will transpose it to F#. Also, guitar solo can be played on synth.")
   private String comment;
 
-  @NotNull
-  @ApiModelProperty(required = true, notes = "Survey id that will contain that song.", example = "15")
+  @ApiModelProperty(required = true, notes = "For removal.")
   private Long surveyId;
 }

@@ -14,22 +14,19 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(description = "Resembles Survey with all its settings.")
+@ApiModel(description = "Resembles Survey with its properties.")
 public class SurveyForm {
 
-  @ApiModelProperty(required = true, notes = "Type of Survey, obviously. RANGED is currently "
-      + "unused.", example = "CLASSIC")
   @NotNull
+  @ApiModelProperty(required = true, notes = "Type of Survey. RANGED is currently unused.")
   private SurveyType type;
 
-  @ApiModelProperty(notes = "State. You can skip that if you're just creating Survey. "
-      + "Choose STARTED state to finish collecting Songs and open survey for actual voting.",
-      example = "STARTED")
+  @ApiModelProperty(notes = "State. Use CREATED for new Surveys, change to STARTED to finish "
+      + "collecting Songs and open survey for actual voting.")
   private SurveyState state;
 
-  @ApiModelProperty(notes = "Some notes on this survey's goals and what should "
-      + "participants keep in mind while voting.", example = "We need to pick some fast songs! And "
-      + "please, have mercy on drummer this time!")
+  @ApiModelProperty(notes = "Message left by Survey creator for every user who wants to vote.",
+      example = "We need to pick some fast songs! And please, have mercy on drummer this time!")
   private String description;
 
   @NotNull
@@ -37,16 +34,16 @@ public class SurveyForm {
       example = "5")
   private Integer proposalsByUser;
 
-  @ApiModelProperty(notes = "Needed only for CLASSIC Survey Type. Defines how many song should one "
-      + "user pick.", example = "3")
+  @ApiModelProperty(notes = "How many songs user should pick when voting. Only for CLASSIC surveys.",
+      example = "3")
   private Integer choicesByUser;
 
-  @ApiModelProperty(required = true, notes = "Should we hide that Survey from main page list for "
-      + "normal users? Can be used for example for Surveys that we want to pause for some time or "
-      + "just to clear some space on main page.", example = "true")
   @NotNull
+  @ApiModelProperty(notes = "If 'true' then survey should not be visible for non-admins.",
+      example = "true")
   private Boolean isHidden;
 
-  @ApiModelProperty(notes = "Needed only for RANGED Survey type. Currently unused.", example = "false")
+  @ApiModelProperty(notes = "Needed only for RANGED Survey type. Currently unused.",
+      example = "false")
   private Boolean logarithmicRatingScale;
 }
