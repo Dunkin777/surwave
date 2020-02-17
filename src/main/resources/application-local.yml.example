@@ -6,8 +6,6 @@ spring:
     database: POSTGRESQL
     show-sql: true
     open-in-view: true
-    hibernate:
-      ddl-auto: create-drop
     properties:
       dialect: org.hibernate.dialect.PostgreSQLDialect
       hibernate.temp.use_jdbc_metadata_defaults: false
