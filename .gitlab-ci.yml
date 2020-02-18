@@ -2,9 +2,9 @@ image: gradle:jdk11
 
 before_script:
   - mkdir -p ~/.ssh
-  - echo '$SSH_PRIVATE_KEY'
-  - echo '$SSH_PRIVATE_KEY' | tr -d '\r' > ~/.ssh/id_surv
-  - echo '$SSH_PRIVATE_KEY'
+  - echo "$SSH_PRIVATE_KEY"
+  - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_surv
+  - echo "$SSH_PRIVATE_KEY"
   - chmod 400 ~/.ssh/id_surv
 
 stages:
@@ -15,8 +15,10 @@ unit-tests:
   stage: unit-tests
   script:
     - echo 'unit test stage bup'
-    - ssh -i ~/.ssh/id_surv surwave@146.66.190.246
-    - touch gitlabHere.txt
+    - ls -la
+    - cat surv_key
+#    - ssh -i ~/.ssh/id_surv surwave@146.66.190.246
+#    - touch gitlabHere.txt
 #  stage: unit-tests
 #  script: gradle test --tests 'epamers.surwave.unit.*'
 
@@ -26,7 +28,7 @@ unit-tests:
 
 
 variables:
-  SSH_PRIVATE_KEY: "-----BEGIN RSA PRIVATE KEY-----
+  SSH_PRIVATE_KEY: '-----BEGIN RSA PRIVATE KEY-----
                                      MIIEpQIBAAKCAQEA57vDFEQhI6Wc7EN/tlnz/f3Ax6bdWHy4Lwln7kuayMzDoV3y
                                      wsZgse4KpNvzIzeXZqAWFNiRV23nACHTmLq2sctxea34/wbhJ9ctInrVo/ie+7ne
                                      /2nvnDFDQ8qwysbzGkrh/bUNNiYfIXZvfjDZ4a8K+nnHkN3bKzKye33SGOyIwhOj
@@ -52,4 +54,4 @@ variables:
                                      /2tyDDMCgYEAkXsni2qyoO1QhOEZ8Hj39AScC2cwWwXUBw3oToD2R7qpN3N15uFB
                                      Cqcp2P1V6WpZuElEQvpfFZC+wIFTo1pue4nz46oDCjQ/Juq07Dk0eSw/HX39t+BJ
                                      yscWiNTBYQb+S91StaW3jl8RX6y0BcTFAe/+3+epzKqQM22z2nmZ91k=
-                                     -----END RSA PRIVATE KEY-----"
+                                     -----END RSA PRIVATE KEY-----'
