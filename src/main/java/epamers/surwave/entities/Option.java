@@ -18,7 +18,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SurveyUserSong {
+public class Option {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +36,6 @@ public class SurveyUserSong {
   @JoinColumn(name = "song_id")
   private Song song;
 
-  @OneToMany(mappedBy = "surveyUserSong")
+  @OneToMany(mappedBy = "option")
   private Set<Vote> votes;
 }

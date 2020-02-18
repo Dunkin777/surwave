@@ -40,7 +40,7 @@ public class User implements UserDetails {
   private Set<Role> roles = new HashSet<>();
 
   @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  private Set<SurveyUserSong> surveyUserSongs;
+  private Set<Option> options;
 
   private String username;
 
@@ -57,8 +57,8 @@ public class User implements UserDetails {
   private LocalDateTime lastVisit;
 
   public Set<Song> getProposedSongs() {
-    return surveyUserSongs.stream()
-        .map(SurveyUserSong::getSong)
+    return options.stream()
+        .map(Option::getSong)
         .collect(Collectors.toSet());
   }
 

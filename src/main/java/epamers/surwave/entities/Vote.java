@@ -19,8 +19,8 @@ public class Vote {
   private Long id;
 
   @ManyToOne
-  @JoinColumn(name = "survey_user_song_id")
-  private SurveyUserSong surveyUserSong;
+  @JoinColumn(name = "option_id")
+  private Option option;
 
   @ManyToOne
   @JoinColumn(name = "user_id")

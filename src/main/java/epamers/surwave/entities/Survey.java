@@ -35,15 +35,15 @@ public abstract class Survey {
   private Boolean isHidden;
 
   @OneToMany(mappedBy = "survey", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  private Set<SurveyUserSong> surveyUserSongs;
+  private Set<Option> options;
 
-  public void addSong(SurveyUserSong songLink) {
-    surveyUserSongs.add(songLink);
+  public void addSong(Option option) {
+    options.add(option);
   }
 
   public Set<Song> getSongs() {
-    return surveyUserSongs.stream()
-        .map(SurveyUserSong::getSong)
+    return options.stream()
+        .map(Option::getSong)
         .collect(Collectors.toSet());
   }
 }
