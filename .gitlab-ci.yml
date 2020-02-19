@@ -15,11 +15,12 @@ stages:
 #  stage: integration-tests
 #  script: gradle test --tests 'epamers.surwave.integration.*'
 
+#//TODO условия для ветки
+
 test-dep-stage:
   stage: test-dep-stage
   script:
     - echo 'deployment stage part'
-    - ls -la
     - chmod 400 surv_key
     - scp -i surv_key -o StrictHostKeyChecking=no ./deployScript.sh surwave@146.66.190.246:/home/surwave
     - ssh -i surv_key -o StrictHostKeyChecking=no surwave@146.66.190.246 bash /home/surwave/deployScript.sh

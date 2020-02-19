@@ -3,7 +3,7 @@ echo 'me script'
 cd /home/surwave/surwave-be
 git branch
 git pull
-./gradlew clean build
+./gradlew clean build -x test
 docker-compose build core
 docker stop surwave
-docker-compose up core
+docker-compose up -d core
