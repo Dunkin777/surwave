@@ -8,6 +8,8 @@ import epamers.surwave.dtos.SongView;
 import epamers.surwave.entities.Song;
 import epamers.surwave.services.MediaUploadService;
 import epamers.surwave.services.SongService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -35,6 +37,11 @@ public class SongController {
   private final MediaUploadService uploadService;
 
   @GetMapping("/all")
+  @ApiOperation(
+      value = "Get all songs",
+      notes = "Returns a collection of SongViews, which will contain all Songs that were ever "
+          + "created in Surwave."
+  )
   public List<SongView> getAllSongs() {
     return songService.getAll().stream()
         .map(o -> converter.convert(o, SongView.class))
@@ -42,14 +49,26 @@ public class SongController {
   }
 
   @PutMapping("/{id}")
-  public void updateSong(@PathVariable Long id, @RequestBody @Valid SongForm songForm) {
+  @ApiOperation(
+      value = "Update Song",
+      notes = "Awaits Song ID as a path variable and SongForm as body. Allows to change data of "
+          + "previously created Song (updated data will be available in all Surveys that are using "
+          + "given Song)"
+  )
+  public void updateSong(@ApiParam(value = "Song ID") @PathVariable Long id,
+      @ApiParam(value = "New Song data") @RequestBody @Valid SongForm songForm) {
     Song song = converter.convert(songForm, Song.class);
     songService.update(id, song);
   }
 
   @PostMapping("/{id}" + UPLOAD_URL)
   @ResponseStatus(HttpStatus.OK)
-  public void uploadMediaToSong(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+  @ApiOperation(
+      value = "Upload media to Song",
+      notes = "Awaits Song ID as a path variable and file that you want to upload. File will be "
+          + "stored and processed in Surwave and can be retrieved later."
+  )
+  public void uploadMediaToSong(@ApiParam(value = "Song ID") @PathVariable Long id, @RequestParam("file") MultipartFile file) {
     Song song = songService.getById(id);
     uploadService.upload(file, song.getTitle());
   }
