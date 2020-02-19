@@ -36,12 +36,12 @@ dependencies {
 	compileOnly "org.projectlombok:lombok"
 	implementation "net.rakugakibox.spring.boot:logback-access-spring-boot-starter:$logback_ver"
 	implementation "io.springfox:springfox-swagger-ui:$swagger_ver"
-	compile("io.springfox:springfox-swagger2:$swagger_ver") {
+	implementation("io.springfox:springfox-swagger2:$swagger_ver") {
 		exclude module: 'swagger-annotations'
 		exclude module: 'swagger-models'
 	}
-	compile("io.swagger:swagger-annotations:1.5.21")
-	compile("io.swagger:swagger-models:1.5.21")
+	implementation("io.swagger:swagger-annotations:1.5.21")
+	implementation("io.swagger:swagger-models:1.5.21")
 	implementation "org.springframework.boot:spring-boot-starter-security"
 	implementation "org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:$oauth2_ver"
 	implementation "commons-fileupload:commons-fileupload:$filesUpload_ver"
