@@ -3,6 +3,7 @@ image: gradle:jdk11
 stages:
   - unit-tests
   - integration-tests
+  - deploy
 
 unit-tests:
   stage: unit-tests
@@ -11,3 +12,15 @@ unit-tests:
 integration-tests:
   stage: integration-tests
   script: gradle test --tests 'epamers.surwave.integration.*'
+
+deploy:
+  stage: deploy
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "Develop"'
+      when: always
+  script:
+    - echo 'deployment stage'
+    - chmod 400 surv_key
+    - scp -i surv_key -o StrictHostKeyChecking=no ./deployScript.sh surwave@146.66.190.246:/home/surwave
+    - ssh -i surv_key -o StrictHostKeyChecking=no surwave@146.66.190.246 bash /home/surwave/deployScript.sh
+
