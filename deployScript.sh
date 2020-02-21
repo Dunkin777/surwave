@@ -1,5 +1,4 @@
 #!/bin/bash -xe
-echo 'me script'
 cd /home/surwave/surwave-be
 git branch
 git pull
