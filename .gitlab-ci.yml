@@ -3,7 +3,7 @@ image: gradle:jdk11
 stages:
   - unit-tests
   - integration-tests
-  - deploy-stage
+  - deploy
 
 unit-tests:
   stage: unit-tests
@@ -13,8 +13,8 @@ integration-tests:
   stage: integration-tests
   script: gradle test --tests 'epamers.surwave.integration.*'
 
-deploy-stage:
-  stage: deploy-stage
+deploy:
+  stage: deploy
   rules:
     - if: '$CI_COMMIT_BRANCH == "Develop"'
       when: always
