@@ -18,7 +18,7 @@ app:
     dir: data
 
 surwave:
-  authType: oauth2
+  authType: basic
 
 security:
   oauth2:
