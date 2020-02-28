@@ -31,8 +31,6 @@ public class Song {
   @Column(nullable = false)
   private String title;
 
-  private String comment;
-
   private String mediaPath;
 
   @OneToMany(mappedBy = "song", cascade = {CascadeType.PERSIST, CascadeType.MERGE})

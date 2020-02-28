@@ -2,10 +2,13 @@ package epamers.surwave.controllers;
 
 import static epamers.surwave.core.Contract.SONG_URL;
 import static epamers.surwave.core.Contract.SURVEY_URL;
+import static java.util.stream.Collectors.toList;
 
+import epamers.surwave.dtos.OptionForm;
 import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyView;
+import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.User;
@@ -47,7 +50,7 @@ public class SurveyController {
   public List<SurveyView> getAllSurveys() {
     return surveyService.getAll().stream()
         .map(s -> converter.convert(s, SurveyView.class))
-        .collect(Collectors.toList());
+        .collect(toList());
   }
 
   @GetMapping("/{id}")
@@ -82,7 +85,8 @@ public class SurveyController {
       notes = "Awaits SongForm as body. Returns new entity url in 'Location' header. "
           + "Creates new Survey with 0 Songs."
   )
-  public void createSurvey(@ApiParam(value = "Data for new Survey") @RequestBody @Valid SurveyForm surveyForm,
+  public void createSurvey(
+      @ApiParam(value = "Data for new Survey") @RequestBody @Valid SurveyForm surveyForm,
       @ApiIgnore HttpServletResponse response) {
     Survey survey = surveyService.create(converter.convert(surveyForm, Survey.class));
     response.addHeader("Location", SURVEY_URL + "/" + survey.getId());
@@ -114,13 +118,30 @@ public class SurveyController {
     response.addHeader("Location", SONG_URL + "/" + createdSong.getId());
   }
 
+  @PutMapping("/{id}/option")
+  @ApiOperation(
+      value = "Propose Options to Survey",
+      notes = "Awaits Survey ID as a path variable and List of OptionForms as body. "
+          + "Allows to populate Survey with new Options for current User, based on Song "
+          + "entities that were created before."
+  )
+  public void addOptions(@ApiIgnore @AuthenticationPrincipal User user,
+      @ApiParam(value = "Survey ID") @PathVariable Long surveyId,
+      @ApiParam(value = "Song to add") @RequestBody @Valid List<OptionForm> optionForms) {
+    List<Option> options = optionForms.stream()
+        .map(o -> converter.convert(o, Option.class))
+        .collect(toList());
+    surveyService.addOptions(surveyId, options, user);
+  }
+
   @DeleteMapping("/{surveyId}" + SONG_URL + "/{songId}")
   @ApiOperation(
       value = "Remove Song from Survey",
       notes = "Awaits Survey ID and Song ID as path variables. Allows to remove certain song from "
           + "specified survey."
   )
-  public void removeSongFromSurvey(@ApiParam(value = "Survey ID") @PathVariable Long surveyId, @ApiParam(value = "Song ID") @PathVariable Long songId) {
+  public void removeSongFromSurvey(@ApiParam(value = "Survey ID") @PathVariable Long surveyId,
+      @ApiParam(value = "Song ID") @PathVariable Long songId) {
     surveyService.removeSong(surveyId, songId);
   }
 }

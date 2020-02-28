@@ -32,7 +32,6 @@ public class ITSongTest extends IntegrationTest {
 
   private SongForm songForm;
   private Song song;
-  private Survey survey;
 
   @Before
   public void setUp() {
@@ -41,10 +40,9 @@ public class ITSongTest extends IntegrationTest {
     songForm = SongForm.builder()
         .performer(PERFORMER)
         .title(TITLE)
-        .comment(COMMENT)
         .build();
 
-    survey = ClassicSurvey.builder()
+    Survey survey = ClassicSurvey.builder()
         .choicesByUser(2)
         .proposalsByUser(2)
         .description(COMMENT)
@@ -53,14 +51,12 @@ public class ITSongTest extends IntegrationTest {
         .build();
 
     song = Song.builder()
-        .comment(COMMENT)
         .performer(PERFORMER)
         .mediaPath("")
         .title(TITLE)
         .build();
 
-    survey = surveyRepository.save(survey);
-    songForm.setSurveyId(survey.getId());
+    surveyRepository.save(survey);
   }
 
   @After
@@ -89,7 +85,6 @@ public class ITSongTest extends IntegrationTest {
         .statusCode(SC_OK)
         .body("$", hasSize(1))
         .body("title", hasItem(TITLE))
-        .body("comment", hasItem(COMMENT))
         .body("performer", hasItem(PERFORMER));
 
     //Change some property of created Song

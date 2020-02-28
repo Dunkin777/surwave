@@ -25,4 +25,6 @@ CORE_PROFILES=local docker-compose up -d
 
 Swagger should be available after several seconds at http://localhost:8080/swagger-ui.html
 
+For default basic security credentials will be "guest/guest".
+
 **If you want to run backend part with Google authorization set authType property to `oauth2` in `application-local.yml` or run last step without CORE_PROFILES**

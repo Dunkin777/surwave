@@ -48,7 +48,6 @@ public class ITSurveyTest extends SecurityTest {
     songForm = SongForm.builder()
         .performer(PERFORMER)
         .title(TITLE)
-        .comment(COMMENT)
         .build();
 
     surveyForm = SurveyForm.builder()
@@ -88,7 +87,6 @@ public class ITSurveyTest extends SecurityTest {
     String newSurveyURI = response.getHeader("Location");
     String[] split = newSurveyURI.split("/");
     Long surveyId = Long.parseLong(split[2]);
-    songForm.setSurveyId(surveyId);
 
     //Retrieve and check newly created Survey
     givenJson()
@@ -101,7 +99,7 @@ public class ITSurveyTest extends SecurityTest {
         .body("proposalsByUser", equalTo(4))
         .body("state", equalTo(CREATED.toString()))
         .body("isHidden", equalTo(false))
-        .body("songs", hasSize(0));
+        .body("options", hasSize(0));
 
     //Forcibly end this Survey
     surveyForm.setState(STOPPED);
@@ -129,10 +127,9 @@ public class ITSurveyTest extends SecurityTest {
         .then()
         .statusCode(SC_OK)
         .body("state", equalTo(STOPPED.toString()))
-        .body("songs", hasSize(1))
-        .body("songs.performer", hasItem(PERFORMER))
-        .body("songs.title", hasItem(TITLE))
-        .body("songs.comment", hasItem(COMMENT));
+        .body("options", hasSize(1))
+        .body("options.performer", hasItem(PERFORMER))
+        .body("options.title", hasItem(TITLE));
 
     //Check that user cant see his own songs
     givenJson()

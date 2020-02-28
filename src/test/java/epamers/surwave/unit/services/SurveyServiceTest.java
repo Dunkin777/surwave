@@ -26,6 +26,7 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -50,6 +51,9 @@ public class SurveyServiceTest {
   @Mock
   User user;
 
+  @Captor
+  ArgumentCaptor<Survey> surveyCaptor;
+
   private final Long SONG_ID = 156L;
   private final String PERFORMER = "Bee Gees";
   private final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
@@ -73,7 +77,6 @@ public class SurveyServiceTest {
         .performer(PERFORMER)
         .title(TITLE)
         .id(SONG_ID)
-        .comment(COMMENT)
         .build();
 
     option = new Option();
@@ -155,27 +158,25 @@ public class SurveyServiceTest {
   public void addSong_validArguments_success() {
     when(songService.getOrCreate(song)).thenReturn(song);
     when(userService.getById(USER_ID)).thenReturn(user);
-    ArgumentCaptor<Survey> arg = ArgumentCaptor.forClass(Survey.class);
     survey.setOptions(new HashSet<>());
 
     surveyService.addSong(SURVEY_ID, song, user);
 
-    verify(surveyRepository).save(arg.capture());
-    assertEquals(survey, arg.getValue());
-    assertTrue(arg.getValue().getSongs().contains(song));
+    verify(surveyRepository).save(surveyCaptor.capture());
+    assertEquals(survey, surveyCaptor.getValue());
+    assertTrue(surveyCaptor.getValue().getOptions().stream()
+        .anyMatch(o -> o.getSong() == song));
   }
 
   @Test
   public void removeSong_existentSong_songRemovedAndDeleted() {
     when(songService.getById(SONG_ID)).thenReturn(song);
-    ArgumentCaptor<Survey> capturedSurvey = ArgumentCaptor.forClass(Survey.class);
-    ArgumentCaptor<Option> capturedOption = ArgumentCaptor.forClass(Option.class);
 
     surveyService.removeSong(SURVEY_ID, SONG_ID);
 
-    verify(surveyRepository).save(capturedSurvey.capture());
-    verify(optionRepository).delete(capturedOption.capture());
-    assertTrue(capturedSurvey.getValue().getSongs().isEmpty());
+    verify(surveyRepository).save(surveyCaptor.capture());
+    verify(optionRepository).delete(any());
+    assertTrue(surveyCaptor.getValue().getOptions().isEmpty());
   }
 
   @Test(expected = NoSuchElementException.class)
@@ -195,12 +196,10 @@ public class SurveyServiceTest {
 
   @Test
   public void updateState_validArguments_success() {
-    ArgumentCaptor<Survey> arg = ArgumentCaptor.forClass(Survey.class);
-
     surveyService.updateState(SURVEY_ID, SurveyState.STOPPED);
 
-    verify(surveyRepository).save(arg.capture());
-    assertEquals(survey, arg.getValue());
-    assertEquals(SurveyState.STOPPED, arg.getValue().getState());
+    verify(surveyRepository).save(surveyCaptor.capture());
+    assertEquals(survey, surveyCaptor.getValue());
+    assertEquals(SurveyState.STOPPED, surveyCaptor.getValue().getState());
   }
 }

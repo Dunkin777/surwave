@@ -13,7 +13,6 @@ public class FormToSongConverter implements Converter<SongForm, Song> {
     return Song.builder()
         .performer(songForm.getPerformer())
         .title(songForm.getTitle())
-        .comment(songForm.getComment())
         .build();
   }
 }

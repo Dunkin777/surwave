@@ -90,6 +90,15 @@ public class SurveyService {
   }
 
   @Transactional
+  public void addOptions(Long surveyId, List<Option> options, User user) {
+    Survey survey = getById(surveyId);
+    for(Option option : options) {
+      Song song = songService.getById(option.getSong().getId());
+    }
+
+  }
+
+  @Transactional
   public void removeSong(Long surveyId, Long songId) {
     Survey survey = getById(surveyId);
     Song song = songService.getById(songId);

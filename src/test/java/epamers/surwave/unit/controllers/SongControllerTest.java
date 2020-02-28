@@ -51,7 +51,6 @@ public class SongControllerTest {
         .performer(PERFORMER)
         .title(TITLE)
         .id(SONG_ID)
-        .comment(COMMENT)
         .build();
 
     songForm = SongForm.builder().build();

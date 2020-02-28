@@ -14,8 +14,6 @@ public class SongToViewConverter implements Converter<Song, SongView> {
         .performer(song.getPerformer())
         .id(song.getId())
         .title(song.getTitle())
-        .comment(song.getComment())
-        .mediaPath(song.getMediaPath())
         .build();
   }
 }

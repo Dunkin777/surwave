@@ -28,8 +28,8 @@ public class SurveyView {
       example = "Please, propose only sad songs. And not too famous, or we will get sued.")
   private String description;
 
-  @ApiModelProperty(notes = "Collection of Song objects, each can be voted for.")
-  private Set<SongView> songs;
+  @ApiModelProperty(notes = "Collection of Options, each representing one Song")
+  private Set<OptionView> options;
 
   @ApiModelProperty(notes = "How many songs one user should add to this survey.",
       example = "5")
