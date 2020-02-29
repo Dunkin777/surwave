@@ -1,12 +1,12 @@
 package epamers.surwave.services;
 
+import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyState;
-import epamers.surwave.entities.Option;
 import epamers.surwave.entities.User;
-import epamers.surwave.repos.SurveyRepository;
 import epamers.surwave.repos.OptionRepository;
+import epamers.surwave.repos.SurveyRepository;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -87,15 +87,6 @@ public class SurveyService {
     userService.save(currentUser);
     surveyRepository.save(survey);
     return newSong;
-  }
-
-  @Transactional
-  public void addOptions(Long surveyId, List<Option> options, User user) {
-    Survey survey = getById(surveyId);
-    for(Option option : options) {
-      Song song = songService.getById(option.getSong().getId());
-    }
-
   }
 
   @Transactional

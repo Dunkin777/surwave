@@ -24,6 +24,10 @@ public class SurveyView {
   @ApiModelProperty(notes = "Stage of Survey's lifecycle.")
   private SurveyState state;
 
+  @ApiModelProperty(notes = "Title of whole survey, usually its purpose.",
+      example = "Songs for New Year party")
+  private String title;
+
   @ApiModelProperty(notes = "Message left by Survey creator for every user who wants to vote.",
       example = "Please, propose only sad songs. And not too famous, or we will get sued.")
   private String description;

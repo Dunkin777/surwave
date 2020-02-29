@@ -21,6 +21,7 @@ public abstract class SurveyToViewConverter {
     return SurveyView.builder()
         .id(survey.getId())
         .type(survey.getType())
+        .title(survey.getTitle())
         .description(survey.getDescription())
         .options(options)
         .state(survey.getState())

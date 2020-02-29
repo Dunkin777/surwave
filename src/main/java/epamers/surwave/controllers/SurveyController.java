@@ -4,11 +4,9 @@ import static epamers.surwave.core.Contract.SONG_URL;
 import static epamers.surwave.core.Contract.SURVEY_URL;
 import static java.util.stream.Collectors.toList;
 
-import epamers.surwave.dtos.OptionForm;
 import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyView;
-import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.User;
@@ -16,7 +14,6 @@ import epamers.surwave.services.SurveyService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -116,22 +113,6 @@ public class SurveyController {
     Song song = converter.convert(songForm, Song.class);
     Song createdSong = surveyService.addSong(id, song, user);
     response.addHeader("Location", SONG_URL + "/" + createdSong.getId());
-  }
-
-  @PutMapping("/{id}/option")
-  @ApiOperation(
-      value = "Propose Options to Survey",
-      notes = "Awaits Survey ID as a path variable and List of OptionForms as body. "
-          + "Allows to populate Survey with new Options for current User, based on Song "
-          + "entities that were created before."
-  )
-  public void addOptions(@ApiIgnore @AuthenticationPrincipal User user,
-      @ApiParam(value = "Survey ID") @PathVariable Long surveyId,
-      @ApiParam(value = "Song to add") @RequestBody @Valid List<OptionForm> optionForms) {
-    List<Option> options = optionForms.stream()
-        .map(o -> converter.convert(o, Option.class))
-        .collect(toList());
-    surveyService.addOptions(surveyId, options, user);
   }
 
   @DeleteMapping("/{surveyId}" + SONG_URL + "/{songId}")
