@@ -7,7 +7,6 @@ import static epamers.surwave.entities.SurveyType.CLASSIC;
 import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 
 import com.jayway.restassured.RestAssured;
@@ -24,9 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class ITSurveyTest extends SecurityTest {
 
-  private final String PERFORMER = "Elton John Lennon";
-  private final String TITLE = "Korobeiniki (feat. George Gershwin)";
-  private final String COMMENT = "Actually, I don't wanna to play this song, adding just for lulz...";
+  private final String SONG_PERFORMER = "Elton John Lennon";
+  private final String SONG_TITLE = "Korobeiniki (feat. George Gershwin)";
+  private final String SURVEY_TITLE = "Sergei Yurzin Birthday's Songs";
   private final String SURVEY_DESCRIPTION = "Please think twice before choosing!";
 
   @Autowired
@@ -46,8 +45,8 @@ public class ITSurveyTest extends SecurityTest {
     RestAssured.port = port;
 
     songForm = SongForm.builder()
-        .performer(PERFORMER)
-        .title(TITLE)
+        .performer(SONG_PERFORMER)
+        .title(SONG_TITLE)
         .build();
 
     surveyForm = SurveyForm.builder()
@@ -56,6 +55,7 @@ public class ITSurveyTest extends SecurityTest {
         .description(SURVEY_DESCRIPTION)
         .proposalsByUser(4)
         .isHidden(false)
+        .title(SURVEY_TITLE)
         .build();
   }
 
@@ -93,6 +93,7 @@ public class ITSurveyTest extends SecurityTest {
         .get(newSurveyURI)
         .then()
         .statusCode(SC_OK)
+        .body("title", equalTo(SURVEY_TITLE))
         .body("description", equalTo(SURVEY_DESCRIPTION))
         .body("type", equalTo(CLASSIC.toString()))
         .body("choicesByUser", equalTo(5))
@@ -110,45 +111,10 @@ public class ITSurveyTest extends SecurityTest {
         .then()
         .statusCode(SC_OK);
 
-    //Add a Song to our Survey
-    response = givenJson()
-        .body(songForm)
-        .put(newSurveyURI + "/song")
-        .then()
-        .statusCode(SC_OK)
-        .extract()
-        .response();
-
-    String newSongURI = response.getHeader("Location");
-
-    //Check that all changes are saved successfully
     givenJson()
         .get(newSurveyURI)
         .then()
         .statusCode(SC_OK)
-        .body("state", equalTo(STOPPED.toString()))
-        .body("options", hasSize(1))
-        .body("options.performer", hasItem(PERFORMER))
-        .body("options.title", hasItem(TITLE));
-
-    //Check that user cant see his own songs
-    givenJson()
-        .get(newSurveyURI + "/filtered")
-        .then()
-        .statusCode(SC_OK)
-        .body("songs", hasSize(0));
-
-    //Remove Song from Survey
-    givenJson()
-        .delete(newSurveyURI + newSongURI)
-        .then()
-        .statusCode(SC_OK);
-
-    //Check it
-    givenJson()
-        .get(newSurveyURI)
-        .then()
-        .statusCode(SC_OK)
-        .body("songs", hasSize(0));
+        .body("state", equalTo(STOPPED.toString()));
   }
 }

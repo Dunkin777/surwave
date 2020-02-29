@@ -8,13 +8,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import epamers.surwave.entities.ClassicSurvey;
+import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyState;
-import epamers.surwave.entities.Option;
 import epamers.surwave.entities.User;
-import epamers.surwave.repos.SurveyRepository;
 import epamers.surwave.repos.OptionRepository;
+import epamers.surwave.repos.SurveyRepository;
 import epamers.surwave.services.SongService;
 import epamers.surwave.services.SurveyService;
 import epamers.surwave.services.UserService;
@@ -55,27 +55,23 @@ public class SurveyServiceTest {
   ArgumentCaptor<Survey> surveyCaptor;
 
   private final Long SONG_ID = 156L;
-  private final String PERFORMER = "Bee Gees";
-  private final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
-  private final String COMMENT = "Starts in D#, then sudden change to another religion.";
-
+  private final String SONG_PERFORMER = "Bee Gees";
+  private final String SONG_TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
   private final Long SURVEY_ID = 35L;
   private final Long NONEXISTENT_SURVEY_ID = 100L;
   private final String SURVEY_DESCRIPTION = "Please think twice before choosing!";
-  private Song song;
-
-  private String USER_ID = "someGoogleId";
+  private final String USER_ID = "someGoogleId";
 
   private Survey survey;
-
+  private Song song;
   private Option option;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     song = Song.builder()
-        .performer(PERFORMER)
-        .title(TITLE)
+        .performer(SONG_PERFORMER)
+        .title(SONG_TITLE)
         .id(SONG_ID)
         .build();
 
@@ -155,20 +151,6 @@ public class SurveyServiceTest {
   }
 
   @Test
-  public void addSong_validArguments_success() {
-    when(songService.getOrCreate(song)).thenReturn(song);
-    when(userService.getById(USER_ID)).thenReturn(user);
-    survey.setOptions(new HashSet<>());
-
-    surveyService.addSong(SURVEY_ID, song, user);
-
-    verify(surveyRepository).save(surveyCaptor.capture());
-    assertEquals(survey, surveyCaptor.getValue());
-    assertTrue(surveyCaptor.getValue().getOptions().stream()
-        .anyMatch(o -> o.getSong() == song));
-  }
-
-  @Test
   public void removeSong_existentSong_songRemovedAndDeleted() {
     when(songService.getById(SONG_ID)).thenReturn(song);
 
@@ -192,14 +174,5 @@ public class SurveyServiceTest {
     verify(surveyRepository, never()).save(any());
     verify(songService, never()).delete(any());
     verify(optionRepository, never()).delete(any());
-  }
-
-  @Test
-  public void updateState_validArguments_success() {
-    surveyService.updateState(SURVEY_ID, SurveyState.STOPPED);
-
-    verify(surveyRepository).save(surveyCaptor.capture());
-    assertEquals(survey, surveyCaptor.getValue());
-    assertEquals(SurveyState.STOPPED, surveyCaptor.getValue().getState());
   }
 }

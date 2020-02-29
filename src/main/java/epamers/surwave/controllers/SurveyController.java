@@ -4,10 +4,8 @@ import static epamers.surwave.core.Contract.SONG_URL;
 import static epamers.surwave.core.Contract.SURVEY_URL;
 import static java.util.stream.Collectors.toList;
 
-import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyView;
-import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.User;
 import epamers.surwave.services.SurveyService;
@@ -98,21 +96,6 @@ public class SurveyController {
   public void updateSurvey(@ApiParam(value = "Survey ID") @PathVariable Long id,
       @ApiParam(value = "Updated Survey data") @RequestBody @Valid SurveyForm surveyForm) {
     surveyService.update(id, converter.convert(surveyForm, Survey.class));
-  }
-
-  @PutMapping("/{id}/song")
-  @ApiOperation(
-      value = "Add Song to Survey",
-      notes = "Awaits Survey ID as a path variable and SongForm as body. Returns new entity url "
-          + "in 'Location' header. Allows to create new Song and add it to specified Survey."
-  )
-  public void addSongToSurvey(@ApiIgnore @AuthenticationPrincipal User user,
-      @ApiParam(value = "Survey ID") @PathVariable Long id,
-      @ApiParam(value = "Song to add") @RequestBody @Valid SongForm songForm,
-      @ApiIgnore HttpServletResponse response) {
-    Song song = converter.convert(songForm, Song.class);
-    Song createdSong = surveyService.addSong(id, song, user);
-    response.addHeader("Location", SONG_URL + "/" + createdSong.getId());
   }
 
   @DeleteMapping("/{surveyId}" + SONG_URL + "/{songId}")

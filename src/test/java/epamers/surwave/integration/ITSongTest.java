@@ -1,16 +1,13 @@
 package epamers.surwave.integration;
 
 import static epamers.surwave.core.Contract.SONG_URL;
-import static epamers.surwave.entities.SurveyState.CREATED;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 
 import com.jayway.restassured.RestAssured;
 import epamers.surwave.dtos.SongForm;
-import epamers.surwave.entities.ClassicSurvey;
 import epamers.surwave.entities.Song;
-import epamers.surwave.entities.Survey;
 import epamers.surwave.repos.SongRepository;
 import epamers.surwave.repos.SurveyRepository;
 import org.junit.After;
@@ -20,9 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class ITSongTest extends IntegrationTest {
 
-  private final String PERFORMER = "Brian Wilson";
-  private final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
-  private final String COMMENT = "Starts in D#, then sudden change to another religion.";
+  private final String SONG_PERFORMER = "Brian Wilson";
+  private final String SONG_TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
 
   @Autowired
   private SongRepository songRepository;
@@ -38,25 +34,15 @@ public class ITSongTest extends IntegrationTest {
     RestAssured.port = port;
 
     songForm = SongForm.builder()
-        .performer(PERFORMER)
-        .title(TITLE)
-        .build();
-
-    Survey survey = ClassicSurvey.builder()
-        .choicesByUser(2)
-        .proposalsByUser(2)
-        .description(COMMENT)
-        .isHidden(false)
-        .state(CREATED)
+        .performer(SONG_PERFORMER)
+        .title(SONG_TITLE)
         .build();
 
     song = Song.builder()
-        .performer(PERFORMER)
+        .performer(SONG_PERFORMER)
         .mediaPath("")
-        .title(TITLE)
+        .title(SONG_TITLE)
         .build();
-
-    surveyRepository.save(survey);
   }
 
   @After
@@ -84,8 +70,8 @@ public class ITSongTest extends IntegrationTest {
         .then()
         .statusCode(SC_OK)
         .body("$", hasSize(1))
-        .body("title", hasItem(TITLE))
-        .body("performer", hasItem(PERFORMER));
+        .body("title", hasItem(SONG_TITLE))
+        .body("performer", hasItem(SONG_PERFORMER));
 
     //Change some property of created Song
     final String changedTitle = "Oh my!.. Title has changed & now it's even better!";
