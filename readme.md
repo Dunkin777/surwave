@@ -6,6 +6,7 @@ In Idea, please, manually adjust setting 'hard wrap at' to 150 symbols and 'Clas
 **Prerequisites:** Docker and JDK 11 installed (make sure that JAVA_HOME environment variable points to JDK 11 path).
 
 1 - Download project sources
+
 2 - Create `application-local.yml` file and copy `application-local.yml.example` content to it.
 
 Next, in console in project root:<br/>
