@@ -6,7 +6,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OptionToViewConverter implements Converter<Option, OptionView> {
+public class OptionToOptionViewConverter implements Converter<Option, OptionView> {
 
   @Override
   public OptionView convert(Option option) {

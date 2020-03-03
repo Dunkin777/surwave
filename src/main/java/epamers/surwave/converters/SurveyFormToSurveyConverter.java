@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-public class FormToSurveyConverter implements Converter<SurveyForm, Survey> {
+public class SurveyFormToSurveyConverter implements Converter<SurveyForm, Survey> {
 
   @Override
   public Survey convert(SurveyForm surveyForm) {

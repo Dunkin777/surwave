@@ -9,13 +9,13 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public abstract class SurveyToViewConverter {
+public abstract class SurveyToSurveyViewConverter {
 
-  private final OptionToViewConverter optionToViewConverter;
+  private final OptionToOptionViewConverter optionToOptionViewConverter;
 
   public SurveyView convert(Survey survey) {
     Set<OptionView> options = survey.getOptions().stream()
-        .map(optionToViewConverter::convert)
+        .map(optionToOptionViewConverter::convert)
         .collect(toSet());
 
     return SurveyView.builder()

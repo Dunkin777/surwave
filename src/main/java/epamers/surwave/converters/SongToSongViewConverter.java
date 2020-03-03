@@ -6,7 +6,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SongToViewConverter implements Converter<Song, SongView> {
+public class SongToSongViewConverter implements Converter<Song, SongView> {
 
   @Override
   public SongView convert(Song song) {

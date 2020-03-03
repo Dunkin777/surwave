@@ -8,7 +8,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FormToOptionConverter implements Converter<OptionForm, Option> {
+public class OptionFormToOptionConverter implements Converter<OptionForm, Option> {
 
   @Override
   public Option convert(OptionForm optionForm) {
