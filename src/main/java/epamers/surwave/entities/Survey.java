@@ -1,5 +1,7 @@
 package epamers.surwave.entities;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.util.Set;
 import javax.persistence.*;
 import lombok.Data;
@@ -39,7 +41,9 @@ public abstract class Survey {
   @OneToMany(mappedBy = "survey", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private Set<Option> options;
 
-  public void addSong(Option option) {
-    options.add(option);
+  public Set<Song> getSongs() {
+    return options.stream()
+        .map(Option::getSong)
+        .collect(toSet());
   }
 }
