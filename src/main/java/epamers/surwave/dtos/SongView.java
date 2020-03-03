@@ -19,6 +19,6 @@ public class SongView {
   @ApiModelProperty(notes = "Name of the composition/track.", example = "Main theme from Santa Barbara")
   private String title;
 
-  @ApiModelProperty(required = true, notes = "For removal.")
+  @ApiModelProperty(required = true, notes = "Path/URL to song media data.")
   private String mediaPath;
 }
