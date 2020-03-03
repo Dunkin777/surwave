@@ -1,6 +1,6 @@
 package epamers.surwave.configuration;
 
-import epamers.surwave.annotations.NotForTests;
+import epamers.surwave.core.annotations.NotForTests;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;

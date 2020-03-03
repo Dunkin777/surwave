@@ -1,6 +1,6 @@
 package epamers.surwave.services;
 
-import epamers.surwave.exceptions.FileStorageException;
+import epamers.surwave.core.exceptions.FileStorageException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;

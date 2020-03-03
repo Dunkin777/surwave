@@ -22,11 +22,4 @@ public class SongForm {
   @NotNull
   @ApiModelProperty(required = true, notes = "Name of the composition/track.", example = "Fly As A Bird")
   private String title;
-
-  @ApiModelProperty(notes = "Notes from user who suggested this song for other voters.",
-      example = "We will transpose it to F#. Also, guitar solo can be played on synth.")
-  private String comment;
-
-  @ApiModelProperty(required = true, notes = "For removal.")
-  private Long surveyId;
 }

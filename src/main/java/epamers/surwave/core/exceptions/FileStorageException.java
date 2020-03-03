@@ -1,4 +1,4 @@
-package epamers.surwave.exceptions;
+package epamers.surwave.core.exceptions;
 
 public class FileStorageException extends RuntimeException {
 

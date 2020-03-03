@@ -40,7 +40,6 @@ public class SongServiceTest {
         .performer(PERFORMER)
         .title(TITLE)
         .id(SONG_ID)
-        .comment(COMMENT)
         .build();
 
     when(songRepository.existsById(SONG_ID)).thenReturn(true);

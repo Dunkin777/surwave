@@ -1,6 +1,5 @@
 package epamers.surwave.unit.controllers;
 
-import static epamers.surwave.core.Contract.SONG_URL;
 import static epamers.surwave.core.Contract.SURVEY_URL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -113,16 +112,6 @@ public class SurveyControllerTest {
     surveyController.updateSurvey(SURVEY_ID, surveyForm);
 
     verify(surveyService).update(SURVEY_ID, survey);
-  }
-
-  @Test
-  public void addSongToSurvey_success() {
-    when(surveyService.addSong(SURVEY_ID, song, user)).thenReturn(song);
-
-    surveyController.addSongToSurvey(user, SURVEY_ID, songForm, response);
-
-    verify(surveyService).addSong(SURVEY_ID, song, user);
-    verify(response).addHeader("Location", SONG_URL + "/" + SONG_ID);
   }
 
   @Test
