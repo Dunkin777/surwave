@@ -1,5 +1,7 @@
 package epamers.surwave.entities;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
@@ -59,7 +61,7 @@ public class User implements UserDetails {
   public Set<Song> getProposedSongs() {
     return options.stream()
         .map(Option::getSong)
-        .collect(Collectors.toSet());
+        .collect(toSet());
   }
 
   @Override

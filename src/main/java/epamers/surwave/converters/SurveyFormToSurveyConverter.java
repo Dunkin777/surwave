@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-public class FormToSurveyConverter implements Converter<SurveyForm, Survey> {
+public class SurveyFormToSurveyConverter implements Converter<SurveyForm, Survey> {
 
   @Override
   public Survey convert(SurveyForm surveyForm) {
@@ -29,6 +29,7 @@ public class FormToSurveyConverter implements Converter<SurveyForm, Survey> {
       throw new IllegalArgumentException("Got unsupported survey type " + surveyForm.getType());
     }
 
+    survey.setTitle(surveyForm.getTitle());
     survey.setDescription(surveyForm.getDescription());
     survey.setProposalsByUser(surveyForm.getProposalsByUser());
     survey.setState(surveyForm.getState());

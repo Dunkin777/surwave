@@ -1,7 +1,8 @@
 package epamers.surwave.entities;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,9 @@ public abstract class Survey {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @Column(nullable = false)
+  private String title;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
@@ -37,13 +41,9 @@ public abstract class Survey {
   @OneToMany(mappedBy = "survey", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private Set<Option> options;
 
-  public void addSong(Option option) {
-    options.add(option);
-  }
-
   public Set<Song> getSongs() {
     return options.stream()
         .map(Option::getSong)
-        .collect(Collectors.toSet());
+        .collect(toSet());
   }
 }

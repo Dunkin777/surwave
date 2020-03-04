@@ -8,13 +8,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import epamers.surwave.entities.ClassicSurvey;
+import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyState;
-import epamers.surwave.entities.Option;
 import epamers.surwave.entities.User;
-import epamers.surwave.repos.SurveyRepository;
 import epamers.surwave.repos.OptionRepository;
+import epamers.surwave.repos.SurveyRepository;
 import epamers.surwave.services.SongService;
 import epamers.surwave.services.SurveyService;
 import epamers.surwave.services.UserService;
@@ -26,6 +26,7 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -50,30 +51,28 @@ public class SurveyServiceTest {
   @Mock
   User user;
 
-  private final Long SONG_ID = 156L;
-  private final String PERFORMER = "Bee Gees";
-  private final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
-  private final String COMMENT = "Starts in D#, then sudden change to another religion.";
+  @Captor
+  ArgumentCaptor<Survey> surveyCaptor;
 
+  private final Long SONG_ID = 156L;
+  private final String SONG_PERFORMER = "Bee Gees";
+  private final String SONG_TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
   private final Long SURVEY_ID = 35L;
   private final Long NONEXISTENT_SURVEY_ID = 100L;
   private final String SURVEY_DESCRIPTION = "Please think twice before choosing!";
-  private Song song;
-
-  private String USER_ID = "someGoogleId";
+  private final String USER_ID = "someGoogleId";
 
   private Survey survey;
-
+  private Song song;
   private Option option;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     song = Song.builder()
-        .performer(PERFORMER)
-        .title(TITLE)
+        .performer(SONG_PERFORMER)
+        .title(SONG_TITLE)
         .id(SONG_ID)
-        .comment(COMMENT)
         .build();
 
     option = new Option();
@@ -152,30 +151,14 @@ public class SurveyServiceTest {
   }
 
   @Test
-  public void addSong_validArguments_success() {
-    when(songService.getOrCreate(song)).thenReturn(song);
-    when(userService.getById(USER_ID)).thenReturn(user);
-    ArgumentCaptor<Survey> arg = ArgumentCaptor.forClass(Survey.class);
-    survey.setOptions(new HashSet<>());
-
-    surveyService.addSong(SURVEY_ID, song, user);
-
-    verify(surveyRepository).save(arg.capture());
-    assertEquals(survey, arg.getValue());
-    assertTrue(arg.getValue().getSongs().contains(song));
-  }
-
-  @Test
   public void removeSong_existentSong_songRemovedAndDeleted() {
     when(songService.getById(SONG_ID)).thenReturn(song);
-    ArgumentCaptor<Survey> capturedSurvey = ArgumentCaptor.forClass(Survey.class);
-    ArgumentCaptor<Option> capturedOption = ArgumentCaptor.forClass(Option.class);
 
     surveyService.removeSong(SURVEY_ID, SONG_ID);
 
-    verify(surveyRepository).save(capturedSurvey.capture());
-    verify(optionRepository).delete(capturedOption.capture());
-    assertTrue(capturedSurvey.getValue().getSongs().isEmpty());
+    verify(surveyRepository).save(surveyCaptor.capture());
+    verify(optionRepository).delete(any());
+    assertTrue(surveyCaptor.getValue().getOptions().isEmpty());
   }
 
   @Test(expected = NoSuchElementException.class)
@@ -191,16 +174,5 @@ public class SurveyServiceTest {
     verify(surveyRepository, never()).save(any());
     verify(songService, never()).delete(any());
     verify(optionRepository, never()).delete(any());
-  }
-
-  @Test
-  public void updateState_validArguments_success() {
-    ArgumentCaptor<Survey> arg = ArgumentCaptor.forClass(Survey.class);
-
-    surveyService.updateState(SURVEY_ID, SurveyState.STOPPED);
-
-    verify(surveyRepository).save(arg.capture());
-    assertEquals(survey, arg.getValue());
-    assertEquals(SurveyState.STOPPED, arg.getValue().getState());
   }
 }

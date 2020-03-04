@@ -2,34 +2,28 @@ package epamers.surwave.converters;
 
 import static java.util.stream.Collectors.toSet;
 
-import epamers.surwave.dtos.SongView;
+import epamers.surwave.dtos.OptionView;
 import epamers.surwave.dtos.SurveyView;
-import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
-import epamers.surwave.entities.User;
-import epamers.surwave.services.SurveyService;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @RequiredArgsConstructor
-public abstract class SurveyToViewConverter {
+public abstract class SurveyToSurveyViewConverter {
 
-  private final SongToViewConverter songConverter;
-  private final SurveyService surveyService;
+  private final OptionToOptionViewConverter optionToOptionViewConverter;
 
   public SurveyView convert(Survey survey) {
-    Set<SongView> songs = survey.getSongs().stream()
-        .map(songConverter::convert)
+    Set<OptionView> options = survey.getOptions().stream()
+        .map(optionToOptionViewConverter::convert)
         .collect(toSet());
 
     return SurveyView.builder()
         .id(survey.getId())
         .type(survey.getType())
+        .title(survey.getTitle())
         .description(survey.getDescription())
-        .songs(songs)
+        .options(options)
         .state(survey.getState())
         .proposalsByUser(survey.getProposalsByUser())
         .isHidden(survey.getIsHidden())

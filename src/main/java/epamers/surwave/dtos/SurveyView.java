@@ -24,12 +24,16 @@ public class SurveyView {
   @ApiModelProperty(notes = "Stage of Survey's lifecycle.")
   private SurveyState state;
 
+  @ApiModelProperty(notes = "Title of whole survey, usually its purpose.",
+      example = "Songs for New Year party")
+  private String title;
+
   @ApiModelProperty(notes = "Message left by Survey creator for every user who wants to vote.",
       example = "Please, propose only sad songs. And not too famous, or we will get sued.")
   private String description;
 
-  @ApiModelProperty(notes = "Collection of Song objects, each can be voted for.")
-  private Set<SongView> songs;
+  @ApiModelProperty(notes = "Collection of Options, each representing one Song")
+  private Set<OptionView> options;
 
   @ApiModelProperty(notes = "How many songs one user should add to this survey.",
       example = "5")

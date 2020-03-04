@@ -6,14 +6,13 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FormToSongConverter implements Converter<SongForm, Song> {
+public class SongFormToSongConverter implements Converter<SongForm, Song> {
 
   @Override
   public Song convert(SongForm songForm) {
     return Song.builder()
         .performer(songForm.getPerformer())
         .title(songForm.getTitle())
-        .comment(songForm.getComment())
         .build();
   }
 }

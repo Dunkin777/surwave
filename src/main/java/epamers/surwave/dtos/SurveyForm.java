@@ -25,6 +25,10 @@ public class SurveyForm {
       + "collecting Songs and open survey for actual voting.")
   private SurveyState state;
 
+  @ApiModelProperty(notes = "Title of whole survey, usually its purpose.",
+      example = "Songs for New Year party")
+  private String title;
+
   @ApiModelProperty(notes = "Message left by Survey creator for every user who wants to vote.",
       example = "We need to pick some fast songs! And please, have mercy on drummer this time!")
   private String description;
