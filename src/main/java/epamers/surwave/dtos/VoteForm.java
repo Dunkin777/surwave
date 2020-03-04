@@ -21,7 +21,7 @@ public class VoteForm {
 
   @NotNull
   @ApiModelProperty(required = true, notes = "Id of voted User")
-  private Long participantId;
+  private String participantId;
 
   @NotNull
   @ApiModelProperty(required = true, notes = "Resembles the fact of vote itself, preferably 0 or 1, also represents"

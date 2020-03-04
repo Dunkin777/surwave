@@ -7,6 +7,10 @@ import epamers.surwave.entities.SurveyState;
 import epamers.surwave.entities.User;
 import epamers.surwave.repos.OptionRepository;
 import epamers.surwave.repos.SurveyRepository;
+import epamers.surwave.entities.Vote;
+import epamers.surwave.repos.OptionRepository;
+import epamers.surwave.repos.SurveyRepository;
+import epamers.surwave.repos.VoteRepository;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,6 +26,7 @@ public class SurveyService {
   private final SongService songService;
   private final UserService userService;
   private final OptionRepository optionRepository;
+  private final VoteRepository voteRepository;
 
   public List<Survey> getAll() {
     return surveyRepository.findAll();
@@ -82,6 +87,13 @@ public class SurveyService {
     if (survey.getOptions().remove(optionToRemove)) {
       surveyRepository.save(survey);
       optionRepository.delete(optionToRemove);
+    }
+  }
+
+  @Transactional
+  public void addVotes(Long surveyId, List<Vote> votes) {
+    for (Vote vote : votes) {
+      voteRepository.save(vote);
     }
   }
 }
