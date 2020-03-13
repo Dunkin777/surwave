@@ -20,7 +20,7 @@ public class MediaUploadService {
 
   public void upload(MultipartFile file, Long songId) {
 
-    Path copyLocation = Paths.get(getWorkDirectory().toString() + songId + ".mp3");
+    Path copyLocation = getUploadDirectory().resolve(songId + ".mp3");
 
     try {
       file.transferTo(copyLocation);
@@ -30,8 +30,8 @@ public class MediaUploadService {
     }
   }
 
-  private Path getWorkDirectory() {
-    Path path = Paths.get(System.getProperty("user.dir") + File.separator + uploadPath + File.separator);
+  private Path getUploadDirectory() {
+    Path path = Paths.get(System.getProperty("user.dir") + File.separator + uploadPath);
 
     if (!Files.exists(path)) {
       try {

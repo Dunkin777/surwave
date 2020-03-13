@@ -21,7 +21,7 @@ create table if not exists survey
 
 create table if not exists song
 (
-    id         bigserial unique not null,
+    id         bigserial  unique  not null,
     comment    varchar(255),
     media_path varchar(255),
     performer  varchar(255) not null,
