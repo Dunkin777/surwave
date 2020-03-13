@@ -84,6 +84,6 @@ public class SongControllerTest {
     songController.uploadMediaToSong(SONG_ID, any());
 
     verify(songService).getById(SONG_ID);
-    verify(uploadService).upload(any(), eq(TITLE));
+    verify(uploadService).upload(any());
   }
 }

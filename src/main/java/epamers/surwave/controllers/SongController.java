@@ -69,7 +69,17 @@ public class SongController {
           + "stored and processed in Surwave and can be retrieved later."
   )
   public void uploadMediaToSong(@ApiParam(value = "Song ID") @PathVariable Long id, @RequestParam("file") MultipartFile file) {
-    Song song = songService.getById(id);
-    uploadService.upload(file, song.getTitle());
+    uploadService.upload(file);
+  }
+
+  @PostMapping
+  @ApiOperation(
+      value = "Creates a new Song",
+      notes = "Awaits SongForm as request body and file that you want to upload. File will be "
+          + "stored and processed in Surwave and can be retrieved later."
+  )
+  public void createSong(@RequestBody SongForm songForm) {
+    Song song = converter.convert(songForm, Song.class);
+    songService.create(song);
   }
 }

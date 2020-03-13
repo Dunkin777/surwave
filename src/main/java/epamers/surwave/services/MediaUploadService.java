@@ -19,9 +19,8 @@ public class MediaUploadService {
   @Value("${app.upload.dir}")
   private String uploadPath;
 
-  public void upload(MultipartFile file, String title) {
+  public void upload(MultipartFile file) {
     String fileName = Optional.ofNullable(file.getOriginalFilename()).orElse("defaultFileName.mp3");
-    fileName = title + "." + fileName.substring(fileName.lastIndexOf(".") + 1);
 
     Path copyLocation = Paths.get(getWorkDirectory() + File.separator + StringUtils.cleanPath(fileName));
 
