@@ -86,7 +86,7 @@ public class SurveyControllerTest {
 
   @Test
   public void getAllSurveys_success() {
-    List<SurveyView> returnedSurveys = surveyController.getAllSurveys();
+    List<SurveyView> returnedSurveys = surveyController.getAll();
 
     assertEquals(1, returnedSurveys.size());
     assertTrue(returnedSurveys.contains(surveyView));
@@ -94,14 +94,14 @@ public class SurveyControllerTest {
 
   @Test
   public void getSurvey_success() {
-    SurveyView returnedSurvey = surveyController.getSurvey(SURVEY_ID);
+    SurveyView returnedSurvey = surveyController.get(SURVEY_ID);
 
     assertEquals(surveyView, returnedSurvey);
   }
 
   @Test
   public void createSurvey_success() {
-    surveyController.createSurvey(surveyForm, response);
+    surveyController.create(surveyForm, response);
 
     verify(surveyService).create(survey);
     verify(response).addHeader("Location", SURVEY_URL + "/" + SURVEY_ID);
@@ -109,15 +109,15 @@ public class SurveyControllerTest {
 
   @Test
   public void updateSurvey_success() {
-    surveyController.updateSurvey(SURVEY_ID, surveyForm);
+    surveyController.update(SURVEY_ID, surveyForm);
 
     verify(surveyService).update(SURVEY_ID, survey);
   }
 
   @Test
   public void removeSongFromSurvey_success() {
-    surveyController.removeSongFromSurvey(SURVEY_ID, SONG_ID);
+    surveyController.removeOption(SURVEY_ID, SONG_ID);
 
-    verify(surveyService).removeSong(SURVEY_ID, SONG_ID);
+    verify(surveyService).removeOption(SURVEY_ID, SONG_ID);
   }
 }

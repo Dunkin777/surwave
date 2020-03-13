@@ -44,7 +44,7 @@ public class SurveyForm {
 
   @NotNull
   @ApiModelProperty(notes = "If 'true' then survey should not be visible for non-admins.",
-      example = "true")
+      example = "false")
   private Boolean isHidden;
 
   @ApiModelProperty(notes = "Needed only for RANGED Survey type. Currently unused.",

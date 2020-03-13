@@ -55,6 +55,7 @@ public class SurveyServiceTest {
   ArgumentCaptor<Survey> surveyCaptor;
 
   private final Long SONG_ID = 156L;
+  private final Long OPTION_ID = 15L;
   private final String SONG_PERFORMER = "Bee Gees";
   private final String SONG_TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
   private final Long SURVEY_ID = 35L;
@@ -152,9 +153,9 @@ public class SurveyServiceTest {
 
   @Test
   public void removeSong_existentSong_songRemovedAndDeleted() {
-    when(songService.getById(SONG_ID)).thenReturn(song);
+    when(optionRepository.findById(OPTION_ID)).thenReturn(Optional.of(option));
 
-    surveyService.removeSong(SURVEY_ID, SONG_ID);
+    surveyService.removeOption(SURVEY_ID, OPTION_ID);
 
     verify(surveyRepository).save(surveyCaptor.capture());
     verify(optionRepository).delete(any());
@@ -169,7 +170,7 @@ public class SurveyServiceTest {
         .build();
     when(songService.getById(otherSongId)).thenReturn(otherSong);
 
-    surveyService.removeSong(SURVEY_ID, otherSongId);
+    surveyService.removeOption(SURVEY_ID, otherSongId);
 
     verify(surveyRepository, never()).save(any());
     verify(songService, never()).delete(any());

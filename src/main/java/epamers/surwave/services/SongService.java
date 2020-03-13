@@ -25,13 +25,14 @@ public class SongService {
   }
 
   @Transactional
-  public Song create(Song song, MultipartFile mefiaFile) {
+  public Song create(Song song, MultipartFile mediaFile) {
     if (song == null) {
       throw new IllegalArgumentException();
     }
 
     song = songRepository.save(song);
-    mediaUploadService.upload(mefiaFile, song.getId());
+    String mediaPath = mediaUploadService.upload(mediaFile, song.getId());
+    song.setMediaPath(mediaPath);
 
     return song;
   }

@@ -58,7 +58,6 @@ public class SongControllerTest {
 
     when(songService.getAll()).thenReturn(List.of(song));
     when(songService.getById(SONG_ID)).thenReturn(song);
-    when(songService.create(song)).thenReturn(song);
     when(converter.convert(song, SongView.class)).thenReturn(songView);
     when(converter.convert(songForm, Song.class)).thenReturn(song);
   }
@@ -77,13 +76,5 @@ public class SongControllerTest {
 
     verify(converter).convert(songForm, Song.class);
     verify(songService).update(SONG_ID, song);
-  }
-
-  @Test
-  public void uploadMediaToOptionTest() {
-    songController.uploadMediaToSong(SONG_ID, any());
-
-    verify(songService).getById(SONG_ID);
-    verify(uploadService).upload(any());
   }
 }

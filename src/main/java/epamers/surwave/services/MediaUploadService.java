@@ -18,7 +18,7 @@ public class MediaUploadService {
   @Value("${app.upload.dir}")
   private String uploadPath;
 
-  public void upload(MultipartFile file, Long songId) {
+  public String upload(MultipartFile file, Long songId) {
 
     Path copyLocation = getUploadDirectory().resolve(songId + ".mp3");
 
@@ -28,6 +28,8 @@ public class MediaUploadService {
       log.error("Failed to load file", e);
       throw new FileStorageException("Could not store file " + file.getOriginalFilename() + ". Please try again!");
     }
+
+    return copyLocation.toString();
   }
 
   private Path getUploadDirectory() {

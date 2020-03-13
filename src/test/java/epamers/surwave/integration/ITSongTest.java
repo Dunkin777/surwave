@@ -40,7 +40,7 @@ public class ITSongTest extends IntegrationTest {
 
     song = Song.builder()
         .performer(SONG_PERFORMER)
-        .mediaPath("")
+        .mediaPath("/1.mp3")
         .title(SONG_TITLE)
         .build();
   }

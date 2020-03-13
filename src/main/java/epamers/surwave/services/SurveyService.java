@@ -70,18 +70,24 @@ public class SurveyService {
   }
 
   @Transactional
-  public void removeSong(Long surveyId, Long songId) {
+  public void removeOption(Long surveyId, Long optionId) {
     Survey survey = getById(surveyId);
-    Song song = songService.getById(songId);
 
-    Option optionToRemove = survey.getOptions().stream()
-        .filter(option -> option.getSong().equals(song))
-        .findFirst()
-        .orElseThrow();
+    Option optionToRemove = optionRepository.findById(optionId).orElseThrow();
 
     if (survey.getOptions().remove(optionToRemove)) {
       surveyRepository.save(survey);
       optionRepository.delete(optionToRemove);
     }
+  }
+
+  @Transactional
+  public Option addOption(Long surveyId, Option option) {
+    Survey survey = getById(surveyId);
+    option.setSurvey(survey);
+    Song song = songService.getById(option.getSong().getId());
+    option.setSong(song);
+
+    return optionRepository.save(option);
   }
 }

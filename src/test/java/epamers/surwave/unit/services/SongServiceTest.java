@@ -72,14 +72,6 @@ public class SongServiceTest {
   }
 
   @Test
-  public void create_validSong_success() {
-    Song returnedSong = songService.create(song);
-
-    verify(songRepository).save(song);
-    assertEquals(song, returnedSong);
-  }
-
-  @Test
   public void getOrCreate_existingSong_success() {
     when(songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(TITLE, PERFORMER)).thenReturn(Optional.of(song));
 
@@ -97,11 +89,6 @@ public class SongServiceTest {
     verify(songRepository).findByTitleIgnoreCaseAndPerformerIgnoreCase(TITLE, PERFORMER);
     verify(songRepository).save(song);
     assertEquals(song, returnedSong);
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void create_nullArgument_exception() {
-    songService.create(null);
   }
 
   @Test
