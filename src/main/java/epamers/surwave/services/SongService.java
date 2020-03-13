@@ -7,12 +7,14 @@ import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Service
 public class SongService {
 
   private final SongRepository songRepository;
+  private final MediaUploadService mediaUploadService;
 
   public List<Song> getAll() {
     return songRepository.findAll();
@@ -23,12 +25,15 @@ public class SongService {
   }
 
   @Transactional
-  public Song create(Song song) {
+  public Song create(Song song, MultipartFile mefiaFile) {
     if (song == null) {
       throw new IllegalArgumentException();
     }
 
-    return songRepository.save(song);
+    song = songRepository.save(song);
+    mediaUploadService.upload(mefiaFile, song.getId());
+
+    return song;
   }
 
   @Transactional

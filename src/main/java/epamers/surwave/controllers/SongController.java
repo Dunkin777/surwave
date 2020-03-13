@@ -1,7 +1,6 @@
 package epamers.surwave.controllers;
 
 import static epamers.surwave.core.Contract.SONG_URL;
-import static epamers.surwave.core.Contract.UPLOAD_URL;
 
 import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SongView;
@@ -12,20 +11,19 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequiredArgsConstructor
@@ -61,25 +59,16 @@ public class SongController {
     songService.update(id, song);
   }
 
-  @PostMapping("/{id}" + UPLOAD_URL)
-  @ResponseStatus(HttpStatus.OK)
-  @ApiOperation(
-      value = "Upload media to Song",
-      notes = "Awaits Song ID as a path variable and file that you want to upload. File will be "
-          + "stored and processed in Surwave and can be retrieved later."
-  )
-  public void uploadMediaToSong(@ApiParam(value = "Song ID") @PathVariable Long id, @RequestParam("file") MultipartFile file) {
-    uploadService.upload(file, id);
-  }
-
-  @PostMapping
+  @PostMapping(consumes = {"multipart/form-data"})
   @ApiOperation(
       value = "Creates a new Song",
-      notes = "Awaits SongForm as request body and file that you want to upload. File will be "
+      notes = "Awaits SongForm as request body. File from it will be "
           + "stored and processed in Surwave and can be retrieved later."
   )
-  public void createSong(@RequestBody SongForm songForm) {
+  public void createSong(@ModelAttribute SongForm songForm, @ApiIgnore HttpServletResponse response) {
     Song song = converter.convert(songForm, Song.class);
-    songService.create(song);
+    Long songId = songService.create(song, songForm.getMediaFile()).getId();
+
+    response.addHeader("Location", SONG_URL + "/" + songId);
   }
 }
