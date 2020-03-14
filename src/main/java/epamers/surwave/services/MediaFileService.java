@@ -20,19 +20,19 @@ public class MediaFileService {
 
   public String upload(MultipartFile file, Long songId) {
 
-    Path copyLocation = getUploadDirectory().resolve(songId + ".mp3");
+    Path copyLocation = getUploadPath().resolve(songId + ".mp3");
 
     try {
       file.transferTo(copyLocation);
     } catch (IOException e) {
       log.error("Failed to load file", e);
-      throw new FileStorageException("Could not store file " + file.getOriginalFilename() + ". Please try again!");
+      throw new FileStorageException("Could not store file " + file.getOriginalFilename());
     }
 
     return copyLocation.toString();
   }
 
-  private Path getUploadDirectory() {
+  private Path getUploadPath() {
     Path uploadPath = Paths.get(System.getProperty("user.dir") + File.separator + uploadDirectory);
 
     if (!Files.exists(uploadPath)) {
@@ -40,7 +40,7 @@ public class MediaFileService {
         Files.createDirectory(uploadPath);
       } catch (IOException e) {
         log.error("Failed to load file", e);
-        throw new FileStorageException("Cannot create upload directory at" + uploadPath.toString());
+        throw new FileStorageException("Could not create upload directory at" + uploadPath.toString());
       }
     }
 

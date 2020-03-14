@@ -2,6 +2,7 @@ package epamers.surwave.dtos;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 @ApiModel(description = "Resembles one voting option in some survey. Based on certain song.")
 public class OptionForm {
 
+  @NotNull
   @ApiModelProperty(notes = "Id of the Song that this Option is based on.",
       example = "12")
   private Long songId;

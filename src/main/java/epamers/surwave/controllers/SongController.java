@@ -41,7 +41,7 @@ public class SongController {
           + "created in Surwave. No use for now on FE, in the future will be probably transformed "
           + "into autocompletion endpoint."
   )
-  public List<SongView> getAllSongs() {
+  public List<SongView> getAll() {
     return songService.getAll().stream()
         .map(o -> converter.convert(o, SongView.class))
         .collect(Collectors.toList());
@@ -54,7 +54,7 @@ public class SongController {
           + "previously created Song (updated data will be available in all Options that are using "
           + "given Song.)"
   )
-  public void updateSong(@ApiParam(value = "Song ID") @PathVariable Long id,
+  public void update(@ApiParam(value = "Song ID") @PathVariable Long id,
       @ApiParam(value = "New Song data") @RequestBody @Valid SongForm songForm) {
     Song song = converter.convert(songForm, Song.class);
     songService.update(id, song);
@@ -67,7 +67,7 @@ public class SongController {
       notes = "Awaits SongForm as request body. File from it will be stored and processed in "
           + "Surwave and can be retrieved later. Returns new Song id in the Location header."
   )
-  public void createSong(@ModelAttribute @Valid SongForm songForm, @ApiIgnore HttpServletResponse response) {
+  public void create(@ModelAttribute @Valid SongForm songForm, @ApiIgnore HttpServletResponse response) {
     Song song = converter.convert(songForm, Song.class);
     Long songId = songService.getOrCreate(song, songForm.getMediaFile()).getId();
 

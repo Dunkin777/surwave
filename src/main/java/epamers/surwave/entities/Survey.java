@@ -24,6 +24,7 @@ public abstract class Survey {
   private String title;
 
   @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
   private SurveyType type;
 
   private String description;
