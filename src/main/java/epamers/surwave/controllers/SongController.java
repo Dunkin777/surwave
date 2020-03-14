@@ -67,9 +67,9 @@ public class SongController {
       notes = "Awaits SongForm as request body. File from it will be stored and processed in "
           + "Surwave and can be retrieved later. Returns new Song id in the Location header."
   )
-  public void createSong(@ModelAttribute SongForm songForm, @ApiIgnore HttpServletResponse response) {
+  public void createSong(@ModelAttribute @Valid SongForm songForm, @ApiIgnore HttpServletResponse response) {
     Song song = converter.convert(songForm, Song.class);
-    Long songId = songService.create(song, songForm.getMediaFile()).getId();
+    Long songId = songService.getOrCreate(song, songForm.getMediaFile()).getId();
 
     response.addHeader("Location", SONG_URL + "/" + songId);
   }

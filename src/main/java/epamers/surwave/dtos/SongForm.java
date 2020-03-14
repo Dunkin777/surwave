@@ -24,7 +24,7 @@ public class SongForm {
   @ApiModelProperty(required = true, notes = "Name of the composition/track.", example = "Fly As A Bird")
   private String title;
 
-  /*  @NotNull*/
+  @NotNull
   @ApiModelProperty(required = true, notes = "File", example = "John Lennon")
   private MultipartFile mediaFile;
 }

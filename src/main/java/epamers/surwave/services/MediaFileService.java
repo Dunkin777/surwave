@@ -13,10 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
-public class MediaUploadService {
+public class MediaFileService {
 
-  @Value("${app.upload.dir}")
-  private String uploadPath;
+  @Value("${surwave.uploadDir}")
+  private String uploadDirectory;
 
   public String upload(MultipartFile file, Long songId) {
 
@@ -33,17 +33,17 @@ public class MediaUploadService {
   }
 
   private Path getUploadDirectory() {
-    Path path = Paths.get(System.getProperty("user.dir") + File.separator + uploadPath);
+    Path uploadPath = Paths.get(System.getProperty("user.dir") + File.separator + uploadDirectory);
 
-    if (!Files.exists(path)) {
+    if (!Files.exists(uploadPath)) {
       try {
-        Files.createDirectory(path);
+        Files.createDirectory(uploadPath);
       } catch (IOException e) {
         log.error("Failed to load file", e);
-        throw new FileStorageException("Cannot create upload directory at" + path.toString());
+        throw new FileStorageException("Cannot create upload directory at" + uploadPath.toString());
       }
     }
 
-    return path;
+    return uploadPath;
   }
 }

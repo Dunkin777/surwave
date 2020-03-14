@@ -11,7 +11,7 @@ import epamers.surwave.controllers.SongController;
 import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SongView;
 import epamers.surwave.entities.Song;
-import epamers.surwave.services.MediaUploadService;
+import epamers.surwave.services.MediaFileService;
 import epamers.surwave.services.SongService;
 import java.util.List;
 import org.junit.Before;
@@ -30,7 +30,7 @@ public class SongControllerTest {
   SongService songService;
 
   @Mock
-  MediaUploadService uploadService;
+  MediaFileService uploadService;
 
   @Mock
   ConversionService converter;
