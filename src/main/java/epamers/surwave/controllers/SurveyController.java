@@ -105,7 +105,7 @@ public class SurveyController {
   @PostMapping("/{surveyId}" + OPTION_URL)
   @ResponseStatus(HttpStatus.CREATED)
   @ApiOperation(
-      value = "Create Option for certain Survey",
+      value = "Create Option for Survey",
       notes = "Awaits OptionForm as body. Returns new entity url in 'Location' header. "
           + "Creates and adds to Survey new Option based on existing Song."
   )

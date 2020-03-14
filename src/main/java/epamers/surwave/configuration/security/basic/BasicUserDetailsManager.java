@@ -14,10 +14,9 @@ public class BasicUserDetailsManager implements UserDetailsManager {
   @Override
   public void createUser(UserDetails user) {
     String username = user.getUsername();
-    if (userRepository.existsByUsername(username)) {
-      userRepository.delete((User) user);
+    if (!userRepository.existsByUsername(username)) {
+      userRepository.save((User) user);
     }
-    userRepository.save((User) user);
   }
 
   @Override

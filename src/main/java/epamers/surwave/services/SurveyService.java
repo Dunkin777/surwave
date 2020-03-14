@@ -90,6 +90,10 @@ public class SurveyService {
     Survey survey = getById(surveyId);
     Song song = songService.getById(option.getSong().getId());
 
+    if (survey.getSongs().contains(song)) {
+      throw new IllegalArgumentException("Given survey already contains this song.");
+    }
+
     option.setSurvey(survey);
     option.setUser(currentUser);
     option.setSong(song);
