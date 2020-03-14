@@ -32,7 +32,7 @@ public class SongService {
     }
 
     Optional<Song> dbSong = songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(song.getTitle(), song.getPerformer());
-    if(dbSong.isPresent()){
+    if (dbSong.isPresent()) {
       return dbSong.get();
     }
 

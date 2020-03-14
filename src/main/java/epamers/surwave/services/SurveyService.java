@@ -83,6 +83,10 @@ public class SurveyService {
 
   @Transactional
   public Option addOption(Long surveyId, Option option) {
+    if (option == null) {
+      throw new IllegalArgumentException();
+    }
+
     Survey survey = getById(surveyId);
     option.setSurvey(survey);
     Song song = songService.getById(option.getSong().getId());
