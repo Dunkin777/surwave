@@ -82,15 +82,19 @@ public class SurveyService {
   }
 
   @Transactional
-  public Option addOption(Long surveyId, Option option) {
+  public Option addOption(Long surveyId, Option option, User currentUser) {
     if (option == null) {
       throw new IllegalArgumentException();
     }
 
     Survey survey = getById(surveyId);
-    option.setSurvey(survey);
     Song song = songService.getById(option.getSong().getId());
+
+    option.setSurvey(survey);
+    option.setUser(currentUser);
     option.setSong(song);
+
+    survey.getOptions().add(option);
 
     return optionRepository.save(option);
   }

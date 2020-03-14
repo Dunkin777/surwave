@@ -109,11 +109,10 @@ public class SurveyController {
       notes = "Awaits OptionForm as body. Returns new entity url in 'Location' header. "
           + "Creates and adds to Survey new Option based on existing Song."
   )
-  public void addOption(
-      @ApiParam(value = "Survey ID") @PathVariable Long surveyId, @ApiParam(value = "Data for new Option")
-  @RequestBody @Valid OptionForm optionForm, @ApiIgnore HttpServletResponse response) {
+  public void addOption(@ApiIgnore @AuthenticationPrincipal User user, @ApiParam(value = "Survey ID") @PathVariable Long surveyId,
+      @ApiParam(value = "Data for new Option") @RequestBody @Valid OptionForm optionForm, @ApiIgnore HttpServletResponse response) {
     Option option = converter.convert(optionForm, Option.class);
-    Long optionId = surveyService.addOption(surveyId, option).getId();
+    Long optionId = surveyService.addOption(surveyId, option, user).getId();
     response.addHeader("Location", SURVEY_URL + "/" + optionId);
   }
 

@@ -1,1 +1,0 @@
-ALTER TABLE survey ALTER COLUMN description DROP NOT NULL;

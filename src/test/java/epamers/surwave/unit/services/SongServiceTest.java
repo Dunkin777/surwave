@@ -30,7 +30,6 @@ public class SongServiceTest {
   private final Long NONEXISTENT_ID = 36L;
   private final String PERFORMER = "Felix Mendelson";
   private final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
-  private final String COMMENT = "Starts in D#, then sudden change to another religion.";
   private Song song;
 
   @Before
@@ -69,26 +68,6 @@ public class SongServiceTest {
     when(songRepository.existsById(SONG_ID)).thenReturn(false);
 
     songService.getById(13L);
-  }
-
-  @Test
-  public void getOrCreate_existingSong_success() {
-    when(songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(TITLE, PERFORMER)).thenReturn(Optional.of(song));
-
-    Song returnedSong = songService.getOrCreate(song);
-
-    assertEquals(song, returnedSong);
-  }
-
-  @Test
-  public void getOrCreate_newSong_success() {
-    when(songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(TITLE, PERFORMER)).thenReturn(Optional.empty());
-
-    Song returnedSong = songService.getOrCreate(song);
-
-    verify(songRepository).findByTitleIgnoreCaseAndPerformerIgnoreCase(TITLE, PERFORMER);
-    verify(songRepository).save(song);
-    assertEquals(song, returnedSong);
   }
 
   @Test

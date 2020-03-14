@@ -36,7 +36,6 @@ public class SongControllerTest {
   private final Long SONG_ID = 156L;
   private final String PERFORMER = "Some Author";
   private final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
-  private final String COMMENT = "Starts in D#, then sudden change to another religion.";
 
   private Song song;
   private SongView songView;
@@ -62,7 +61,7 @@ public class SongControllerTest {
 
   @Test
   public void getAllSongs_success() {
-    List<SongView> returnedSongs = songController.getAllSongs();
+    List<SongView> returnedSongs = songController.getAll();
 
     assertEquals(1, returnedSongs.size());
     assertTrue(returnedSongs.contains(songView));
@@ -70,7 +69,7 @@ public class SongControllerTest {
 
   @Test
   public void updateSong_success() {
-    songController.updateSong(SONG_ID, songForm);
+    songController.update(SONG_ID, songForm);
 
     verify(converter).convert(songForm, Song.class);
     verify(songService).update(SONG_ID, song);
