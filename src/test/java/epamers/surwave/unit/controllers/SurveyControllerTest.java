@@ -42,8 +42,8 @@ public class SurveyControllerTest {
   @Mock
   private User user;
 
-  private final Long SONG_ID = 55L;
-  private final Long SURVEY_ID = 77L;
+  private static final Long SONG_ID = 55L;
+  private static final Long SURVEY_ID = 77L;
   private Survey survey;
   private Song song;
   private List<Survey> surveys;

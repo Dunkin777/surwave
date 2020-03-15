@@ -47,19 +47,6 @@ public class SongController {
         .collect(Collectors.toList());
   }
 
-  @PutMapping("/{id}")
-  @ApiOperation(
-      value = "Update Song",
-      notes = "Awaits Song ID as a path variable and SongForm as body. Allows to change data of "
-          + "previously created Song (updated data will be available in all Options that are using "
-          + "given Song.)"
-  )
-  public void update(@ApiParam(value = "Song ID") @PathVariable Long id,
-      @ApiParam(value = "New Song data") @RequestBody @Valid SongForm songForm) {
-    Song song = converter.convert(songForm, Song.class);
-    songService.update(id, song);
-  }
-
   @PostMapping(consumes = {"multipart/form-data"})
   @ResponseStatus(HttpStatus.CREATED)
   @ApiOperation(

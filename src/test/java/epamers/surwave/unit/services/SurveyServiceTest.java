@@ -54,14 +54,14 @@ public class SurveyServiceTest {
   @Captor
   ArgumentCaptor<Survey> surveyCaptor;
 
-  private final Long SONG_ID = 156L;
-  private final Long OPTION_ID = 15L;
-  private final String SONG_PERFORMER = "Bee Gees";
-  private final String SONG_TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
-  private final Long SURVEY_ID = 35L;
-  private final Long NONEXISTENT_SURVEY_ID = 100L;
-  private final String SURVEY_DESCRIPTION = "Please think twice before choosing!";
-  private final String USER_ID = "someGoogleId";
+  private static final Long SONG_ID = 156L;
+  private static final Long OPTION_ID = 15L;
+  private static final String SONG_PERFORMER = "Bee Gees";
+  private static final String SONG_TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
+  private static final Long SURVEY_ID = 35L;
+  private static final Long NONEXISTENT_SURVEY_ID = 100L;
+  private static final String SURVEY_DESCRIPTION = "Please think twice before choosing!";
+  private static final String USER_ID = "someGoogleId";
 
   private Survey survey;
   private Song song;
@@ -173,7 +173,6 @@ public class SurveyServiceTest {
     surveyService.removeOption(SURVEY_ID, otherSongId);
 
     verify(surveyRepository, never()).save(any());
-    verify(songService, never()).delete(any());
     verify(optionRepository, never()).delete(any());
   }
 }
