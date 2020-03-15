@@ -33,6 +33,15 @@ import org.mockito.MockitoAnnotations;
 
 public class SurveyServiceTest {
 
+  private static final Long SONG_ID = 156L;
+  private static final Long OPTION_ID = 15L;
+  private static final String SONG_PERFORMER = "Bee Gees";
+  private static final String SONG_TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
+  private static final Long SURVEY_ID = 35L;
+  private static final Long NONEXISTENT_SURVEY_ID = 100L;
+  private static final String SURVEY_DESCRIPTION = "Please think twice before choosing!";
+  private static final String USER_ID = "someGoogleId";
+
   @InjectMocks
   SurveyService surveyService;
 
@@ -53,15 +62,6 @@ public class SurveyServiceTest {
 
   @Captor
   ArgumentCaptor<Survey> surveyCaptor;
-
-  private static final Long SONG_ID = 156L;
-  private static final Long OPTION_ID = 15L;
-  private static final String SONG_PERFORMER = "Bee Gees";
-  private static final String SONG_TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
-  private static final Long SURVEY_ID = 35L;
-  private static final Long NONEXISTENT_SURVEY_ID = 100L;
-  private static final String SURVEY_DESCRIPTION = "Please think twice before choosing!";
-  private static final String USER_ID = "someGoogleId";
 
   private Survey survey;
   private Song song;

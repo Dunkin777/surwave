@@ -23,6 +23,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class SongServiceTest {
 
+  private static final Long SONG_ID = 156L;
+  private static final Long SONG_NONEXISTENT_ID = 36L;
+  private static final String SONG_PERFORMER = "Felix Mendelssohn";
+  private static final String SONG_TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
+  private static final String SONG_MEDIA_PATH = "/data/1.mp3";
+
   @InjectMocks
   SongService songService;
 
@@ -35,11 +41,6 @@ public class SongServiceTest {
   @Mock
   MultipartFile multipartFile;
 
-  private static final Long SONG_ID = 156L;
-  private static final Long SONG_NONEXISTENT_ID = 36L;
-  private static final String SONG_PERFORMER = "Felix Mendelssohn";
-  private static final String SONG_TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
-  private static final String SONG_MEDIA_PATH = "/data/1.mp3";
   private Song song;
 
   @Before

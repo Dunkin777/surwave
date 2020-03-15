@@ -37,17 +37,11 @@ public class ITSurveyTest extends SecurityTest {
   @Autowired
   private UserRepository userRepository;
 
-  private SongForm songForm;
   private SurveyForm surveyForm;
 
   @Before
   public void setUp() {
     RestAssured.port = port;
-
-    songForm = SongForm.builder()
-        .performer(SONG_PERFORMER)
-        .title(SONG_TITLE)
-        .build();
 
     surveyForm = SurveyForm.builder()
         .type(CLASSIC)

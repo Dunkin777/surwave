@@ -27,6 +27,9 @@ import org.springframework.core.convert.ConversionService;
 
 public class SurveyControllerTest {
 
+  private static final Long SONG_ID = 55L;
+  private static final Long SURVEY_ID = 77L;
+
   @InjectMocks
   SurveyController surveyController;
 
@@ -42,8 +45,6 @@ public class SurveyControllerTest {
   @Mock
   private User user;
 
-  private static final Long SONG_ID = 55L;
-  private static final Long SURVEY_ID = 77L;
   private Survey survey;
   private Song song;
   private List<Survey> surveys;

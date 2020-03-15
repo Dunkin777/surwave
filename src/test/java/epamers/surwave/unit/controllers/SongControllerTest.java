@@ -26,6 +26,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class SongControllerTest {
 
+  private static final Long SONG_ID = 156L;
+  private static final String PERFORMER = "Some Author";
+  private static final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
+
   @InjectMocks
   SongController songController;
 
@@ -43,10 +47,6 @@ public class SongControllerTest {
 
   @Mock
   MultipartFile multipartFile;
-
-  private static final Long SONG_ID = 156L;
-  private static final String PERFORMER = "Some Author";
-  private static final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
 
   private Song song;
   private SongView songView;
