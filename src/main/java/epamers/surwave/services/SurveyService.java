@@ -31,8 +31,12 @@ public class SurveyService {
     return surveyRepository.findById(id).orElseThrow();
   }
 
+  public Option getOptionById(Long id) {
+    return optionRepository.findById(id).orElseThrow();
+  }
+
   public Survey getByIdForCurrentUser(Long id, User user) {
-    Survey survey = surveyRepository.findById(id).orElseThrow();
+    Survey survey = getById(id);
     User currentUser = userService.getById(user.getId());
 
     Set<Option> options = survey.getOptions().stream()
@@ -73,7 +77,7 @@ public class SurveyService {
   public void removeOption(Long surveyId, Long optionId) {
     Survey survey = getById(surveyId);
 
-    Option optionToRemove = optionRepository.findById(optionId).orElseThrow();
+    Option optionToRemove = getOptionById(optionId);
 
     if (survey.getOptions().remove(optionToRemove)) {
       surveyRepository.save(survey);

@@ -25,6 +25,7 @@ public class SurveyForm {
       + "collecting Songs and open survey for actual voting.")
   private SurveyState state;
 
+  @NotNull
   @ApiModelProperty(required = true, notes = "Title of whole survey, usually its purpose.",
       example = "Songs for New Year party")
   private String title;
@@ -43,7 +44,7 @@ public class SurveyForm {
   private Integer choicesByUser;
 
   @NotNull
-  @ApiModelProperty(notes = "If 'true' then survey should not be visible for non-admins.",
+  @ApiModelProperty(required = true, notes = "If 'true' then survey should not be visible for non-admins.",
       example = "false")
   private Boolean isHidden;
 

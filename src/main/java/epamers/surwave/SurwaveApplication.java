@@ -9,5 +9,4 @@ public class SurwaveApplication {
   public static void main(String[] args) {
     SpringApplication.run(SurwaveApplication.class, args);
   }
-
 }

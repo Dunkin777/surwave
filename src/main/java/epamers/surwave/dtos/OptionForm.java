@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class OptionForm {
 
   @NotNull
-  @ApiModelProperty(notes = "Id of the Song that this Option is based on.",
+  @ApiModelProperty(required = true, notes = "Id of the Song that this Option is based on.",
       example = "12")
   private Long songId;
 

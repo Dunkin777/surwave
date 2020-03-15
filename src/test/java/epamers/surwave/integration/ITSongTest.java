@@ -83,7 +83,7 @@ public class ITSongTest extends IntegrationTest {
         .then()
         .statusCode(SC_OK);
 
-    //Check successfullness of the change
+    //Check successfulness of the change
     givenJson()
         .get(SONG_URL + "/all")
         .then()

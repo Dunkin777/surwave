@@ -107,7 +107,8 @@ public class SurveyController {
   @ApiOperation(
       value = "Create Option for Survey",
       notes = "Awaits OptionForm as body. Returns new entity url in 'Location' header. "
-          + "Creates and adds to Survey new Option based on existing Song."
+          + "Creates and adds to Survey new Option based on existing Song. Current user "
+          + "will be remembered as Option creator."
   )
   public void addOption(@ApiIgnore @AuthenticationPrincipal User user, @ApiParam(value = "Survey ID") @PathVariable Long surveyId,
       @ApiParam(value = "Data for new Option") @RequestBody @Valid OptionForm optionForm, @ApiIgnore HttpServletResponse response) {

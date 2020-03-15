@@ -65,7 +65,8 @@ public class SongController {
   @ApiOperation(
       value = "Create a new Song",
       notes = "Awaits SongForm as request body. File from it will be stored and processed in "
-          + "Surwave and can be retrieved later. Returns new Song id in the Location header."
+          + "Surwave and can be retrieved later. Returns new Song id in the Location header. "
+          + "Will use existing Song if finds one by title and performer."
   )
   public void create(@ModelAttribute @Valid SongForm songForm, @ApiIgnore HttpServletResponse response) {
     Song song = converter.convert(songForm, Song.class);
