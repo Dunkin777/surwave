@@ -10,6 +10,9 @@ import lombok.Data;
 @ApiModel(description = "Option.")
 public class OptionView {
 
+  @ApiModelProperty(notes = "Option id.")
+  private Long id;
+
   @ApiModelProperty(notes = "Song that this Option is based on.")
   private SongView song;
 

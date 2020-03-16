@@ -18,6 +18,7 @@ public class OptionToOptionViewConverter implements Converter<Option, OptionView
     SongView song = songToSongViewConverter.convert(option.getSong());
 
     return OptionView.builder()
+        .id(option.getId())
         .song(song)
         .comment(option.getComment())
         .build();

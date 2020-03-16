@@ -12,6 +12,7 @@ import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyState;
+import epamers.surwave.entities.SurveyType;
 import epamers.surwave.entities.User;
 import epamers.surwave.repos.OptionRepository;
 import epamers.surwave.repos.SurveyRepository;
@@ -41,6 +42,7 @@ public class SurveyServiceTest {
   private static final Long NONEXISTENT_SURVEY_ID = 100L;
   private static final String SURVEY_DESCRIPTION = "Please think twice before choosing!";
   private static final String USER_ID = "someGoogleId";
+  private static final Integer SURVEY_PROPOSALS_BY_USER = 5;
 
   @InjectMocks
   SurveyService surveyService;
@@ -59,9 +61,6 @@ public class SurveyServiceTest {
 
   @Mock
   User user;
-
-  @Captor
-  ArgumentCaptor<Survey> surveyCaptor;
 
   private Survey survey;
   private Song song;
@@ -88,7 +87,7 @@ public class SurveyServiceTest {
         .choicesByUser(3)
         .description(SURVEY_DESCRIPTION)
         .id(SURVEY_ID)
-        .proposalsByUser(3)
+        .proposalsByUser(SURVEY_PROPOSALS_BY_USER)
         .options(options)
         .build();
 
@@ -135,10 +134,24 @@ public class SurveyServiceTest {
   }
 
   @Test
-  public void update_validArguments_success() {
-    surveyService.update(SURVEY_ID, survey);
+  public void update_validArguments_onlyAllowedFieldsUpdated() {
+    final String newDescription = "Changed description";
+    final String newTitle = "Changed title";
+    final Integer newProposalsByUser = 66;
 
-    verify(surveyRepository).save(survey);
+    Survey surveyNewValues = ClassicSurvey.builder()
+        .title(newTitle)
+        .description(newDescription)
+        .proposalsByUser(newProposalsByUser)
+        .type(SurveyType.RANGED)
+        .build();
+
+    surveyService.update(SURVEY_ID, surveyNewValues);
+
+    assertEquals(newDescription, survey.getDescription());
+    assertEquals(newTitle, survey.getTitle());
+    assertEquals(SURVEY_PROPOSALS_BY_USER, survey.getProposalsByUser());
+    assertEquals(SurveyType.CLASSIC, survey.getType());
   }
 
   @Test(expected = NoSuchElementException.class)
@@ -152,27 +165,20 @@ public class SurveyServiceTest {
   }
 
   @Test
-  public void removeSong_existentSong_songRemovedAndDeleted() {
+  public void removeOption_existentOption_songRemovedAndDeleted() {
     when(optionRepository.findById(OPTION_ID)).thenReturn(Optional.of(option));
 
-    surveyService.removeOption(SURVEY_ID, OPTION_ID);
+    surveyService.removeOption(OPTION_ID);
 
-    verify(surveyRepository).save(surveyCaptor.capture());
     verify(optionRepository).delete(any());
-    assertTrue(surveyCaptor.getValue().getOptions().isEmpty());
   }
 
   @Test(expected = NoSuchElementException.class)
-  public void removeSong_nonExistentSong_nothingRemoved() {
-    Long otherSongId = 40L;
-    Song otherSong = Song.builder()
-        .id(otherSongId)
-        .build();
-    when(songService.getById(otherSongId)).thenReturn(otherSong);
+  public void removeOption_nonExistentOption_nothingRemoved() {
+    Long otherOptionId = 40L;
 
-    surveyService.removeOption(SURVEY_ID, otherSongId);
+    surveyService.removeOption(otherOptionId);
 
-    verify(surveyRepository, never()).save(any());
     verify(optionRepository, never()).delete(any());
   }
 }

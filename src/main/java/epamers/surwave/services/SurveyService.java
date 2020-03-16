@@ -65,24 +65,17 @@ public class SurveyService {
       throw new IllegalArgumentException();
     }
 
-    Set<Option> option = getById(id).getOptions();
-
-    survey.setId(id);
-    survey.setOptions(option);
-
-    surveyRepository.save(survey);
+    Survey storedSurvey = getById(id);
+    storedSurvey.setDescription(survey.getDescription());
+    storedSurvey.setTitle(survey.getTitle());
+    storedSurvey.setState(survey.getState());
+    storedSurvey.setIsHidden(survey.getIsHidden());
   }
 
   @Transactional
-  public void removeOption(Long surveyId, Long optionId) {
-    Survey survey = getById(surveyId);
-
+  public void removeOption(Long optionId) {
     Option optionToRemove = getOptionById(optionId);
-
-    if (survey.getOptions().remove(optionToRemove)) {
-      surveyRepository.save(survey);
-      optionRepository.delete(optionToRemove);
-    }
+    optionRepository.delete(optionToRemove);
   }
 
   @Transactional
@@ -101,8 +94,6 @@ public class SurveyService {
     option.setSurvey(survey);
     option.setUser(currentUser);
     option.setSong(song);
-
-    survey.getOptions().add(option);
 
     return optionRepository.save(option);
   }
