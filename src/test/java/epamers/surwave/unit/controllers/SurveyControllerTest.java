@@ -10,12 +10,15 @@ import epamers.surwave.controllers.SurveyController;
 import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyView;
+import epamers.surwave.dtos.VoteForm;
 import epamers.surwave.entities.ClassicSurvey;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyType;
 import epamers.surwave.entities.User;
+import epamers.surwave.entities.Vote;
 import epamers.surwave.services.SurveyService;
+import java.util.Collections;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.Before;
@@ -27,29 +30,27 @@ import org.springframework.core.convert.ConversionService;
 
 public class SurveyControllerTest {
 
-  @InjectMocks
-  SurveyController surveyController;
-
-  @Mock
-  private SurveyService surveyService;
-
-  @Mock
-  private ConversionService converter;
-
-  @Mock
-  HttpServletResponse response;
-
-  @Mock
-  private User user;
-
   private final Long SONG_ID = 55L;
   private final Long SURVEY_ID = 77L;
+  @InjectMocks
+  SurveyController surveyController;
+  @Mock
+  HttpServletResponse response;
+  @Mock
+  private SurveyService surveyService;
+  @Mock
+  private ConversionService converter;
+  @Mock
+  private User user;
   private Survey survey;
   private Song song;
+  private Vote vote;
   private List<Survey> surveys;
   private SurveyForm surveyForm;
   private SurveyView surveyView;
   private SongForm songForm;
+  private VoteForm voteForm;
+  private List<VoteForm> voteForms;
 
   @Before
   public void setUp() {
@@ -61,6 +62,11 @@ public class SurveyControllerTest {
     songForm = SongForm.builder()
         .build();
 
+    voteForm = VoteForm.builder()
+        .build();
+
+    voteForms = List.of(voteForm);
+
     surveyView = SurveyView.builder()
         .id(SURVEY_ID)
         .type(SurveyType.CLASSIC)
@@ -68,6 +74,9 @@ public class SurveyControllerTest {
 
     survey = ClassicSurvey.builder()
         .id(SURVEY_ID)
+        .build();
+
+    vote = Vote.builder()
         .build();
 
     surveys = List.of(survey);
@@ -82,6 +91,7 @@ public class SurveyControllerTest {
     when(converter.convert(survey, SurveyView.class)).thenReturn(surveyView);
     when(converter.convert(surveyForm, Survey.class)).thenReturn(survey);
     when(converter.convert(songForm, Song.class)).thenReturn(song);
+    when(converter.convert(voteForm, Vote.class)).thenReturn(vote);
   }
 
   @Test
@@ -119,5 +129,12 @@ public class SurveyControllerTest {
     surveyController.removeSongFromSurvey(SURVEY_ID, SONG_ID);
 
     verify(surveyService).removeSong(SURVEY_ID, SONG_ID);
+  }
+
+  @Test
+  public void addVotes_success(){
+    surveyController.addVotes(voteForms);
+
+    verify(surveyService).addVotes(List.of(vote));
   }
 }

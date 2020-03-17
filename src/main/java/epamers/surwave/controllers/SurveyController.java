@@ -111,17 +111,16 @@ public class SurveyController {
     surveyService.removeSong(surveyId, songId);
   }
 
-  @PutMapping("/{surveyId}/vote")
+  @PutMapping("/vote")
   @ApiOperation(
       value = "Add Collection of Votes to Survey",
       notes = "Awaits Survey ID as a path variable and Collection of VoteForms as body."
   )
-  public void addVotes(@ApiIgnore @AuthenticationPrincipal User user, @ApiParam(value = "Survey ID") @PathVariable Long surveyId,
-      @ApiParam(value = "Votes to add") @RequestBody @Valid List<VoteForm> voteForms) {
+  public void addVotes(@ApiParam(value = "Votes to add") @RequestBody @Valid List<VoteForm> voteForms) {
     List<Vote> votes = voteForms.stream()
         .map(voteForm -> converter.convert(voteForm, Vote.class))
         .collect(toList());
 
-    surveyService.addVotes(surveyId, votes);
+    surveyService.addVotes(votes);
   }
 }

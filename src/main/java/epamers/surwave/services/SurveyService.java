@@ -8,8 +8,6 @@ import epamers.surwave.entities.User;
 import epamers.surwave.repos.OptionRepository;
 import epamers.surwave.repos.SurveyRepository;
 import epamers.surwave.entities.Vote;
-import epamers.surwave.repos.OptionRepository;
-import epamers.surwave.repos.SurveyRepository;
 import epamers.surwave.repos.VoteRepository;
 import java.util.List;
 import java.util.Set;
@@ -91,7 +89,7 @@ public class SurveyService {
   }
 
   @Transactional
-  public void addVotes(Long surveyId, List<Vote> votes) {
+  public void addVotes(List<Vote> votes) {
     for (Vote vote : votes) {
       voteRepository.save(vote);
     }
