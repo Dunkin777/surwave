@@ -27,20 +27,16 @@ public class SongService {
 
   @Transactional
   public Song getOrCreate(Song song, MultipartFile mediaFile) {
-    if (song == null) {
-      throw new IllegalArgumentException();
-    }
 
-    Optional<Song> dbSong = songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(song.getTitle(), song.getPerformer());
-    if (dbSong.isPresent()) {
-      song = dbSong.get();
-
-    } else {
-      song = songRepository.save(song);
-      String mediaPath = mediaFileService.upload(mediaFile, song.getId());
-      song.setMediaPath(mediaPath);
-    }
-    return song;
+    return Optional.ofNullable(song)
+        .map(s -> songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(song.getTitle(), song.getPerformer())
+            .orElseGet(() -> {
+              Song newSong = songRepository.save(song);
+              String mediaPath = mediaFileService.upload(mediaFile, newSong.getId());
+              newSong.setMediaPath(mediaPath);
+              return newSong;
+            }))
+        .orElseThrow(IllegalArgumentException::new);
   }
 
   @Transactional
