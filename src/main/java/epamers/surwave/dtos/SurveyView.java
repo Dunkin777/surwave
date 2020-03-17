@@ -48,4 +48,7 @@ public class SurveyView {
 
   @ApiModelProperty(notes = "Setting only for RANGED Survey type. Currently unused.")
   private Boolean logarithmicRatingScale;
+
+  @ApiModelProperty(notes = "If 'true' then current user already voted in this survey.")
+  private Boolean isVoted;
 }
