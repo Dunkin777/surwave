@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class VoteFormToVoteConverter implements Converter<VoteForm, Vote> {
 
-
   private final UserService userService;
   private final OptionRepository optionRepository;
 
