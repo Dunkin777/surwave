@@ -33,13 +33,13 @@ public class SongService {
 
     Optional<Song> dbSong = songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(song.getTitle(), song.getPerformer());
     if (dbSong.isPresent()) {
-      return dbSong.get();
+      song = dbSong.get();
+
+    } else {
+      song = songRepository.save(song);
+      String mediaPath = mediaFileService.upload(mediaFile, song.getId());
+      song.setMediaPath(mediaPath);
     }
-
-    song = songRepository.save(song);
-    String mediaPath = mediaFileService.upload(mediaFile, song.getId());
-    song.setMediaPath(mediaPath);
-
     return song;
   }
 
