@@ -91,6 +91,14 @@ public class SurveyService {
   @Transactional
   public void addVotes(List<Vote> votes) {
     for (Vote vote : votes) {
+      Long optionId = vote.getOption().getId();
+      Option option = optionRepository.getOne(optionId);
+
+      String participantId = vote.getParticipant().getId();
+      User participant = userService.getById(participantId);
+
+      vote.setOption(option);
+      vote.setParticipant(participant);
       voteRepository.save(vote);
     }
   }

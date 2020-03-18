@@ -16,15 +16,15 @@ import lombok.NoArgsConstructor;
 public class VoteForm {
 
   @NotNull
-  @ApiModelProperty(required = true, notes = "Id of Option that user voted for.")
+  @ApiModelProperty(required = true, notes = "Id of Option that user voted for.", example = "42")
   private Long optionId;
 
   @NotNull
-  @ApiModelProperty(required = true, notes = "Id of voted User")
+  @ApiModelProperty(required = true, notes = "Id of voted User", example = "42")
   private String participantId;
 
   @NotNull
   @ApiModelProperty(required = true, notes = "Resembles the fact of vote itself, preferably 0 or 1, also represents"
-      + " position of Option in RANGED survey, currently unused")
+      + " position of Option in RANGED survey, currently unused", example = "1")
   private Integer rating;
 }

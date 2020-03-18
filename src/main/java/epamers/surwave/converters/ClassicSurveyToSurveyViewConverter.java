@@ -4,6 +4,7 @@ import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.entities.ClassicSurvey;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.User;
+import epamers.surwave.entities.Vote;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.Authentication;
@@ -31,8 +32,6 @@ public class ClassicSurveyToSurveyViewConverter extends SurveyToSurveyViewConver
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     User currentUser = (User) authentication.getPrincipal();
 
-    return survey.getVotes().stream()
-        .filter(vote -> vote.getParticipant().equals(currentUser))
-        .count() == surveyView.getChoicesByUser();
+    return survey.getVotes().stream().map(Vote::getParticipant).anyMatch(currentUser::equals);
   }
 }

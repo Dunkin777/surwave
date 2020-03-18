@@ -48,7 +48,7 @@ public abstract class Survey {
         .collect(toSet());
   }
 
-  public Set<Vote> getVotes(){
+  public Set<Vote> getVotes() {
     return options.stream()
         .map(Option::getVotes)
         .flatMap(Collection::stream)

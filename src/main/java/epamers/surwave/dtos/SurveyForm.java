@@ -18,11 +18,11 @@ import lombok.NoArgsConstructor;
 public class SurveyForm {
 
   @NotNull
-  @ApiModelProperty(required = true, notes = "Type of Survey. RANGED is currently unused.")
+  @ApiModelProperty(required = true, notes = "Type of Survey. RANGED is currently unused.", example = "CLASSIC")
   private SurveyType type;
 
   @ApiModelProperty(notes = "State. Use CREATED for new Surveys, change to STARTED to finish "
-      + "collecting Songs and open survey for actual voting.")
+      + "collecting Songs and open survey for actual voting.", example = "CREATED")
   private SurveyState state;
 
   @ApiModelProperty(notes = "Title of whole survey, usually its purpose.",
