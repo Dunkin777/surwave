@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Builder
 @Data
@@ -22,4 +23,8 @@ public class SongForm {
   @NotNull
   @ApiModelProperty(required = true, notes = "Name of the composition/track.", example = "Fly As A Bird")
   private String title;
+
+  @NotNull
+  @ApiModelProperty(required = true, notes = "File")
+  private MultipartFile mediaFile;
 }

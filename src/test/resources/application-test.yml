@@ -8,14 +8,11 @@ spring:
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:test;DB_CLOSE_ON_EXIT=FALSE
-
   servlet:
     multipart:
-      max-file-size: 10MB
-
-app:
-  upload:
-    dir: data
+      max-file-size: 20MB
+      max-request-size: 20MB
 
 surwave:
   authType: disabled
+  uploadDir: data

@@ -34,8 +34,12 @@ public class SurveyService {
     return surveyRepository.findById(id).orElseThrow();
   }
 
+  public Option getOptionById(Long id) {
+    return optionRepository.findById(id).orElseThrow();
+  }
+
   public Survey getByIdForCurrentUser(Long id, User user) {
-    Survey survey = surveyRepository.findById(id).orElseThrow();
+    Survey survey = getById(id);
     User currentUser = userService.getById(user.getId());
 
     Set<Option> options = survey.getOptions().stream()
@@ -64,28 +68,37 @@ public class SurveyService {
       throw new IllegalArgumentException();
     }
 
-    Set<Option> option = getById(id).getOptions();
-
-    survey.setId(id);
-    survey.setOptions(option);
-
-    surveyRepository.save(survey);
+    Survey storedSurvey = getById(id);
+    storedSurvey.setDescription(survey.getDescription());
+    storedSurvey.setTitle(survey.getTitle());
+    storedSurvey.setState(survey.getState());
+    storedSurvey.setIsHidden(survey.getIsHidden());
   }
 
   @Transactional
-  public void removeSong(Long surveyId, Long songId) {
-    Survey survey = getById(surveyId);
-    Song song = songService.getById(songId);
+  public void removeOption(Long optionId) {
+    Option optionToRemove = getOptionById(optionId);
+    optionRepository.delete(optionToRemove);
+  }
 
-    Option optionToRemove = survey.getOptions().stream()
-        .filter(option -> option.getSong().equals(song))
-        .findFirst()
-        .orElseThrow();
-
-    if (survey.getOptions().remove(optionToRemove)) {
-      surveyRepository.save(survey);
-      optionRepository.delete(optionToRemove);
+  @Transactional
+  public Option addOption(Long surveyId, Option option, User currentUser) {
+    if (option == null) {
+      throw new IllegalArgumentException();
     }
+
+    Survey survey = getById(surveyId);
+    Song song = songService.getById(option.getSong().getId());
+
+    if (survey.getSongs().contains(song)) {
+      throw new IllegalArgumentException("Given survey already contains this song.");
+    }
+
+    option.setSurvey(survey);
+    option.setUser(currentUser);
+    option.setSong(song);
+
+    return optionRepository.save(option);
   }
 
   @Transactional

@@ -8,5 +8,5 @@ public class Contract {
 
   public static final String SONG_URL = "/song";
   public static final String SURVEY_URL = "/survey";
-  public static final String UPLOAD_URL = "/upload";
+  public static final String OPTION_URL = "/option";
 }

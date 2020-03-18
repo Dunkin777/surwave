@@ -23,10 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class ITSurveyTest extends SecurityTest {
 
-  private final String SONG_PERFORMER = "Elton John Lennon";
-  private final String SONG_TITLE = "Korobeiniki (feat. George Gershwin)";
-  private final String SURVEY_TITLE = "Sergei Yurzin Birthday's Songs";
-  private final String SURVEY_DESCRIPTION = "Please think twice before choosing!";
+  private static final String SONG_PERFORMER = "Elton John Lennon";
+  private static final String SONG_TITLE = "Korobeiniki (feat. George Gershwin)";
+  private static final String SURVEY_TITLE = "Sergei Yurzin Birthday's Songs";
+  private static final String SURVEY_DESCRIPTION = "Please think twice before choosing!";
 
   @Autowired
   private SurveyRepository surveyRepository;
@@ -37,17 +37,11 @@ public class ITSurveyTest extends SecurityTest {
   @Autowired
   private UserRepository userRepository;
 
-  private SongForm songForm;
   private SurveyForm surveyForm;
 
   @Before
   public void setUp() {
     RestAssured.port = port;
-
-    songForm = SongForm.builder()
-        .performer(SONG_PERFORMER)
-        .title(SONG_TITLE)
-        .build();
 
     surveyForm = SurveyForm.builder()
         .type(CLASSIC)

@@ -8,17 +8,14 @@ spring:
     properties:
       dialect: org.hibernate.dialect.PostgreSQLDialect
       hibernate.temp.use_jdbc_metadata_defaults: false
-
   servlet:
     multipart:
-      max-file-size: 10MB
-
-app:
-  upload:
-    dir: data
+      max-file-size: 20MB
+      max-request-size: 20MB
 
 surwave:
-  authType: basic
+  authType: oauth2
+  uploadDir: data
 
 security:
   oauth2:

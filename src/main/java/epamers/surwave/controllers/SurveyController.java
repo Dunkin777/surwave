@@ -1,12 +1,14 @@
 package epamers.surwave.controllers;
 
-import static epamers.surwave.core.Contract.SONG_URL;
+import static epamers.surwave.core.Contract.OPTION_URL;
 import static epamers.surwave.core.Contract.SURVEY_URL;
 import static java.util.stream.Collectors.toList;
 
+import epamers.surwave.dtos.OptionForm;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.dtos.VoteForm;
+import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.User;
 import epamers.surwave.entities.Vote;
@@ -44,7 +46,7 @@ public class SurveyController {
       value = "Get All Surveys",
       notes = "Returns all Surveys ever created."
   )
-  public List<SurveyView> getAllSurveys() {
+  public List<SurveyView> getAll() {
     return surveyService.getAll().stream()
         .map(s -> converter.convert(s, SurveyView.class))
         .collect(toList());
@@ -53,10 +55,9 @@ public class SurveyController {
   @GetMapping("/{id}")
   @ApiOperation(
       value = "Get Survey",
-      notes = "Awaits Survey ID as path variable. Returns SurveyView. "
-          + "Songs for all users, without filtration."
+      notes = "Awaits Survey ID as path variable. Returns SurveyView. Songs for all users, without filtration."
   )
-  public SurveyView getSurvey(@ApiParam(value = "Survey ID") @PathVariable Long id) {
+  public SurveyView get(@ApiParam(value = "Survey ID") @PathVariable Long id) {
     Survey survey = surveyService.getById(id);
 
     return converter.convert(survey, SurveyView.class);
@@ -65,10 +66,10 @@ public class SurveyController {
   @GetMapping("/{id}/filtered")
   @ApiOperation(
       value = "Get Survey for current User",
-      notes = "Awaits Survey ID as a path variable. Returns SurveyView. Requested Survey will "
-          + "contain only Songs that can be used as voting options for the current user."
+      notes = "Awaits Survey ID as a path variable. Returns SurveyView. Requested Survey will contain only Songs that can be used as voting options "
+          + "for the current user."
   )
-  public SurveyView getSurveyForUser(@ApiIgnore @AuthenticationPrincipal User user,
+  public SurveyView getForUser(@ApiIgnore @AuthenticationPrincipal User user,
       @ApiParam(value = "Survey ID") @PathVariable Long id) {
     Survey survey = surveyService.getByIdForCurrentUser(id, user);
 
@@ -79,36 +80,49 @@ public class SurveyController {
   @ResponseStatus(HttpStatus.CREATED)
   @ApiOperation(
       value = "Create Survey",
-      notes = "Awaits SongForm as body. Returns new entity url in 'Location' header. "
-          + "Creates new Survey with 0 Songs."
+      notes = "Awaits SongForm as body. Returns new entity url in 'Location' header. Creates new Survey with 0 Songs."
   )
-  public void createSurvey(
+  public void create(
       @ApiParam(value = "Data for new Survey") @RequestBody @Valid SurveyForm surveyForm,
       @ApiIgnore HttpServletResponse response) {
-    Survey survey = surveyService.create(converter.convert(surveyForm, Survey.class));
-    response.addHeader("Location", SURVEY_URL + "/" + survey.getId());
+    Survey survey = converter.convert(surveyForm, Survey.class);
+    Long surveyId = surveyService.create(survey).getId();
+    response.addHeader("Location", SURVEY_URL + "/" + surveyId);
   }
 
   @PutMapping("/{id}")
   @ApiOperation(
       value = "Update Survey",
-      notes = "Awaits Survey ID as a path variable and SurveyForm as body. Allows to change "
-          + "basic Survey properties."
+      notes = "Awaits Survey ID as a path variable and SurveyForm as body. Allows to change basic Survey properties."
   )
-  public void updateSurvey(@ApiParam(value = "Survey ID") @PathVariable Long id,
+  public void update(@ApiParam(value = "Survey ID") @PathVariable Long id,
       @ApiParam(value = "Updated Survey data") @RequestBody @Valid SurveyForm surveyForm) {
-    surveyService.update(id, converter.convert(surveyForm, Survey.class));
+    Survey survey = converter.convert(surveyForm, Survey.class);
+    surveyService.update(id, survey);
   }
 
-  @DeleteMapping("/{surveyId}" + SONG_URL + "/{songId}")
+  @PostMapping("/{surveyId}" + OPTION_URL)
+  @ResponseStatus(HttpStatus.CREATED)
   @ApiOperation(
-      value = "Remove Song from Survey",
-      notes = "Awaits Survey ID and Song ID as path variables. Allows to remove certain song from "
-          + "specified survey."
+      value = "Create Option for Survey",
+      notes = "Awaits OptionForm as body. Returns new entity url in 'Location' header. Creates and adds to Survey new Option based on existing Song. "
+          + "Current user will be remembered as Option creator."
   )
-  public void removeSongFromSurvey(@ApiParam(value = "Survey ID") @PathVariable Long surveyId,
-      @ApiParam(value = "Song ID") @PathVariable Long songId) {
-    surveyService.removeSong(surveyId, songId);
+  public void addOption(@ApiIgnore @AuthenticationPrincipal User user, @ApiParam(value = "Survey ID") @PathVariable Long surveyId,
+      @ApiParam(value = "Data for new Option") @RequestBody @Valid OptionForm optionForm, @ApiIgnore HttpServletResponse response) {
+    Option option = converter.convert(optionForm, Option.class);
+    Long optionId = surveyService.addOption(surveyId, option, user).getId();
+    response.addHeader("Location", SURVEY_URL + "/" + optionId);
+  }
+
+  @DeleteMapping("/{surveyId}" + OPTION_URL + "/{optionId}")
+  @ApiOperation(
+      value = "Remove Option",
+      notes = "Awaits Survey ID and Song ID as path variables. Allows to remove certain song from survey. As Option can be used only in one Survey, "
+          + "SurveyId is not needed."
+  )
+  public void removeOption(@ApiParam(value = "Option ID") @PathVariable Long optionId) {
+    surveyService.removeOption(optionId);
   }
 
   @PutMapping("/vote")
