@@ -12,10 +12,8 @@ import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.dtos.VoteForm;
 import epamers.surwave.entities.ClassicSurvey;
-import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyType;
-import epamers.surwave.entities.User;
 import epamers.surwave.entities.Vote;
 import epamers.surwave.services.SurveyService;
 import java.util.List;
@@ -40,12 +38,8 @@ public class SurveyControllerTest {
   private SurveyService surveyService;
   @Mock
   private ConversionService converter;
-  @Mock
-  private User user;
 
   private Survey survey;
-
-  private Song song;
   private Vote vote;
   private List<Survey> surveys;
   private SurveyForm surveyForm;
@@ -88,7 +82,6 @@ public class SurveyControllerTest {
     when(surveyService.create(survey)).thenReturn(survey);
     when(converter.convert(survey, SurveyView.class)).thenReturn(surveyView);
     when(converter.convert(surveyForm, Survey.class)).thenReturn(survey);
-    when(converter.convert(songForm, Song.class)).thenReturn(song);
     when(converter.convert(voteForm, Vote.class)).thenReturn(vote);
   }
 
