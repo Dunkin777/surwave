@@ -27,6 +27,9 @@ import org.springframework.core.convert.ConversionService;
 
 public class SurveyControllerTest {
 
+  private static final Long OPTION_ID = 55L;
+  private static final Long SURVEY_ID = 77L;
+
   @InjectMocks
   SurveyController surveyController;
 
@@ -42,10 +45,8 @@ public class SurveyControllerTest {
   @Mock
   private User user;
 
-  private final Long SONG_ID = 55L;
-  private final Long SURVEY_ID = 77L;
   private Survey survey;
-  private Song song;
+
   private List<Survey> surveys;
   private SurveyForm surveyForm;
   private SurveyView surveyView;
@@ -72,52 +73,47 @@ public class SurveyControllerTest {
 
     surveys = List.of(survey);
 
-    song = Song.builder()
-        .id(SONG_ID)
-        .build();
-
     when(surveyService.getAll()).thenReturn(surveys);
     when(surveyService.getById(SURVEY_ID)).thenReturn(survey);
     when(surveyService.create(survey)).thenReturn(survey);
     when(converter.convert(survey, SurveyView.class)).thenReturn(surveyView);
     when(converter.convert(surveyForm, Survey.class)).thenReturn(survey);
-    when(converter.convert(songForm, Song.class)).thenReturn(song);
   }
 
   @Test
-  public void getAllSurveys_success() {
-    List<SurveyView> returnedSurveys = surveyController.getAllSurveys();
+  public void getAll_success() {
+    List<SurveyView> returnedSurveys = surveyController.getAll();
 
     assertEquals(1, returnedSurveys.size());
     assertTrue(returnedSurveys.contains(surveyView));
   }
 
   @Test
-  public void getSurvey_success() {
-    SurveyView returnedSurvey = surveyController.getSurvey(SURVEY_ID);
+  public void get_success() {
+    SurveyView returnedSurvey = surveyController.get(SURVEY_ID);
 
     assertEquals(surveyView, returnedSurvey);
   }
 
   @Test
-  public void createSurvey_success() {
-    surveyController.createSurvey(surveyForm, response);
+  public void create_success() {
+    surveyController.create(surveyForm, response);
 
     verify(surveyService).create(survey);
     verify(response).addHeader("Location", SURVEY_URL + "/" + SURVEY_ID);
   }
 
   @Test
-  public void updateSurvey_success() {
-    surveyController.updateSurvey(SURVEY_ID, surveyForm);
+  public void update_success() {
+    surveyController.update(SURVEY_ID, surveyForm);
 
     verify(surveyService).update(SURVEY_ID, survey);
   }
 
   @Test
-  public void removeSongFromSurvey_success() {
-    surveyController.removeSongFromSurvey(SURVEY_ID, SONG_ID);
+  public void removeOption_success() {
+    surveyController.removeOption(OPTION_ID);
 
-    verify(surveyService).removeSong(SURVEY_ID, SONG_ID);
+    verify(surveyService).removeOption(OPTION_ID);
   }
 }

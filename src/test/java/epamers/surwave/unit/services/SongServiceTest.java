@@ -2,12 +2,14 @@ package epamers.surwave.unit.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import epamers.surwave.entities.Song;
 import epamers.surwave.repos.SongRepository;
+import epamers.surwave.services.MediaFileService;
 import epamers.surwave.services.SongService;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -17,8 +19,15 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.web.multipart.MultipartFile;
 
 public class SongServiceTest {
+
+  private static final Long SONG_ID = 156L;
+  private static final Long SONG_NONEXISTENT_ID = 36L;
+  private static final String SONG_PERFORMER = "Felix Mendelssohn";
+  private static final String SONG_TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
+  private static final String SONG_MEDIA_PATH = "/data/1.mp3";
 
   @InjectMocks
   SongService songService;
@@ -26,24 +35,26 @@ public class SongServiceTest {
   @Mock
   SongRepository songRepository;
 
-  private final Long SONG_ID = 156L;
-  private final Long NONEXISTENT_ID = 36L;
-  private final String PERFORMER = "Felix Mendelson";
-  private final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
-  private final String COMMENT = "Starts in D#, then sudden change to another religion.";
+  @Mock
+  MediaFileService mediaFileService;
+
+  @Mock
+  MultipartFile multipartFile;
+
   private Song song;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     song = Song.builder()
-        .performer(PERFORMER)
-        .title(TITLE)
+        .performer(SONG_PERFORMER)
+        .title(SONG_TITLE)
         .id(SONG_ID)
+        .mediaPath(SONG_MEDIA_PATH)
         .build();
 
     when(songRepository.existsById(SONG_ID)).thenReturn(true);
-    when(songRepository.existsById(NONEXISTENT_ID)).thenReturn(false);
+    when(songRepository.existsById(SONG_NONEXISTENT_ID)).thenReturn(false);
     when(songRepository.findById(SONG_ID)).thenReturn(Optional.of(song));
     when(songRepository.findAll()).thenReturn(List.of(song));
     when(songRepository.save(song)).thenReturn(song);
@@ -72,36 +83,28 @@ public class SongServiceTest {
   }
 
   @Test
-  public void create_validSong_success() {
-    Song returnedSong = songService.create(song);
+  public void getOrCreate_newSong_created() {
+    Song returnedSong = songService.getOrCreate(song, multipartFile);
 
     verify(songRepository).save(song);
+    verify(mediaFileService).upload(multipartFile, song.getId());
     assertEquals(song, returnedSong);
   }
 
   @Test
-  public void getOrCreate_existingSong_success() {
-    when(songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(TITLE, PERFORMER)).thenReturn(Optional.of(song));
+  public void getOrCreate_existingSong_notCreated() {
+    Song existingSong = Song.builder().build();
+    when(songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(any(), any())).thenReturn(Optional.of(existingSong));
 
-    Song returnedSong = songService.getOrCreate(song);
+    Song returnedSong = songService.getOrCreate(song, multipartFile);
 
-    assertEquals(song, returnedSong);
-  }
-
-  @Test
-  public void getOrCreate_newSong_success() {
-    when(songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(TITLE, PERFORMER)).thenReturn(Optional.empty());
-
-    Song returnedSong = songService.getOrCreate(song);
-
-    verify(songRepository).findByTitleIgnoreCaseAndPerformerIgnoreCase(TITLE, PERFORMER);
-    verify(songRepository).save(song);
-    assertEquals(song, returnedSong);
+    verify(songRepository, never()).save(any());
+    assertEquals(existingSong, returnedSong);
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void create_nullArgument_exception() {
-    songService.create(null);
+  public void getOrCreate_nullSong_exception() {
+    songService.getOrCreate(null, multipartFile);
   }
 
   @Test
@@ -113,7 +116,7 @@ public class SongServiceTest {
 
   @Test(expected = NoSuchElementException.class)
   public void update_nonExistingId_exception() {
-    songService.update(NONEXISTENT_ID, song);
+    songService.update(SONG_NONEXISTENT_ID, song);
 
     verify(songRepository, never()).save(song);
   }
@@ -123,19 +126,5 @@ public class SongServiceTest {
     songService.update(SONG_ID, null);
 
     verify(songRepository, never()).save(song);
-  }
-
-  @Test
-  public void delete_existingId_success() {
-    songService.delete(SONG_ID);
-
-    verify(songRepository).deleteById(SONG_ID);
-  }
-
-  @Test
-  public void delete_nonExistingId_exception() {
-    songService.delete(NONEXISTENT_ID);
-
-    verify(songRepository, never()).deleteById(NONEXISTENT_ID);
   }
 }

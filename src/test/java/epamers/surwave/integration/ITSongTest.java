@@ -1,15 +1,19 @@
 package epamers.surwave.integration;
 
+import static com.jayway.restassured.RestAssured.given;
 import static epamers.surwave.core.Contract.SONG_URL;
+import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
 
 import com.jayway.restassured.RestAssured;
-import epamers.surwave.dtos.SongForm;
-import epamers.surwave.entities.Song;
+import com.jayway.restassured.response.Response;
 import epamers.surwave.repos.SongRepository;
-import epamers.surwave.repos.SurveyRepository;
+import java.io.File;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,38 +21,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class ITSongTest extends IntegrationTest {
 
-  private final String SONG_PERFORMER = "Brian Wilson";
-  private final String SONG_TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
+  private static final String SONG_PERFORMER = "Brian Wilson";
+  private static final String SONG_TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
 
   @Autowired
   private SongRepository songRepository;
 
-  @Autowired
-  private SurveyRepository surveyRepository;
-
-  private SongForm songForm;
-  private Song song;
-
   @Before
   public void setUp() {
     RestAssured.port = port;
-
-    songForm = SongForm.builder()
-        .performer(SONG_PERFORMER)
-        .title(SONG_TITLE)
-        .build();
-
-    song = Song.builder()
-        .performer(SONG_PERFORMER)
-        .mediaPath("")
-        .title(SONG_TITLE)
-        .build();
   }
 
   @After
   public void cleanUp() {
     songRepository.deleteAll();
-    surveyRepository.deleteAll();
   }
 
   @Test
@@ -60,9 +46,20 @@ public class ITSongTest extends IntegrationTest {
         .statusCode(SC_OK)
         .body("$", hasSize(0));
 
-    //Create a new Song (somehow)
-    Long newEntityId = songRepository.save(song).getId();
-    String newEntityURI = SONG_URL + "/" + newEntityId;
+    //Create a new Song
+    Response response = given()
+        .multiPart("mediaFile", new File("./readme.md"))
+        .formParam("performer", SONG_PERFORMER)
+        .formParam("title", SONG_TITLE)
+        .when()
+        .post(SONG_URL)
+        .then()
+        .statusCode(SC_CREATED)
+        .extract()
+        .response();
+
+    String newSongUri = response.getHeader("Location");
+    Integer newSongId = Integer.valueOf(newSongUri.substring(newSongUri.lastIndexOf("/") + 1));
 
     //Ensure that we have exactly one Song in repo
     givenJson()
@@ -70,25 +67,29 @@ public class ITSongTest extends IntegrationTest {
         .then()
         .statusCode(SC_OK)
         .body("$", hasSize(1))
+        .body("id", hasItem(newSongId))
+        .body("mediaPath", not(isEmptyOrNullString()))
         .body("title", hasItem(SONG_TITLE))
         .body("performer", hasItem(SONG_PERFORMER));
 
-    //Change some property of created Song
-    final String changedTitle = "Oh my!.. Title has changed & now it's even better!";
-    songForm.setTitle(changedTitle);
-
-    givenJson()
-        .body(songForm)
-        .put(newEntityURI)
+    //Try to add already existing Song
+    given()
+        .multiPart("mediaFile", new File("./readme.md"))
+        .formParam("performer", SONG_PERFORMER)
+        .formParam("title", SONG_TITLE)
+        .when()
+        .post(SONG_URL)
         .then()
-        .statusCode(SC_OK);
+        .statusCode(SC_CREATED);
 
-    //Check successfullness of the change
+    //Check that it has returned the same location
+    assertEquals(newSongUri, response.getHeader("Location"));
+
+    //Check that we still have one Song
     givenJson()
         .get(SONG_URL + "/all")
         .then()
         .statusCode(SC_OK)
-        .body("$", hasSize(1))
-        .body("title", hasItem(changedTitle));
+        .body("$", hasSize(1));
   }
 }

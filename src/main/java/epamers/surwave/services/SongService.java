@@ -7,12 +7,14 @@ import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Service
 public class SongService {
 
   private final SongRepository songRepository;
+  private final MediaFileService mediaFileService;
 
   public List<Song> getAll() {
     return songRepository.findAll();
@@ -23,18 +25,19 @@ public class SongService {
   }
 
   @Transactional
-  public Song create(Song song) {
+  public Song getOrCreate(Song song, MultipartFile mediaFile) {
     if (song == null) {
       throw new IllegalArgumentException();
     }
 
-    return songRepository.save(song);
-  }
-
-  @Transactional
-  public Song getOrCreate(Song song) {
     return songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(song.getTitle(), song.getPerformer())
-        .orElseGet(() -> songRepository.save(song));
+        .orElseGet(() -> {
+          Song newSong = songRepository.save(song);
+          String mediaPath = mediaFileService.upload(mediaFile, newSong.getId());
+          newSong.setMediaPath(mediaPath);
+          return newSong;
+        });
+
   }
 
   @Transactional
@@ -49,12 +52,5 @@ public class SongService {
 
     song.setId(id);
     songRepository.save(song);
-  }
-
-  @Transactional
-  public void delete(Long id) {
-    if (songRepository.existsById(id)) {
-      songRepository.deleteById(id);
-    }
   }
 }

@@ -1,5 +1,6 @@
 package epamers.surwave.unit.controllers;
 
+import static epamers.surwave.core.Contract.SONG_URL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -11,17 +12,23 @@ import epamers.surwave.controllers.SongController;
 import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SongView;
 import epamers.surwave.entities.Song;
-import epamers.surwave.services.MediaUploadService;
+import epamers.surwave.services.MediaFileService;
 import epamers.surwave.services.SongService;
 import java.util.List;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.web.multipart.MultipartFile;
 
 public class SongControllerTest {
+
+  private static final Long SONG_ID = 156L;
+  private static final String PERFORMER = "Some Author";
+  private static final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
 
   @InjectMocks
   SongController songController;
@@ -30,15 +37,16 @@ public class SongControllerTest {
   SongService songService;
 
   @Mock
-  MediaUploadService uploadService;
+  MediaFileService uploadService;
 
   @Mock
   ConversionService converter;
 
-  private final Long SONG_ID = 156L;
-  private final String PERFORMER = "Some Author";
-  private final String TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
-  private final String COMMENT = "Starts in D#, then sudden change to another religion.";
+  @Mock
+  HttpServletResponse response;
+
+  @Mock
+  MultipartFile multipartFile;
 
   private Song song;
   private SongView songView;
@@ -53,37 +61,38 @@ public class SongControllerTest {
         .id(SONG_ID)
         .build();
 
-    songForm = SongForm.builder().build();
+    songForm = SongForm.builder()
+        .mediaFile(multipartFile)
+        .build();
     songView = SongView.builder().build();
 
     when(songService.getAll()).thenReturn(List.of(song));
-    when(songService.getById(SONG_ID)).thenReturn(song);
-    when(songService.create(song)).thenReturn(song);
     when(converter.convert(song, SongView.class)).thenReturn(songView);
     when(converter.convert(songForm, Song.class)).thenReturn(song);
   }
 
   @Test
-  public void getAllSongs_success() {
-    List<SongView> returnedSongs = songController.getAllSongs();
+  public void getAll_success() {
+    List<SongView> returnedSongs = songController.getAll();
 
     assertEquals(1, returnedSongs.size());
+    verify(converter).convert(song, SongView.class);
     assertTrue(returnedSongs.contains(songView));
   }
 
   @Test
-  public void updateSong_success() {
-    songController.updateSong(SONG_ID, songForm);
+  public void create_success() {
+    final Long newSongId = 5L;
+    Song createdSong = Song.builder()
+        .id(newSongId)
+        .build();
+
+    when(songService.getOrCreate(eq(song), any())).thenReturn(createdSong);
+
+    songController.create(songForm, response);
 
     verify(converter).convert(songForm, Song.class);
-    verify(songService).update(SONG_ID, song);
-  }
-
-  @Test
-  public void uploadMediaToOptionTest() {
-    songController.uploadMediaToSong(SONG_ID, any());
-
-    verify(songService).getById(SONG_ID);
-    verify(uploadService).upload(any(), eq(TITLE));
+    verify(songService).getOrCreate(song, multipartFile);
+    verify(response).addHeader("Location", SONG_URL + "/" + newSongId);
   }
 }

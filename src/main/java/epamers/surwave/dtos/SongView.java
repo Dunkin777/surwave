@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Builder
 @Data
-@ApiModel(description = "Song. Nothing more to say.")
+@ApiModel(description = "Song. Will be used for autocompletion endpoint.")
 public class SongView {
 
   private Long id;
@@ -19,6 +19,6 @@ public class SongView {
   @ApiModelProperty(notes = "Name of the composition/track.", example = "Main theme from Santa Barbara")
   private String title;
 
-  @ApiModelProperty(required = true, notes = "Path/URL to song media data.")
+  @ApiModelProperty(notes = "Path/URL to song media data.")
   private String mediaPath;
 }

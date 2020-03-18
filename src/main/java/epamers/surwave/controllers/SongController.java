@@ -1,31 +1,26 @@
 package epamers.surwave.controllers;
 
 import static epamers.surwave.core.Contract.SONG_URL;
-import static epamers.surwave.core.Contract.UPLOAD_URL;
 
 import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SongView;
 import epamers.surwave.entities.Song;
-import epamers.surwave.services.MediaUploadService;
 import epamers.surwave.services.SongService;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,42 +29,30 @@ public class SongController {
 
   private final SongService songService;
   private final ConversionService converter;
-  private final MediaUploadService uploadService;
 
   @GetMapping("/all")
   @ApiOperation(
       value = "Get all songs",
-      notes = "Returns a collection of SongViews, which will contain all Songs that were ever "
-          + "created in Surwave."
+      notes = "Returns a collection of SongViews, which will contain all Songs that were ever created in Surwave. No use for now on FE, in the "
+          + "future will be probably transformed into autocompletion endpoint."
   )
-  public List<SongView> getAllSongs() {
+  public List<SongView> getAll() {
     return songService.getAll().stream()
         .map(o -> converter.convert(o, SongView.class))
         .collect(Collectors.toList());
   }
 
-  @PutMapping("/{id}")
+  @PostMapping(consumes = {"multipart/form-data"})
+  @ResponseStatus(HttpStatus.CREATED)
   @ApiOperation(
-      value = "Update Song",
-      notes = "Awaits Song ID as a path variable and SongForm as body. Allows to change data of "
-          + "previously created Song (updated data will be available in all Surveys that are using "
-          + "given Song)"
+      value = "Create a new Song",
+      notes = "Awaits SongForm as request body. File from it will be stored and processed in Surwave and can be retrieved later. "
+          + "Returns new Song id in the Location header. Will use existing Song if finds one by title and performer."
   )
-  public void updateSong(@ApiParam(value = "Song ID") @PathVariable Long id,
-      @ApiParam(value = "New Song data") @RequestBody @Valid SongForm songForm) {
+  public void create(@ModelAttribute @Valid SongForm songForm, @ApiIgnore HttpServletResponse response) {
     Song song = converter.convert(songForm, Song.class);
-    songService.update(id, song);
-  }
+    Long songId = songService.getOrCreate(song, songForm.getMediaFile()).getId();
 
-  @PostMapping("/{id}" + UPLOAD_URL)
-  @ResponseStatus(HttpStatus.OK)
-  @ApiOperation(
-      value = "Upload media to Song",
-      notes = "Awaits Song ID as a path variable and file that you want to upload. File will be "
-          + "stored and processed in Surwave and can be retrieved later."
-  )
-  public void uploadMediaToSong(@ApiParam(value = "Song ID") @PathVariable Long id, @RequestParam("file") MultipartFile file) {
-    Song song = songService.getById(id);
-    uploadService.upload(file, song.getTitle());
+    response.addHeader("Location", SONG_URL + "/" + songId);
   }
 }
