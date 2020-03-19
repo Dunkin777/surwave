@@ -10,6 +10,7 @@ public class Utils {
 
   public static User getCurrentUser() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
     return (User) authentication.getPrincipal();
   }
 }

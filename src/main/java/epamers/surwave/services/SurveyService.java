@@ -106,7 +106,6 @@ public class SurveyService {
 
   @Transactional
   public void addVotes(Long surveyId, List<Vote> votes) {
-
     Survey survey = getById(surveyId);
 
     if (survey.getType().equals(SurveyType.CLASSIC)) {
