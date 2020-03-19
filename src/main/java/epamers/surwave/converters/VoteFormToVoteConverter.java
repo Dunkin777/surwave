@@ -4,7 +4,7 @@ import epamers.surwave.dtos.VoteForm;
 import epamers.surwave.entities.Option;
 import epamers.surwave.entities.User;
 import epamers.surwave.entities.Vote;
-import epamers.surwave.utils.SurveyUtils;
+import epamers.surwave.utils.Utils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,7 @@ public class VoteFormToVoteConverter implements Converter<VoteForm, Vote> {
         .id(voteForm.getOptionId())
         .build();
 
-    User user = SurveyUtils.getCurrentUser();
+    User user = Utils.getCurrentUser();
 
     return Vote.builder()
         .option(option)

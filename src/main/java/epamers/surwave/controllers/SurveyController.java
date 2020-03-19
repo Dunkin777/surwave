@@ -125,16 +125,16 @@ public class SurveyController {
     surveyService.removeOption(optionId);
   }
 
-  @PutMapping("/vote")
+  @PutMapping("/{surveyId}/vote")
   @ApiOperation(
       value = "Add Collection of Votes to Survey",
       notes = "Awaits Survey ID as a path variable and Collection of VoteForms as body."
   )
-  public void addVotes(@ApiParam(value = "Votes to add") @RequestBody @Valid List<VoteForm> voteForms) {
+  public void addVotes(@PathVariable Long surveyId, @ApiParam(value = "Votes to add") @RequestBody @Valid List<VoteForm> voteForms) {
     List<Vote> votes = voteForms.stream()
         .map(voteForm -> converter.convert(voteForm, Vote.class))
         .collect(toList());
 
-    surveyService.addVotes(votes);
+    surveyService.addVotes(surveyId, votes);
   }
 }

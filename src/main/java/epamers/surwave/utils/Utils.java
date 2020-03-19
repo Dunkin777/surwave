@@ -6,7 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @UtilityClass
-public class SurveyUtils {
+public class Utils {
 
   public static User getCurrentUser() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

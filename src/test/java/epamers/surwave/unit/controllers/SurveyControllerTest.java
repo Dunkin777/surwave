@@ -123,9 +123,9 @@ public class SurveyControllerTest {
   }
 
   @Test
-  public void addVotes_success(){
-    surveyController.addVotes(voteForms);
+  public void addVotes_success() {
+    surveyController.addVotes(SURVEY_ID, voteForms);
 
-    verify(surveyService).addVotes(List.of(vote));
+    verify(surveyService).addVotes(SURVEY_ID, List.of(vote));
   }
 }

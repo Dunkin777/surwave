@@ -48,10 +48,11 @@ public abstract class Survey {
         .collect(toSet());
   }
 
-  public Set<Vote> getVotes() {
+  public Set<Vote> getVotesByUserId(String userId) {
     return options.stream()
         .map(Option::getVotes)
         .flatMap(Collection::stream)
+        .filter(vote -> vote.getParticipant().getId().equals(userId))
         .collect(toSet());
   }
 }

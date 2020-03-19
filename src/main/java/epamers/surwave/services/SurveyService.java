@@ -1,9 +1,12 @@
 package epamers.surwave.services;
 
+import epamers.surwave.core.exceptions.VotingException;
+import epamers.surwave.entities.ClassicSurvey;
 import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyState;
+import epamers.surwave.entities.SurveyType;
 import epamers.surwave.entities.User;
 import epamers.surwave.entities.Vote;
 import epamers.surwave.repos.OptionRepository;
@@ -102,7 +105,14 @@ public class SurveyService {
   }
 
   @Transactional
-  public void addVotes(List<Vote> votes) {
+  public void addVotes(Long surveyId, List<Vote> votes) {
+
+    Survey survey = getById(surveyId);
+
+    if (survey.getType().equals(SurveyType.CLASSIC)) {
+      checkVotesSize((ClassicSurvey) survey, votes);
+    }
+
     for (Vote vote : votes) {
       Long optionId = vote.getOption().getId();
       Option option = optionRepository.getOne(optionId);
@@ -113,6 +123,15 @@ public class SurveyService {
       vote.setOption(option);
       vote.setParticipant(participant);
       voteRepository.save(vote);
+    }
+  }
+
+  private void checkVotesSize(ClassicSurvey survey, List<Vote> votes) {
+    Integer choicesByUser = survey.getChoicesByUser();
+    int votesSize = votes.size();
+
+    if (choicesByUser != votesSize) {
+      throw new VotingException(String.format("Invalid number of votes! expected %d but received %d", choicesByUser, votesSize));
     }
   }
 }
