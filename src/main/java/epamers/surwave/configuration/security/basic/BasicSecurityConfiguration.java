@@ -64,7 +64,7 @@ public class BasicSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     User anotherUser = new User(Map.of(
         "sub", "coolID2",
-        "name", "guest2",
+        "name", "admin",
         "email", "GuestEmail2@mail.dut",
         "locale", "native",
         "picture", "nopicture"));
@@ -73,7 +73,9 @@ public class BasicSecurityConfiguration extends WebSecurityConfigurerAdapter {
     detailsManager.createUser(user);
 
     anotherUser.setPassword("$2a$10$of1z7we8YS4xth0a.S71WOzIOqJ7ms/XVASVCjtl8el1psQLLq.0K");
+    anotherUser.addRole(Role.ADMIN);
     detailsManager.createUser(anotherUser);
+
     return detailsManager;
   }
 
