@@ -2,6 +2,7 @@ package epamers.surwave.entities;
 
 import static java.util.stream.Collectors.toSet;
 
+import java.util.Collection;
 import java.util.Set;
 import javax.persistence.*;
 import lombok.Data;
@@ -44,6 +45,14 @@ public abstract class Survey {
   public Set<Song> getSongs() {
     return options.stream()
         .map(Option::getSong)
+        .collect(toSet());
+  }
+
+  public Set<Vote> getVotesByUserId(String userId) {
+    return options.stream()
+        .map(Option::getVotes)
+        .flatMap(Collection::stream)
+        .filter(vote -> vote.getParticipant().getId().equals(userId))
         .collect(toSet());
   }
 }

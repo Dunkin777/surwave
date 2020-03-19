@@ -10,11 +10,11 @@ import epamers.surwave.controllers.SurveyController;
 import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyView;
+import epamers.surwave.dtos.VoteForm;
 import epamers.surwave.entities.ClassicSurvey;
-import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyType;
-import epamers.surwave.entities.User;
+import epamers.surwave.entities.Vote;
 import epamers.surwave.services.SurveyService;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
@@ -32,25 +32,21 @@ public class SurveyControllerTest {
 
   @InjectMocks
   SurveyController surveyController;
-
+  @Mock
+  HttpServletResponse response;
   @Mock
   private SurveyService surveyService;
-
   @Mock
   private ConversionService converter;
 
-  @Mock
-  HttpServletResponse response;
-
-  @Mock
-  private User user;
-
   private Survey survey;
-
+  private Vote vote;
   private List<Survey> surveys;
   private SurveyForm surveyForm;
   private SurveyView surveyView;
   private SongForm songForm;
+  private VoteForm voteForm;
+  private List<VoteForm> voteForms;
 
   @Before
   public void setUp() {
@@ -62,6 +58,11 @@ public class SurveyControllerTest {
     songForm = SongForm.builder()
         .build();
 
+    voteForm = VoteForm.builder()
+        .build();
+
+    voteForms = List.of(voteForm);
+
     surveyView = SurveyView.builder()
         .id(SURVEY_ID)
         .type(SurveyType.CLASSIC)
@@ -71,6 +72,9 @@ public class SurveyControllerTest {
         .id(SURVEY_ID)
         .build();
 
+    vote = Vote.builder()
+        .build();
+
     surveys = List.of(survey);
 
     when(surveyService.getAll()).thenReturn(surveys);
@@ -78,6 +82,7 @@ public class SurveyControllerTest {
     when(surveyService.create(survey)).thenReturn(survey);
     when(converter.convert(survey, SurveyView.class)).thenReturn(surveyView);
     when(converter.convert(surveyForm, Survey.class)).thenReturn(survey);
+    when(converter.convert(voteForm, Vote.class)).thenReturn(vote);
   }
 
   @Test
@@ -115,5 +120,12 @@ public class SurveyControllerTest {
     surveyController.removeOption(OPTION_ID);
 
     verify(surveyService).removeOption(OPTION_ID);
+  }
+
+  @Test
+  public void addVotes_success() {
+    surveyController.addVotes(SURVEY_ID, voteForms);
+
+    verify(surveyService).addVotes(SURVEY_ID, List.of(vote));
   }
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "app_user")
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = {"id", "username", "email"})
 public class User implements UserDetails {
 
   public User(Map<String, Object> googleData) {

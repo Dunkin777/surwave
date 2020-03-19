@@ -1,12 +1,17 @@
 package epamers.surwave.services;
 
+import epamers.surwave.core.exceptions.VotingException;
+import epamers.surwave.entities.ClassicSurvey;
 import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyState;
+import epamers.surwave.entities.SurveyType;
 import epamers.surwave.entities.User;
+import epamers.surwave.entities.Vote;
 import epamers.surwave.repos.OptionRepository;
 import epamers.surwave.repos.SurveyRepository;
+import epamers.surwave.repos.VoteRepository;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,6 +27,7 @@ public class SurveyService {
   private final SongService songService;
   private final UserService userService;
   private final OptionRepository optionRepository;
+  private final VoteRepository voteRepository;
 
   public List<Survey> getAll() {
     return surveyRepository.findAll();
@@ -96,5 +102,35 @@ public class SurveyService {
     option.setSong(song);
 
     return optionRepository.save(option);
+  }
+
+  @Transactional
+  public void addVotes(Long surveyId, List<Vote> votes) {
+    Survey survey = getById(surveyId);
+
+    if (survey.getType().equals(SurveyType.CLASSIC)) {
+      checkVotesSize((ClassicSurvey) survey, votes);
+    }
+
+    for (Vote vote : votes) {
+      Long optionId = vote.getOption().getId();
+      Option option = optionRepository.getOne(optionId);
+
+      String participantId = vote.getParticipant().getId();
+      User participant = userService.getById(participantId);
+
+      vote.setOption(option);
+      vote.setParticipant(participant);
+      voteRepository.save(vote);
+    }
+  }
+
+  private void checkVotesSize(ClassicSurvey survey, List<Vote> votes) {
+    Integer choicesByUser = survey.getChoicesByUser();
+    int votesSize = votes.size();
+
+    if (choicesByUser != votesSize) {
+      throw new VotingException(String.format("Invalid number of votes! expected %d but received %d", choicesByUser, votesSize));
+    }
   }
 }

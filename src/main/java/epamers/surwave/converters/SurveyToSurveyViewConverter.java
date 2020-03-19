@@ -7,7 +7,9 @@ import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.entities.Survey;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
 @RequiredArgsConstructor
 public abstract class SurveyToSurveyViewConverter {
 

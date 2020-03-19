@@ -7,9 +7,11 @@ import static java.util.stream.Collectors.toList;
 import epamers.surwave.dtos.OptionForm;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyView;
+import epamers.surwave.dtos.VoteForm;
 import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.User;
+import epamers.surwave.entities.Vote;
 import epamers.surwave.services.SurveyService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -121,5 +123,18 @@ public class SurveyController {
   )
   public void removeOption(@ApiParam(value = "Option ID") @PathVariable Long optionId) {
     surveyService.removeOption(optionId);
+  }
+
+  @PutMapping("/{surveyId}/vote")
+  @ApiOperation(
+      value = "Add Collection of Votes to Survey",
+      notes = "Awaits Survey ID as a path variable and Collection of VoteForms as body."
+  )
+  public void addVotes(@PathVariable Long surveyId, @ApiParam(value = "Votes to add") @RequestBody @Valid List<VoteForm> voteForms) {
+    List<Vote> votes = voteForms.stream()
+        .map(voteForm -> converter.convert(voteForm, Vote.class))
+        .collect(toList());
+
+    surveyService.addVotes(surveyId, votes);
   }
 }

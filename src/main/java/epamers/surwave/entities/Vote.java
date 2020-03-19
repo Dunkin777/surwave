@@ -6,12 +6,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 public class Vote {
 
   @Id
@@ -23,7 +27,7 @@ public class Vote {
   private Option option;
 
   @ManyToOne
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "participant_id", referencedColumnName = "id")
   private User participant;
 
   private Integer rating;
