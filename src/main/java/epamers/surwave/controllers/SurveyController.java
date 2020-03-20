@@ -52,6 +52,18 @@ public class SurveyController {
         .collect(toList());
   }
 
+  @GetMapping("/all/filtered")
+  @ApiOperation(
+      value = "Get All Surveys for current user",
+      notes = "Returns all Surveys that current user is allowed to see."
+  )
+  public List<SurveyView> getAllForUser(@ApiIgnore @AuthenticationPrincipal User user) {
+    return surveyService.getAll().stream()
+        .filter(s -> user.isAdmin() || !s.getIsHidden())
+        .map(s -> converter.convert(s, SurveyView.class))
+        .collect(toList());
+  }
+
   @GetMapping("/{id}")
   @ApiOperation(
       value = "Get Survey",
