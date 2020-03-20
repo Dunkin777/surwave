@@ -12,8 +12,10 @@ import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.dtos.VoteForm;
 import epamers.surwave.entities.ClassicSurvey;
+import epamers.surwave.entities.Role;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyType;
+import epamers.surwave.entities.User;
 import epamers.surwave.entities.Vote;
 import epamers.surwave.services.SurveyService;
 import java.util.List;
@@ -32,10 +34,13 @@ public class SurveyControllerTest {
 
   @InjectMocks
   SurveyController surveyController;
+
   @Mock
   HttpServletResponse response;
+
   @Mock
   private SurveyService surveyService;
+
   @Mock
   private ConversionService converter;
 
@@ -70,17 +75,23 @@ public class SurveyControllerTest {
 
     survey = ClassicSurvey.builder()
         .id(SURVEY_ID)
+        .isHidden(false)
+        .build();
+
+    Survey hiddenSurvey = ClassicSurvey.builder()
+        .isHidden(true)
         .build();
 
     vote = Vote.builder()
         .build();
 
-    surveys = List.of(survey);
+    surveys = List.of(survey, hiddenSurvey);
 
     when(surveyService.getAll()).thenReturn(surveys);
     when(surveyService.getById(SURVEY_ID)).thenReturn(survey);
     when(surveyService.create(survey)).thenReturn(survey);
     when(converter.convert(survey, SurveyView.class)).thenReturn(surveyView);
+    when(converter.convert(hiddenSurvey, SurveyView.class)).thenReturn(surveyView);
     when(converter.convert(surveyForm, Survey.class)).thenReturn(survey);
     when(converter.convert(voteForm, Vote.class)).thenReturn(vote);
   }
@@ -89,7 +100,7 @@ public class SurveyControllerTest {
   public void getAll_success() {
     List<SurveyView> returnedSurveys = surveyController.getAll();
 
-    assertEquals(1, returnedSurveys.size());
+    assertEquals(2, returnedSurveys.size());
     assertTrue(returnedSurveys.contains(surveyView));
   }
 
@@ -127,5 +138,25 @@ public class SurveyControllerTest {
     surveyController.addVotes(SURVEY_ID, voteForms);
 
     verify(surveyService).addVotes(SURVEY_ID, List.of(vote));
+  }
+
+  @Test
+  public void getAllForUser_admin_returnAllSurveys() {
+    User user = new User();
+    user.addRole(Role.ADMIN);
+
+    List<SurveyView> returnedSurveys = surveyController.getAllForUser(user);
+
+    assertEquals(2, returnedSurveys.size());
+  }
+
+  @Test
+  public void getAllForUser_user_returnOnlyVisible() {
+    User user = new User();
+    user.addRole(Role.USER);
+
+    List<SurveyView> returnedSurveys = surveyController.getAllForUser(user);
+
+    assertEquals(1, returnedSurveys.size());
   }
 }
