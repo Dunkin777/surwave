@@ -3,7 +3,7 @@ package epamers.surwave.converters;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.entities.ClassicSurvey;
 import epamers.surwave.entities.User;
-import epamers.surwave.utils.Utils;
+import epamers.surwave.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 public class ClassicSurveyToSurveyViewConverter extends SurveyToSurveyViewConverter implements Converter<ClassicSurvey, SurveyView> {
 
   @Autowired
-  public ClassicSurveyToSurveyViewConverter(OptionToOptionViewConverter converter) {
-    super(converter);
+  public ClassicSurveyToSurveyViewConverter(OptionToOptionViewConverter converter, UserService userService) {
+    super(converter, userService);
   }
 
   @Override
@@ -26,7 +26,7 @@ public class ClassicSurveyToSurveyViewConverter extends SurveyToSurveyViewConver
   }
 
   private boolean isVoted(ClassicSurvey survey) {
-    User currentUser = Utils.getCurrentUser();
+    User currentUser = userService.getCurrentUser();
 
     return survey.getVotesByUserId(currentUser.getId()).size() == survey.getChoicesByUser();
   }

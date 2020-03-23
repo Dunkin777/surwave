@@ -1,6 +1,6 @@
 package epamers.surwave.entities;
 
-import java.util.stream.Stream;
+import java.util.Arrays;
 import org.springframework.security.core.GrantedAuthority;
 
 public enum Role implements GrantedAuthority {
@@ -8,7 +8,7 @@ public enum Role implements GrantedAuthority {
   USER;
 
   public static String[] getAllowedAuthorities() {
-    return Stream.of(Role.USER, Role.ADMIN)
+    return Arrays.stream(values())
         .map(Role::getAuthority)
         .toArray(String[]::new);
   }

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Entity
 @Getter
 @Setter
+@Builder
 @Table(name = "app_user")
 @NoArgsConstructor
 @AllArgsConstructor

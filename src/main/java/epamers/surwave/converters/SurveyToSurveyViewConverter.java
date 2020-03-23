@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toSet;
 import epamers.surwave.dtos.OptionView;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.entities.Survey;
+import epamers.surwave.services.UserService;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 public abstract class SurveyToSurveyViewConverter {
 
   private final OptionToOptionViewConverter optionToOptionViewConverter;
+  protected final UserService userService;
 
   public SurveyView convert(Survey survey) {
     Set<OptionView> options = survey.getOptions().stream()
