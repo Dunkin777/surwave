@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,7 +29,14 @@ public class UserService implements UserDetailsService {
     User user = userRepository.findById(id).orElse(new User(googleData));
 
     user.setLastVisit(LocalDateTime.now());
+
     return userRepository.save(user);
+  }
+
+  public User getCurrentUser() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    return (User) authentication.getPrincipal();
   }
 
   @Transactional

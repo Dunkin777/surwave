@@ -59,14 +59,14 @@ public class BasicSecurityConfiguration extends WebSecurityConfigurerAdapter {
         "sub", "coolID",
         "name", "guest",
         "email", "GuestEmail@mail.dut",
-        "locale", "native",
+        "locale", "ru",
         "picture", "nopicture"));
 
     User anotherUser = new User(Map.of(
         "sub", "coolID2",
         "name", "admin",
         "email", "GuestEmail2@mail.dut",
-        "locale", "native",
+        "locale", "en-GB",
         "picture", "nopicture"));
 
     user.setPassword("$2a$10$of1z7we8YS4xth0a.S71WOzIOqJ7ms/XVASVCjtl8el1psQLLq.0K");
