@@ -7,6 +7,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import epamers.surwave.entities.Features;
 import epamers.surwave.entities.Song;
 import epamers.surwave.repos.SongRepository;
 import epamers.surwave.services.MediaFileService;
@@ -46,11 +47,18 @@ public class SongServiceTest {
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
+    Features features = Features.builder()
+        .danceability(0.6)
+        .energy(0.59)
+        .valence(0.9999)
+        .build();
+
     song = Song.builder()
         .performer(SONG_PERFORMER)
         .title(SONG_TITLE)
         .id(SONG_ID)
         .mediaPath(SONG_MEDIA_PATH)
+        .features(features)
         .build();
 
     when(songRepository.existsById(SONG_ID)).thenReturn(true);

@@ -12,13 +12,15 @@ public class SongView {
 
   private Long id;
 
-  @ApiModelProperty(notes = "Who performed song on given record. Usually, band or singer name.",
-      example = "Elvis Presley")
+  @ApiModelProperty(notes = "Who performed song on given record. Usually, band or singer name.")
   private String performer;
 
-  @ApiModelProperty(notes = "Name of the composition/track.", example = "Main theme from Santa Barbara")
+  @ApiModelProperty(notes = "Name of the composition/track.")
   private String title;
 
   @ApiModelProperty(notes = "Path/URL to song media data.")
   private String mediaPath;
+
+  @ApiModelProperty(notes = "Object that holds different relative characteristics of a composition.")
+  private FeaturesDto features;
 }
