@@ -1,10 +1,11 @@
 version: '3.5'
 
 services:
-  core:
-    container_name: surwave
+  surwave-be:
+    container_name: surwave-be
     build:
       context: .
+    image: surwave-be
     environment:
       - POSTGRES_DB_HOST
       - POSTGRES_USER
@@ -15,15 +16,26 @@ services:
       - db
     ports:
       - 8080:8080
+    networks:
+      - surwavenet
 
   db:
     container_name: db
     image: postgres:12.1-alpine
     volumes:
-      - ./db:/var/lib/postgresql
+      - db:/var/lib/postgresql
     ports:
       - 5432:5432
     environment:
       - POSTGRES_USER
       - POSTGRES_DB
       - POSTGRES_PASSWORD
+    networks:
+      - surwavenet
+
+networks:
+  surwavenet:
+    name: surwavenet
+
+volumes:
+  db: {}
