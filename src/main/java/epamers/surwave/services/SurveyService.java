@@ -41,15 +41,38 @@ public class SurveyService {
     return optionRepository.findById(id).orElseThrow();
   }
 
-  public Survey getByIdForCurrentUser(Long id, User user) {
+  public Survey getByIdFiltered(Long id, User user) {
     Survey survey = getById(id);
-    User currentUser = userService.getById(user.getId());
 
-    Set<Option> options = survey.getOptions().stream()
-        .filter(option -> !option.getUser().equals(currentUser))
-        .collect(Collectors.toSet());
+    return filterOptions(survey, user);
+  }
 
-    survey.setOptions(options);
+  public List<Survey> getAllFiltered(User user) {
+    List<Survey> surveys = getAll();
+    surveys.forEach(survey -> filterOptions(survey, user));
+
+    return surveys;
+  }
+
+  private Survey filterOptions(Survey survey, User user) {
+    Set<Option> options = survey.getOptions();
+    Set<Option> filteredOptions;
+
+    if (survey.getState() == SurveyState.CREATED) {
+      filteredOptions = options.stream()
+          .filter(option -> option.getUser().equals(user))
+          .collect(Collectors.toSet());
+
+    } else if (survey.getState() == SurveyState.STARTED) {
+      filteredOptions = options.stream()
+          .filter(option -> !option.getUser().equals(user))
+          .collect(Collectors.toSet());
+
+    } else {
+      filteredOptions = options;
+    }
+
+    survey.setOptions(filteredOptions);
 
     return survey;
   }

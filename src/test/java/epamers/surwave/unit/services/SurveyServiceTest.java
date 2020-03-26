@@ -1,6 +1,7 @@
 package epamers.surwave.unit.services;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -59,31 +60,37 @@ public class SurveyServiceTest {
   @Mock
   OptionRepository optionRepository;
 
-  @Mock
-  User user;
-
+  private User user;
   private Survey survey;
-  private Song song;
   private Option option;
+  private Set<Option> options;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
-    song = Song.builder()
+    Song song = Song.builder()
         .performer(SONG_PERFORMER)
         .title(SONG_TITLE)
         .id(SONG_ID)
         .build();
 
-    option = new Option();
-    option.setSong(song);
-    option.setUser(user);
-    option.setSurvey(survey);
+    user = User.builder()
+        .id(USER_ID)
+        .build();
 
-    Set<Option> options = new HashSet<>();
+    option = Option.builder()
+        .user(user)
+        .song(song)
+        .survey(survey)
+        .build();
+
+    options = new HashSet<>();
     options.add(option);
 
+    user.setOptions(options);
+
     survey = ClassicSurvey.builder()
+        .state(SurveyState.CREATED)
         .choicesByUser(3)
         .description(SURVEY_DESCRIPTION)
         .id(SURVEY_ID)
@@ -95,8 +102,6 @@ public class SurveyServiceTest {
     when(surveyRepository.findAll()).thenReturn(List.of(survey));
     when(surveyRepository.save(survey)).thenReturn(survey);
     when(surveyRepository.existsById(SURVEY_ID)).thenReturn(true);
-    when(user.getId()).thenReturn(USER_ID);
-    when(user.getProposedSongs()).thenReturn(new HashSet<>());
   }
 
   @Test
@@ -180,5 +185,34 @@ public class SurveyServiceTest {
     surveyService.removeOption(otherOptionId);
 
     verify(optionRepository, never()).delete(any());
+  }
+
+  @Test
+  public void getByIdFiltered_createdState_returnOnlyUserOptions() {
+    Option otherOption = Option.builder()
+        .user(User.builder()
+            .id("anotherUserId")
+            .build())
+        .build();
+    options.add(otherOption);
+
+    Survey returnedSurvey = surveyService.getByIdFiltered(SURVEY_ID, user);
+
+    returnedSurvey.getOptions().forEach(o -> assertEquals(user, o.getUser()));
+  }
+
+  @Test
+  public void getByIdFiltered_startedState_returnNotUserOptions() {
+    Option otherOption = Option.builder()
+        .user(User.builder()
+            .id("anotherUserId")
+            .build())
+        .build();
+    options.add(otherOption);
+    survey.setState(SurveyState.STARTED);
+
+    Survey returnedSurvey = surveyService.getByIdFiltered(SURVEY_ID, user);
+
+    returnedSurvey.getOptions().forEach(o -> assertNotEquals(user, o.getUser()));
   }
 }

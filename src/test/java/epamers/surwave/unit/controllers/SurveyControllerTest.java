@@ -141,22 +141,22 @@ public class SurveyControllerTest {
   }
 
   @Test
-  public void getAllForUser_admin_returnAllSurveys() {
+  public void getAllForUser_success() {
     User user = new User();
-    user.addRole(Role.ADMIN);
+    when(surveyService.getAllFiltered(user)).thenReturn(surveys);
 
-    List<SurveyView> returnedSurveys = surveyController.getAllForUser(user);
+    List<SurveyView> returnedSurveys = surveyController.getAllFiltered(user);
 
     assertEquals(2, returnedSurveys.size());
   }
 
   @Test
-  public void getAllForUser_user_returnOnlyVisible() {
+  public void getForUser_success() {
     User user = new User();
-    user.addRole(Role.USER);
+    when(surveyService.getByIdFiltered(SURVEY_ID, user)).thenReturn(survey);
 
-    List<SurveyView> returnedSurveys = surveyController.getAllForUser(user);
+    SurveyView returnedSurveys = surveyController.getFiltered(user, SURVEY_ID);
 
-    assertEquals(1, returnedSurveys.size());
+    assertEquals(surveyView, returnedSurveys);
   }
 }

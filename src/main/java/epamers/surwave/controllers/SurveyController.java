@@ -54,12 +54,11 @@ public class SurveyController {
 
   @GetMapping("/all/filtered")
   @ApiOperation(
-      value = "Get All Surveys for current user",
-      notes = "Returns all Surveys that current user is allowed to see."
+      value = "Get All Surveys with filtered Options",
+      notes = "Returns all Surveys filtered depending on user's role and current survey's state."
   )
-  public List<SurveyView> getAllForUser(@ApiIgnore @AuthenticationPrincipal User user) {
-    return surveyService.getAll().stream()
-        .filter(s -> user.isAdmin() || !s.getIsHidden())
+  public List<SurveyView> getAllFiltered(@ApiIgnore @AuthenticationPrincipal User user) {
+    return surveyService.getAllFiltered(user).stream()
         .map(s -> converter.convert(s, SurveyView.class))
         .collect(toList());
   }
@@ -77,13 +76,12 @@ public class SurveyController {
 
   @GetMapping("/{id}/filtered")
   @ApiOperation(
-      value = "Get Survey for current User",
-      notes = "Awaits Survey ID as a path variable. Returns SurveyView. Requested Survey will contain only Songs that can be used as voting options "
-          + "for the current user."
+      value = "Get Survey with filtered Options",
+      notes = "Returns all Surveys filtered depending on user's role and current survey's state."
   )
-  public SurveyView getForUser(@ApiIgnore @AuthenticationPrincipal User user,
+  public SurveyView getFiltered(@ApiIgnore @AuthenticationPrincipal User user,
       @ApiParam(value = "Survey ID") @PathVariable Long id) {
-    Survey survey = surveyService.getByIdForCurrentUser(id, user);
+    Survey survey = surveyService.getByIdFiltered(id, user);
 
     return converter.convert(survey, SurveyView.class);
   }
