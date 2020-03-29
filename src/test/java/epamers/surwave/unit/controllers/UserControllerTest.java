@@ -42,8 +42,8 @@ public class UserControllerTest {
         .avatarUrl(AVATAR_URL)
         .id(USER_ID)
         .username(USERNAME)
-        .roles(Set.of(Role.USER))
         .build();
+    user.addRole(Role.USER);
 
     userView = UserView.builder()
         .avatarUrl(AVATAR_URL)
