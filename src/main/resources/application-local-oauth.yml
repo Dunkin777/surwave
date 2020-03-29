@@ -1,0 +1,32 @@
+server:
+  port: 8080
+
+spring:
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    open-in-view: true
+    properties:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate.temp.use_jdbc_metadata_defaults: false
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+surwave:
+  authType: oauth2
+  uploadDir: data
+
+security:
+  oauth2:
+    client:
+      clientId: 778041561335-7kfmqv2pud0adhnnv6i6sl2ha5l47oa4.apps.googleusercontent.com
+      clientSecret: 8xQYWrBdGzsHz5wI6EuAC6CW
+      clientAuthenticationScheme: form
+      scope: openid,email,profile
+      accessTokenUri: https://www.googleapis.com/oauth2/v4/token
+      userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
+    resource:
+      userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
+      preferTokenInfo: true
