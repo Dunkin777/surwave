@@ -9,20 +9,27 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 import epamers.surwave.repos.SongRepository;
+import epamers.surwave.services.S3Service;
 import java.io.File;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 public class ITSongTest extends IntegrationTest {
 
   private static final String SONG_PERFORMER = "Brian Wilson";
   private static final String SONG_TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
+
+  @MockBean
+  private S3Service s3Service;
 
   @Autowired
   private SongRepository songRepository;
@@ -30,6 +37,7 @@ public class ITSongTest extends IntegrationTest {
   @Before
   public void setUp() {
     RestAssured.port = port;
+    Mockito.doNothing().when(s3Service).putObject(any(), any(), any());
   }
 
   @After

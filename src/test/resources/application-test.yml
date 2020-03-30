@@ -15,4 +15,3 @@ spring:
 
 surwave:
   authType: disabled
-  uploadDir: data

@@ -70,11 +70,11 @@ public class BasicSecurityConfiguration extends WebSecurityConfigurerAdapter {
         "picture", "nopicture"));
 
     user.setPassword("$2a$10$of1z7we8YS4xth0a.S71WOzIOqJ7ms/XVASVCjtl8el1psQLLq.0K");
-    detailsManager.createUser(user);
+    detailsManager.updateUser(user);
 
     anotherUser.setPassword("$2a$10$of1z7we8YS4xth0a.S71WOzIOqJ7ms/XVASVCjtl8el1psQLLq.0K");
     anotherUser.addRole(Role.ADMIN);
-    detailsManager.createUser(anotherUser);
+    detailsManager.updateUser(anotherUser);
 
     return detailsManager;
   }

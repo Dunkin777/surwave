@@ -7,7 +7,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import javax.persistence.*;
+import java.util.stream.Collectors;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -27,39 +33,33 @@ import org.springframework.security.core.userdetails.UserDetails;
 @EqualsAndHashCode(of = {"id", "username", "email"})
 public class User implements UserDetails {
 
+  @Id
+  private String id;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<UserRole> userRoles;
+
+  @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  private Set<Option> options;
+
+  private String username;
+  private String password;
+  private Boolean active;
+  private String email;
+  private String avatarUrl;
+  private String locale;
+  private LocalDateTime lastVisit;
+
   public User(Map<String, Object> googleData) {
     this.id = (String) googleData.get("sub");
     this.username = (String) googleData.get("name");
     this.email = (String) googleData.get("email");
     this.locale = (String) googleData.get("locale");
     this.avatarUrl = (String) googleData.get("picture");
-    this.roles.add(Role.USER);
+    userRoles = new HashSet<>();
+    active = true;
+    addRole(Role.USER);
   }
-
-  @Id
-  private String id;
-
-  @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-  @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
-  @Enumerated(EnumType.STRING)
-  private Set<Role> roles = new HashSet<>();
-
-  @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  private Set<Option> options;
-
-  private String username;
-
-  private String password;
-
-  private Boolean active = true;
-
-  private String email;
-
-  private String avatarUrl;
-
-  private String locale;
-
-  private LocalDateTime lastVisit;
 
   public Set<Song> getProposedSongs() {
     return options.stream()
@@ -69,7 +69,9 @@ public class User implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return roles;
+    return userRoles.stream()
+        .map(UserRole::getRole)
+        .collect(Collectors.toSet());
   }
 
   @Override
@@ -93,10 +95,27 @@ public class User implements UserDetails {
   }
 
   public boolean isAdmin() {
-    return roles.contains(Role.ADMIN);
+    return userRoles.stream()
+        .map(UserRole::getRole)
+        .anyMatch(role -> role.equals(Role.ADMIN));
   }
 
   public void addRole(Role role) {
-    roles.add(role);
+    if (userRoles == null) {
+      userRoles = new HashSet<>();
+    }
+
+    UserRole userRole = UserRole.builder()
+        .role(role)
+        .user(this)
+        .build();
+
+    userRoles.add(userRole);
+  }
+
+  public Set<Role> getRoles() {
+    return userRoles.stream()
+        .map(UserRole::getRole)
+        .collect(Collectors.toSet());
   }
 }

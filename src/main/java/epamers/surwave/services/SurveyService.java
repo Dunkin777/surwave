@@ -48,7 +48,9 @@ public class SurveyService {
   }
 
   public List<Survey> getAllFiltered(User user) {
-    List<Survey> surveys = getAll();
+    List<Survey> surveys = getAll().stream()
+        .filter(s -> !s.getIsHidden() || user.isAdmin())
+        .collect(Collectors.toList());
     surveys.forEach(survey -> filterOptions(survey, user));
 
     return surveys;
