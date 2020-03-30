@@ -1,6 +1,7 @@
 package epamers.surwave.core;
 
 import epamers.surwave.core.exceptions.FileStorageException;
+import epamers.surwave.core.exceptions.NotAuthenticatedException;
 import java.util.NoSuchElementException;
 import javax.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -52,5 +53,13 @@ public class GlobalExceptionHandler {
     log.debug("FileStorageException: ", ex);
 
     return new ResponseEntity<>(ex, HttpStatus.BAD_REQUEST);
+  }
+
+  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  @ExceptionHandler(NotAuthenticatedException.class)
+  public ResponseEntity<NotAuthenticatedException> handleNotAuthenticatedException(NotAuthenticatedException ex) {
+    log.debug("NotAuthenticatedException: ", ex);
+
+    return new ResponseEntity<>(ex, HttpStatus.UNAUTHORIZED);
   }
 }

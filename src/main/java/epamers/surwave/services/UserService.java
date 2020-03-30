@@ -1,5 +1,6 @@
 package epamers.surwave.services;
 
+import epamers.surwave.core.exceptions.NotAuthenticatedException;
 import epamers.surwave.entities.User;
 import epamers.surwave.repos.UserRepository;
 import java.time.LocalDateTime;
@@ -35,6 +36,9 @@ public class UserService implements UserDetailsService {
 
   public User getCurrentUser() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+   if(authentication.getPrincipal() == "anonymousUser") {
+     throw new NotAuthenticatedException("Anonymous requests are not supported. Please, use /login");
+   }
 
     return (User) authentication.getPrincipal();
   }

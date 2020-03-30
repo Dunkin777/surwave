@@ -23,7 +23,7 @@ public class UserController {
   @GetMapping("/info")
   @ApiOperation(
       value = "Get current user info",
-      notes = "Returns information about current user."
+      notes = "Returns information about current user. Returns 401th code if user is not logged in."
   )
   public UserView getInfo() {
     User user = userService.getCurrentUser();
