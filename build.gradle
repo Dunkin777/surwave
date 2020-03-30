@@ -28,8 +28,14 @@ def filesUpload_ver = "1.4"
 def restAssured_ver = "2.9.0"
 def h2_ver = "1.4.197"
 def oauth2_ver = "2.1.8.RELEASE"
+def aws_sdk_bom = '2.11.0'
+def s3_sdk = '1.11.750'
 
 dependencies {
+	implementation platform("software.amazon.awssdk:bom:$aws_sdk_bom")
+	implementation 'software.amazon.awssdk:kinesis'
+	implementation "com.amazonaws:aws-java-sdk-s3:$s3_sdk"
+
 	implementation "org.springframework.boot:spring-boot-starter-data-jpa"
 	implementation "org.springframework.boot:spring-boot-starter-web"
 	implementation "org.flywaydb:flyway-core"

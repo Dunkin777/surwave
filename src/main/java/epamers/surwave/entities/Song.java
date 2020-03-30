@@ -1,5 +1,6 @@
 package epamers.surwave.entities;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
@@ -10,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,6 +34,8 @@ public class Song {
   @Column(nullable = false)
   private String title;
 
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  @Transient
   private String mediaPath;
 
   @OneToMany(mappedBy = "song", cascade = {CascadeType.PERSIST, CascadeType.MERGE})

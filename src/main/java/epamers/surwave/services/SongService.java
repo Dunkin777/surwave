@@ -33,8 +33,7 @@ public class SongService {
     return songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(song.getTitle(), song.getPerformer())
         .orElseGet(() -> {
           Song newSong = songRepository.save(song);
-          String mediaPath = mediaFileService.upload(mediaFile, newSong.getId());
-          newSong.setMediaPath(mediaPath);
+          mediaFileService.upload(mediaFile, newSong.getId());
           return newSong;
         });
 

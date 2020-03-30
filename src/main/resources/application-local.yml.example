@@ -16,4 +16,5 @@ spring:
 
 surwave:
   authType: basic
-  uploadDir: data
+  s3-bucket: surwtest
+  uploadDir: surwave_media

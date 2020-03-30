@@ -15,7 +15,8 @@ spring:
 
 surwave:
   authType: oauth2
-  uploadDir: data
+  s3-bucket: surwtest
+  uploadDir: surwave_media
 
 security:
   oauth2:
