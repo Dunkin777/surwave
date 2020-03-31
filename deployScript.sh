@@ -6,3 +6,4 @@ git pull
 docker-compose build
 docker stop surwave-be
 docker-compose up -d
+docker cp ~/.aws surwave-be:/root
