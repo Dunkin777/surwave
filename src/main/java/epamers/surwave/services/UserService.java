@@ -5,6 +5,7 @@ import epamers.surwave.entities.User;
 import epamers.surwave.repos.UserRepository;
 import java.time.LocalDateTime;
 import java.util.Map;
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -22,7 +23,8 @@ public class UserService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    return userRepository.findByUsername(username).orElseThrow();
+    return userRepository.findByUsername(username)
+        .orElseThrow(() -> new EntityNotFoundException("User with name " + username + " was not found in database."));
   }
 
   public User getOrCreateFromGoogleData(Map<String, Object> googleData) {
@@ -34,18 +36,18 @@ public class UserService implements UserDetailsService {
     return userRepository.save(user);
   }
 
-  public User getCurrentUser() {
+  public User getCurrent() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-   if(authentication.getPrincipal() == "anonymousUser") {
-     throw new NotAuthenticatedException("Anonymous requests are not supported. Please, use /login");
-   }
+    if (authentication.getPrincipal() == "anonymousUser") {
+      throw new NotAuthenticatedException("Anonymous requests are not supported. Please, use /login");
+    }
 
     return (User) authentication.getPrincipal();
   }
 
   @Transactional
   public User getById(String id) {
-    return userRepository.findById(id).orElseThrow();
+    return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User with id " + id + " was not found in database."));
   }
 
   @Transactional

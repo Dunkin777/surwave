@@ -13,8 +13,8 @@ import epamers.surwave.repos.SongRepository;
 import epamers.surwave.services.MediaFileService;
 import epamers.surwave.services.SongService;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
+import javax.persistence.EntityNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -83,7 +83,7 @@ public class SongServiceTest {
     assertEquals(song, returnedSong);
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test(expected = EntityNotFoundException.class)
   public void getById_nonExistingId_exception() {
     when(songRepository.existsById(SONG_ID)).thenReturn(false);
 
@@ -122,7 +122,7 @@ public class SongServiceTest {
     verify(songRepository).save(song);
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test(expected = EntityNotFoundException.class)
   public void update_nonExistingId_exception() {
     songService.update(SONG_NONEXISTENT_ID, song);
 

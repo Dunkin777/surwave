@@ -2,11 +2,10 @@ package epamers.surwave.core;
 
 import epamers.surwave.core.exceptions.FileStorageException;
 import epamers.surwave.core.exceptions.NotAuthenticatedException;
-import java.util.NoSuchElementException;
+import epamers.surwave.core.exceptions.VotingException;
 import javax.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -15,51 +14,22 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class GlobalExceptionHandler {
 
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  @ExceptionHandler(EntityNotFoundException.class)
-  public String handleEntityNotFoundException(EntityNotFoundException ex) {
-    log.debug("EntityNotFoundException: ", ex);
-
-    return ex.getMessage();
-  }
-
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  @ExceptionHandler(NoSuchElementException.class)
-  public String handleNoSuchElementException(NoSuchElementException ex) {
-    log.debug("NoSuchElementException: ", ex);
-
-    return ex.getMessage();
-  }
+  private static final String EXCEPTION_MESSAGE = "Responded with {} code because of exception: ";
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
-  @ExceptionHandler(IllegalArgumentException.class)
-  public String handleIllegalArgumentException(IllegalArgumentException ex) {
-    log.debug("IllegalArgumentException: ", ex);
+  @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class, VotingException.class, FileStorageException.class,
+      EntityNotFoundException.class})
+  public String handleIllegalArgumentException(RuntimeException ex) {
+    log.debug(EXCEPTION_MESSAGE, 400, ex);
 
     return ex.getMessage();
-  }
-
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  @ExceptionHandler(IllegalStateException.class)
-  public String handleIllegalStateException(IllegalArgumentException ex) {
-    log.debug("IllegalStateException: ", ex);
-
-    return ex.getMessage();
-  }
-
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  @ExceptionHandler(FileStorageException.class)
-  public ResponseEntity<FileStorageException> handleException(FileStorageException ex) {
-    log.debug("FileStorageException: ", ex);
-
-    return new ResponseEntity<>(ex, HttpStatus.BAD_REQUEST);
   }
 
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   @ExceptionHandler(NotAuthenticatedException.class)
-  public ResponseEntity<NotAuthenticatedException> handleNotAuthenticatedException(NotAuthenticatedException ex) {
-    log.debug("NotAuthenticatedException: ", ex);
+  public String handleNotAuthenticatedException(RuntimeException ex) {
+    log.debug(EXCEPTION_MESSAGE, 401, ex);
 
-    return new ResponseEntity<>(ex, HttpStatus.UNAUTHORIZED);
+    return ex.getMessage();
   }
 }

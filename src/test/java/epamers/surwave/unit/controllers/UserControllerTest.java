@@ -52,7 +52,7 @@ public class UserControllerTest {
         .roles(Set.of(Role.USER))
         .build();
 
-    when(userService.getCurrentUser()).thenReturn(user);
+    when(userService.getCurrent()).thenReturn(user);
     when(converter.convert(user, UserView.class)).thenReturn(userView);
   }
 

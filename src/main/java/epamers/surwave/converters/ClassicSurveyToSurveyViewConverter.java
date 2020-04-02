@@ -26,7 +26,7 @@ public class ClassicSurveyToSurveyViewConverter extends SurveyToSurveyViewConver
   }
 
   private boolean isVoted(ClassicSurvey survey) {
-    User currentUser = userService.getCurrentUser();
+    User currentUser = userService.getCurrent();
 
     return survey.getVotesByUserId(currentUser.getId()).size() == survey.getChoicesByUser();
   }

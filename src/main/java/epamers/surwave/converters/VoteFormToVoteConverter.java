@@ -21,7 +21,7 @@ public class VoteFormToVoteConverter implements Converter<VoteForm, Vote> {
         .id(voteForm.getOptionId())
         .build();
 
-    User user = userService.getCurrentUser();
+    User user = userService.getCurrent();
 
     return Vote.builder()
         .option(option)
