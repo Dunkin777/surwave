@@ -15,6 +15,7 @@ import epamers.surwave.repos.VoteRepository;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,11 +35,11 @@ public class SurveyService {
   }
 
   public Survey getById(Long id) {
-    return surveyRepository.findById(id).orElseThrow();
+    return surveyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Survey with id " + id + " was not found in database."));
   }
 
   public Option getOptionById(Long id) {
-    return optionRepository.findById(id).orElseThrow();
+    return optionRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Survey with id " + id + " was not found in database."));
   }
 
   public Survey getByIdFiltered(Long id, User user) {
@@ -64,12 +65,10 @@ public class SurveyService {
       filteredOptions = options.stream()
           .filter(option -> option.getUser().equals(user))
           .collect(Collectors.toSet());
-
     } else if (survey.getState() == SurveyState.STARTED) {
       filteredOptions = options.stream()
           .filter(option -> !option.getUser().equals(user))
           .collect(Collectors.toSet());
-
     } else {
       filteredOptions = options;
     }
@@ -82,7 +81,7 @@ public class SurveyService {
   @Transactional
   public Survey create(Survey survey) {
     if (survey == null) {
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException("Given survey is NULL, cannot create.");
     }
 
     survey.setState(SurveyState.CREATED);
@@ -93,7 +92,7 @@ public class SurveyService {
   @Transactional
   public void update(Long id, Survey survey) {
     if (survey == null) {
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException("Given survey is NULL, cannot update.");
     }
 
     Survey storedSurvey = getById(id);
@@ -112,7 +111,7 @@ public class SurveyService {
   @Transactional
   public Option addOption(Long surveyId, Option option, User currentUser) {
     if (option == null) {
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException("Cannot add NULL option to a survey.");
     }
 
     Survey survey = getById(surveyId);
@@ -139,7 +138,7 @@ public class SurveyService {
 
     for (Vote vote : votes) {
       Long optionId = vote.getOption().getId();
-      Option option = optionRepository.getOne(optionId);
+      Option option = getOptionById(optionId);
 
       String participantId = vote.getParticipant().getId();
       User participant = userService.getById(participantId);
@@ -155,7 +154,7 @@ public class SurveyService {
     int votesSize = votes.size();
 
     if (choicesByUser != votesSize) {
-      throw new VotingException(String.format("Invalid number of votes! expected %d but received %d", choicesByUser, votesSize));
+      throw new VotingException(String.format("Invalid number of votes! expected %d but received %d.", choicesByUser, votesSize));
     }
   }
 }

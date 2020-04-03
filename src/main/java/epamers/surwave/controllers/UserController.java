@@ -26,7 +26,7 @@ public class UserController {
       notes = "Returns information about current user. Returns 401th code if user is not logged in."
   )
   public UserView getInfo() {
-    User user = userService.getCurrentUser();
+    User user = userService.getCurrent();
 
     return converter.convert(user, UserView.class);
   }

@@ -3,7 +3,7 @@ package epamers.surwave.services;
 import epamers.surwave.entities.Song;
 import epamers.surwave.repos.SongRepository;
 import java.util.List;
-import java.util.NoSuchElementException;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,13 +21,13 @@ public class SongService {
   }
 
   public Song getById(Long id) {
-    return songRepository.findById(id).orElseThrow();
+    return songRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Song with id " + id + " was not found in database."));
   }
 
   @Transactional
   public Song getOrCreate(Song song, MultipartFile mediaFile) {
     if (song == null) {
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException("Got NULL song, cannot create.");
     }
 
     return songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(song.getTitle(), song.getPerformer())
@@ -36,17 +36,16 @@ public class SongService {
           mediaFileService.upload(mediaFile, newSong.getId());
           return newSong;
         });
-
   }
 
   @Transactional
   public void update(Long id, Song song) {
     if (song == null) {
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException("Got NULL song, cannot update.");
     }
 
     if (!songRepository.existsById(id)) {
-      throw new NoSuchElementException();
+      throw new EntityNotFoundException("Song with id " + id + " was not found in database.");
     }
 
     song.setId(id);

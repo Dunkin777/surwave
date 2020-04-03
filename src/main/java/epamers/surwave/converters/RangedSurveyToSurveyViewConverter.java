@@ -25,7 +25,7 @@ public class RangedSurveyToSurveyViewConverter extends SurveyToSurveyViewConvert
   }
 
   private boolean isVoted(RangedSurvey survey) {
-    User currentUser = userService.getCurrentUser();
+    User currentUser = userService.getCurrent();
 
     return survey.getVotesByUserId(currentUser.getId()).size() > 0;
   }

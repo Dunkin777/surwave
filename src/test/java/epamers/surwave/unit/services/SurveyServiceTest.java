@@ -22,13 +22,11 @@ import epamers.surwave.services.SurveyService;
 import epamers.surwave.services.UserService;
 import java.util.HashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
+import javax.persistence.EntityNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -119,7 +117,7 @@ public class SurveyServiceTest {
     assertEquals(survey, foundSurvey);
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test(expected = EntityNotFoundException.class)
   public void getById_nonexistentID_exception() {
     surveyService.getById(NONEXISTENT_SURVEY_ID);
   }
@@ -159,7 +157,7 @@ public class SurveyServiceTest {
     assertEquals(SurveyType.CLASSIC, survey.getType());
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test(expected = EntityNotFoundException.class)
   public void update_nonexistentId_exception() {
     surveyService.update(NONEXISTENT_SURVEY_ID, survey);
   }
@@ -178,7 +176,7 @@ public class SurveyServiceTest {
     verify(optionRepository).delete(any());
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test(expected = EntityNotFoundException.class)
   public void removeOption_nonExistentOption_nothingRemoved() {
     Long otherOptionId = 40L;
 
