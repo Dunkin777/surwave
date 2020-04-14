@@ -19,7 +19,7 @@ public class SongView {
   private String title;
 
   @ApiModelProperty(notes = "Path/URL to song media data.")
-  private String mediaPath;
+  private String mediaURL;
 
   @ApiModelProperty(notes = "Object that holds different relative characteristics of a composition.")
   private FeaturesDto features;

@@ -16,15 +16,20 @@ public class MediaFileService {
 
   private final S3Service s3Service;
 
-  public void upload(MultipartFile file, Long songId) {
+  public String upload(MultipartFile file, Long songId) {
     String songS3Key = songId + ".mp3";
 
     try {
-      s3Service.putObject(songS3Key, file.getInputStream(), new ObjectMetadata());
+      String storageKey = s3Service.putObject(songS3Key, file.getInputStream(), new ObjectMetadata());
       log.info("Song ID={} was successfully uploaded.", songId);
+      return storageKey;
     } catch (IOException | SdkClientException e) {
       log.error("Failed to load file", e);
       throw new FileStorageException("Could not store file " + file.getOriginalFilename(), e);
     }
+  }
+
+  public String getMediaPresignedUrl(String objectKey) {
+    return s3Service.getPresignedURL(objectKey);
   }
 }
