@@ -17,6 +17,7 @@ import epamers.surwave.entities.SurveyType;
 import epamers.surwave.entities.User;
 import epamers.surwave.repos.OptionRepository;
 import epamers.surwave.repos.SurveyRepository;
+import epamers.surwave.services.MediaFileService;
 import epamers.surwave.services.SongService;
 import epamers.surwave.services.SurveyService;
 import epamers.surwave.services.UserService;
@@ -44,19 +45,22 @@ public class SurveyServiceTest {
   private static final Integer SURVEY_PROPOSALS_BY_USER = 5;
 
   @InjectMocks
-  SurveyService surveyService;
+  private SurveyService surveyService;
 
   @Mock
-  SongService songService;
+  private SongService songService;
 
   @Mock
-  UserService userService;
+  private UserService userService;
 
   @Mock
-  SurveyRepository surveyRepository;
+  private SurveyRepository surveyRepository;
 
   @Mock
-  OptionRepository optionRepository;
+  private OptionRepository optionRepository;
+
+  @Mock
+  private MediaFileService mediaFileService;
 
   private User user;
   private Survey survey;
@@ -69,6 +73,7 @@ public class SurveyServiceTest {
     Song song = Song.builder()
         .performer(SONG_PERFORMER)
         .title(SONG_TITLE)
+        .storageKey("")
         .id(SONG_ID)
         .build();
 
@@ -188,6 +193,7 @@ public class SurveyServiceTest {
   @Test
   public void getByIdFiltered_createdState_returnOnlyUserOptions() {
     Option otherOption = Option.builder()
+        .song(Song.builder().build())
         .user(User.builder()
             .id("anotherUserId")
             .build())
@@ -202,6 +208,7 @@ public class SurveyServiceTest {
   @Test
   public void getByIdFiltered_startedState_returnNotUserOptions() {
     Option otherOption = Option.builder()
+        .song(Song.builder().build())
         .user(User.builder()
             .id("anotherUserId")
             .build())

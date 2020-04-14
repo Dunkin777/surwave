@@ -10,6 +10,8 @@ import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
@@ -19,12 +21,12 @@ import java.io.File;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 public class ITSongTest extends IntegrationTest {
 
+  private static final String S3_FILE_KEY = "somekey/someSong";
   private static final String SONG_PERFORMER = "Brian Wilson";
   private static final String SONG_TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
 
@@ -37,7 +39,7 @@ public class ITSongTest extends IntegrationTest {
   @Before
   public void setUp() {
     RestAssured.port = port;
-    Mockito.doNothing().when(s3Service).putObject(any(), any(), any());
+    when(s3Service.putObject(anyString(), any(), any())).thenReturn(S3_FILE_KEY);
   }
 
   @After

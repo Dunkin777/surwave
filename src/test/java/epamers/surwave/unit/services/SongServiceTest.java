@@ -57,7 +57,7 @@ public class SongServiceTest {
         .performer(SONG_PERFORMER)
         .title(SONG_TITLE)
         .id(SONG_ID)
-        .mediaPath(SONG_MEDIA_PATH)
+        .storageKey(SONG_MEDIA_PATH)
         .features(features)
         .build();
 

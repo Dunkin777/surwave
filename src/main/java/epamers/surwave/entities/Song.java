@@ -1,5 +1,6 @@
 package epamers.surwave.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,9 +35,11 @@ public class Song {
   @Column(nullable = false)
   private String title;
 
-  @JsonInclude(JsonInclude.Include.NON_NULL)
+  @JsonIgnore
+  private String storageKey;
+
   @Transient
-  private String mediaPath;
+  private String mediaURL;
 
   @OneToMany(mappedBy = "song", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private Set<Option> option;

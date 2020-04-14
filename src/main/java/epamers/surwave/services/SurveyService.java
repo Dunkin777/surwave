@@ -29,13 +29,19 @@ public class SurveyService {
   private final UserService userService;
   private final OptionRepository optionRepository;
   private final VoteRepository voteRepository;
+  private final MediaFileService mediaFileService;
 
   public List<Survey> getAll() {
     return surveyRepository.findAll();
   }
 
   public Survey getById(Long id) {
-    return surveyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Survey with id " + id + " was not found in database."));
+    Survey survey = surveyRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Survey with id " + id + " was not found in database."));
+    Set<Song> songs = survey.getSongs();
+    songs.forEach(song -> song.setMediaURL(mediaFileService.getMediaPresignedUrl(song.getStorageKey())));
+
+    return survey;
   }
 
   public Option getOptionById(Long id) {
