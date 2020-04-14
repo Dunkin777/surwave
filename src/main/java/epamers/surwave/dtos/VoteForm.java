@@ -21,6 +21,10 @@ public class VoteForm {
 
   @NotNull
   @ApiModelProperty(required = true, notes = "Resembles the fact of vote itself, preferably 0 or 1, also represents"
-      + " position of Option in RANGED survey, currently unused", example = "1")
+      + " position of Option in RANGED survey, currently unused.", example = "1")
   private Integer rating;
+
+  @NotNull
+  @ApiModelProperty(required = true, notes = "Survey in which voting occurs.", example = "3")
+  private Long surveyId;
 }

@@ -18,16 +18,12 @@ public class ClassicSurveyToSurveyViewConverter extends SurveyToSurveyViewConver
 
   @Override
   public SurveyView convert(ClassicSurvey survey) {
-    SurveyView surveyView = super.convert(survey);
-    surveyView.setChoicesByUser(survey.getChoicesByUser());
-    surveyView.setIsVoted(isVoted(survey));
-
-    return surveyView;
-  }
-
-  private boolean isVoted(ClassicSurvey survey) {
     User currentUser = userService.getCurrent();
 
-    return survey.getVotesByUserId(currentUser.getId()).size() == survey.getChoicesByUser();
+    SurveyView surveyView = super.convert(survey);
+    surveyView.setChoicesByUser(survey.getChoicesByUser());
+    surveyView.setIsVoted(survey.isUserVoted(currentUser));
+
+    return surveyView;
   }
 }

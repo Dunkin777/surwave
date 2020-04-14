@@ -1,12 +1,11 @@
 package epamers.surwave.services;
 
-import epamers.surwave.core.exceptions.VotingException;
-import epamers.surwave.entities.ClassicSurvey;
+import static java.util.stream.Collectors.toSet;
+
 import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyState;
-import epamers.surwave.entities.SurveyType;
 import epamers.surwave.entities.User;
 import epamers.surwave.entities.Vote;
 import epamers.surwave.repos.OptionRepository;
@@ -26,7 +25,6 @@ public class SurveyService {
 
   private final SurveyRepository surveyRepository;
   private final SongService songService;
-  private final UserService userService;
   private final OptionRepository optionRepository;
   private final VoteRepository voteRepository;
   private final MediaFileService mediaFileService;
@@ -45,7 +43,7 @@ public class SurveyService {
   }
 
   public Option getOptionById(Long id) {
-    return optionRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Survey with id " + id + " was not found in database."));
+    return optionRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Option with id " + id + " was not found in database."));
   }
 
   public Survey getByIdFiltered(Long id, User user) {
@@ -70,11 +68,11 @@ public class SurveyService {
     if (survey.getState() == SurveyState.CREATED) {
       filteredOptions = options.stream()
           .filter(option -> option.getUser().equals(user))
-          .collect(Collectors.toSet());
+          .collect(toSet());
     } else if (survey.getState() == SurveyState.STARTED) {
       filteredOptions = options.stream()
           .filter(option -> !option.getUser().equals(user))
-          .collect(Collectors.toSet());
+          .collect(toSet());
     } else {
       filteredOptions = options;
     }
@@ -136,31 +134,12 @@ public class SurveyService {
 
   @Transactional
   public void addVotes(Long surveyId, List<Vote> votes) {
-    Survey survey = getById(surveyId);
-
-    if (survey.getType().equals(SurveyType.CLASSIC)) {
-      checkVotesSize((ClassicSurvey) survey, votes);
-    }
-
     for (Vote vote : votes) {
       Long optionId = vote.getOption().getId();
       Option option = getOptionById(optionId);
 
-      String participantId = vote.getParticipant().getId();
-      User participant = userService.getById(participantId);
-
       vote.setOption(option);
-      vote.setParticipant(participant);
       voteRepository.save(vote);
-    }
-  }
-
-  private void checkVotesSize(ClassicSurvey survey, List<Vote> votes) {
-    Integer choicesByUser = survey.getChoicesByUser();
-    int votesSize = votes.size();
-
-    if (choicesByUser != votesSize) {
-      throw new VotingException(String.format("Invalid number of votes! expected %d but received %d.", choicesByUser, votesSize));
     }
   }
 }

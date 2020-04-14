@@ -55,4 +55,6 @@ public abstract class Survey {
         .filter(vote -> vote.getParticipant().getId().equals(userId))
         .collect(toSet());
   }
+
+  abstract public boolean isUserVoted(User user);
 }

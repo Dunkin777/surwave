@@ -24,4 +24,8 @@ public class RangedSurvey extends Survey {
   }
 
   private Boolean logarithmicRatingScale;
+
+  public boolean isUserVoted(User user) {
+    return getVotesByUserId(user.getId()).size() > 0;
+  }
 }

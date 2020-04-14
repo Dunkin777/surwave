@@ -7,17 +7,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import epamers.surwave.controllers.SurveyController;
-import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.dtos.VoteForm;
 import epamers.surwave.entities.ClassicSurvey;
-import epamers.surwave.entities.Role;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyType;
 import epamers.surwave.entities.User;
 import epamers.surwave.entities.Vote;
 import epamers.surwave.services.SurveyService;
+import epamers.surwave.validators.Validator;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.Before;
@@ -44,12 +43,14 @@ public class SurveyControllerTest {
   @Mock
   private ConversionService converter;
 
+  @Mock
+  private Validator<List<VoteForm>> voteListValidator;
+
   private Survey survey;
   private Vote vote;
   private List<Survey> surveys;
   private SurveyForm surveyForm;
   private SurveyView surveyView;
-  private SongForm songForm;
   private VoteForm voteForm;
   private List<VoteForm> voteForms;
 
@@ -58,9 +59,6 @@ public class SurveyControllerTest {
     MockitoAnnotations.initMocks(this);
 
     surveyForm = SurveyForm.builder()
-        .build();
-
-    songForm = SongForm.builder()
         .build();
 
     voteForm = VoteForm.builder()
@@ -137,6 +135,7 @@ public class SurveyControllerTest {
   public void addVotes_success() {
     surveyController.addVotes(SURVEY_ID, voteForms);
 
+    verify(voteListValidator).validate(voteForms);
     verify(surveyService).addVotes(SURVEY_ID, List.of(vote));
   }
 

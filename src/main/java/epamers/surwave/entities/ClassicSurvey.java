@@ -22,4 +22,16 @@ public class ClassicSurvey extends Survey {
   }
 
   private Integer choicesByUser;
+
+  public boolean isUserVoted(User user) {
+    int currentVotes = getVotesByUserId(user.getId()).size();
+
+    if (currentVotes == 0) {
+      return false;
+    } else if (currentVotes == choicesByUser) {
+      return true;
+    } else {
+      throw new IllegalArgumentException("Found inconsistent number of votes for current user.");
+    }
+  }
 }
