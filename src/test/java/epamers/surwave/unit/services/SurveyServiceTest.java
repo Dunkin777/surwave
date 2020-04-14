@@ -15,12 +15,13 @@ import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyState;
 import epamers.surwave.entities.SurveyType;
 import epamers.surwave.entities.User;
+import epamers.surwave.entities.Vote;
 import epamers.surwave.repos.OptionRepository;
 import epamers.surwave.repos.SurveyRepository;
+import epamers.surwave.repos.VoteRepository;
 import epamers.surwave.services.MediaFileService;
-import epamers.surwave.services.SongService;
 import epamers.surwave.services.SurveyService;
-import epamers.surwave.services.UserService;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -35,23 +36,19 @@ import org.mockito.MockitoAnnotations;
 public class SurveyServiceTest {
 
   private static final Long SONG_ID = 156L;
-  private static final Long OPTION_ID = 15L;
+  private static final Long OPTION_ID = 1L;
+  private static final Long OTHER_OPTION_ID = 2L;
   private static final String SONG_PERFORMER = "Bee Gees";
   private static final String SONG_TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
   private static final Long SURVEY_ID = 35L;
   private static final Long NONEXISTENT_SURVEY_ID = 100L;
   private static final String SURVEY_DESCRIPTION = "Please think twice before choosing!";
-  private static final String USER_ID = "someGoogleId";
+  private static final String CURRENT_USER_ID = "someGoogleId";
+  private static final String OTHER_USER_ID = "anotherGoogleId";
   private static final Integer SURVEY_PROPOSALS_BY_USER = 5;
 
   @InjectMocks
   private SurveyService surveyService;
-
-  @Mock
-  private SongService songService;
-
-  @Mock
-  private UserService userService;
 
   @Mock
   private SurveyRepository surveyRepository;
@@ -62,10 +59,17 @@ public class SurveyServiceTest {
   @Mock
   private MediaFileService mediaFileService;
 
-  private User user;
+  @Mock
+  VoteRepository voteRepository;
+
+  private User currentUser;
+  private User otherUser;
   private Survey survey;
-  private Option option;
+  private Option yourOption;
+  private Option otherOption;
+  private Vote vote;
   private Set<Option> options;
+  private List<Vote> votes;
 
   @Before
   public void setUp() {
@@ -77,38 +81,65 @@ public class SurveyServiceTest {
         .id(SONG_ID)
         .build();
 
-    user = User.builder()
-        .id(USER_ID)
+    currentUser = User.builder()
+        .id(CURRENT_USER_ID)
         .build();
 
-    option = Option.builder()
-        .user(user)
+    otherUser = User.builder()
+        .id(OTHER_USER_ID)
+        .build();
+
+    yourOption = Option.builder()
+        .id(OPTION_ID)
+        .user(currentUser)
         .song(song)
         .survey(survey)
+        .votes(new HashSet<>())
+        .build();
+
+    otherOption = Option.builder()
+        .id(OTHER_OPTION_ID)
+        .user(otherUser)
+        .song(song)
+        .survey(survey)
+        .votes(new HashSet<>())
         .build();
 
     options = new HashSet<>();
-    options.add(option);
+    options.add(yourOption);
+    options.add(otherOption);
 
-    user.setOptions(options);
+    currentUser.setOptions(options);
 
     survey = ClassicSurvey.builder()
         .state(SurveyState.CREATED)
-        .choicesByUser(3)
+        .choicesByUser(1)
         .description(SURVEY_DESCRIPTION)
         .id(SURVEY_ID)
         .proposalsByUser(SURVEY_PROPOSALS_BY_USER)
         .options(options)
         .build();
 
+    vote = Vote.builder()
+        .option(otherOption)
+        .participant(currentUser)
+        .rating(1)
+        .build();
+
+    votes = new ArrayList<>();
+    votes.add(vote);
+
     when(surveyRepository.findById(SURVEY_ID)).thenReturn(Optional.of(survey));
     when(surveyRepository.findAll()).thenReturn(List.of(survey));
     when(surveyRepository.save(survey)).thenReturn(survey);
     when(surveyRepository.existsById(SURVEY_ID)).thenReturn(true);
+
+    when(optionRepository.findById(OPTION_ID)).thenReturn(Optional.of(yourOption));
+    when(optionRepository.findById(OTHER_OPTION_ID)).thenReturn(Optional.of(otherOption));
   }
 
   @Test
-  public void getAll_success() {
+  public void getAll_oneSurveyInRepo_gotOneSurvey() {
     List<Survey> surveys = surveyService.getAll();
 
     assertEquals(1, surveys.size());
@@ -174,7 +205,7 @@ public class SurveyServiceTest {
 
   @Test
   public void removeOption_existentOption_songRemovedAndDeleted() {
-    when(optionRepository.findById(OPTION_ID)).thenReturn(Optional.of(option));
+    when(optionRepository.findById(OPTION_ID)).thenReturn(Optional.of(yourOption));
 
     surveyService.removeOption(OPTION_ID);
 
@@ -200,9 +231,9 @@ public class SurveyServiceTest {
         .build();
     options.add(otherOption);
 
-    Survey returnedSurvey = surveyService.getByIdFiltered(SURVEY_ID, user);
+    Survey returnedSurvey = surveyService.getByIdFiltered(SURVEY_ID, currentUser);
 
-    returnedSurvey.getOptions().forEach(o -> assertEquals(user, o.getUser()));
+    returnedSurvey.getOptions().forEach(o -> assertEquals(currentUser, o.getUser()));
   }
 
   @Test
@@ -216,8 +247,15 @@ public class SurveyServiceTest {
     options.add(otherOption);
     survey.setState(SurveyState.STARTED);
 
-    Survey returnedSurvey = surveyService.getByIdFiltered(SURVEY_ID, user);
+    Survey returnedSurvey = surveyService.getByIdFiltered(SURVEY_ID, currentUser);
 
-    returnedSurvey.getOptions().forEach(o -> assertNotEquals(user, o.getUser()));
+    returnedSurvey.getOptions().forEach(o -> assertNotEquals(currentUser, o.getUser()));
+  }
+
+  @Test
+  public void addVotes_allValid_voteSaved() {
+    surveyService.addVotes(SURVEY_ID, votes);
+
+    verify(voteRepository).save(any(Vote.class));
   }
 }

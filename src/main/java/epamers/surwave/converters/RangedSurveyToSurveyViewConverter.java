@@ -18,15 +18,12 @@ public class RangedSurveyToSurveyViewConverter extends SurveyToSurveyViewConvert
 
   @Override
   public SurveyView convert(RangedSurvey survey) {
-    SurveyView surveyView = super.convert(survey);
-    surveyView.setLogarithmicRatingScale(survey.getLogarithmicRatingScale());
-
-    return surveyView;
-  }
-
-  private boolean isVoted(RangedSurvey survey) {
     User currentUser = userService.getCurrent();
 
-    return survey.getVotesByUserId(currentUser.getId()).size() > 0;
+    SurveyView surveyView = super.convert(survey);
+    surveyView.setLogarithmicRatingScale(survey.getLogarithmicRatingScale());
+    surveyView.setIsVoted(survey.isUserVoted(currentUser));
+
+    return surveyView;
   }
 }

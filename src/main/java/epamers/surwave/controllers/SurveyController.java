@@ -13,6 +13,7 @@ import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.User;
 import epamers.surwave.entities.Vote;
 import epamers.surwave.services.SurveyService;
+import epamers.surwave.validators.Validator;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
@@ -40,6 +41,7 @@ public class SurveyController {
 
   private final SurveyService surveyService;
   private final ConversionService converter;
+  private final Validator<List<VoteForm>> voteListValidator;
 
   @GetMapping("/all")
   @ApiOperation(
@@ -141,6 +143,8 @@ public class SurveyController {
       notes = "Awaits Survey ID as a path variable and Collection of VoteForms as body."
   )
   public void addVotes(@PathVariable Long surveyId, @ApiParam(value = "Votes to add") @RequestBody @Valid List<VoteForm> voteForms) {
+    voteListValidator.validate(voteForms);
+
     List<Vote> votes = voteForms.stream()
         .map(voteForm -> converter.convert(voteForm, Vote.class))
         .collect(toList());

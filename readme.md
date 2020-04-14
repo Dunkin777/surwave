@@ -5,8 +5,9 @@
 1 - Download project sources
 
 2 - Create `application-local.yml` file and copy `application-local.yml.example` content to it.
+If you're planning to use OAuth2 authentication locally - change surwave.authType to `oauth2`. Otherwise, comment out or remove `security` section completely.
 
-Next, in console in project root:<br/>
+Next, in console from project root directory:<br/>
 3 - Run build gradle task:
 ```
 ./gradlew build
