@@ -5,6 +5,7 @@ import epamers.surwave.entities.SurveyType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,10 +27,12 @@ public class SurveyForm {
   private SurveyState state;
 
   @NotNull
+  @Size(max = 100)
   @ApiModelProperty(required = true, notes = "Title of whole survey, usually its purpose.",
       example = "Songs for New Year party")
   private String title;
 
+  @Size(max = 300)
   @ApiModelProperty(notes = "Message left by Survey creator for every user who wants to vote.",
       example = "We need to pick some fast songs! And please, have mercy on drummer this time!")
   private String description;
