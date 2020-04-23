@@ -3,6 +3,7 @@ package epamers.surwave.dtos;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +21,7 @@ public class OptionForm {
       example = "12")
   private Long songId;
 
+  @Size(max = 150)
   @ApiModelProperty(notes = "Notes from user who suggested this song for other voters.",
       example = "Everybody knows the lyrics, will sing along. But let's play it faster.")
   private String comment;

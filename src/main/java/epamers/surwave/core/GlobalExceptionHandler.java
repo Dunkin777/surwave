@@ -6,6 +6,7 @@ import epamers.surwave.core.exceptions.VotingException;
 import javax.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -18,7 +19,7 @@ public class GlobalExceptionHandler {
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class, VotingException.class, FileStorageException.class,
-      EntityNotFoundException.class})
+      EntityNotFoundException.class, MethodArgumentNotValidException.class})
   public String handleIllegalArgumentException(RuntimeException ex) {
     log.debug(EXCEPTION_MESSAGE, 400, ex);
 
