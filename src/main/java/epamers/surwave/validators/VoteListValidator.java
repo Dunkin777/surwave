@@ -7,6 +7,7 @@ import static epamers.surwave.core.ExceptionMessageContract.VOTING_FOR_ZERO_OPTI
 import static epamers.surwave.core.ExceptionMessageContract.VOTING_INVALID_RATING_FOR_CLASSIC_TYPE;
 import static epamers.surwave.core.ExceptionMessageContract.VOTING_MORE_THAN_ONE_VOTE_FOR_OPTION;
 import static epamers.surwave.core.ExceptionMessageContract.VOTING_NOT_ONE_SURVEY;
+import static epamers.surwave.core.ExceptionMessageContract.VOTING_WRONG_SURVEY_STATE;
 import static java.util.stream.Collectors.toSet;
 
 import epamers.surwave.core.exceptions.VotingException;
@@ -14,6 +15,7 @@ import epamers.surwave.dtos.VoteForm;
 import epamers.surwave.entities.ClassicSurvey;
 import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Survey;
+import epamers.surwave.entities.SurveyState;
 import epamers.surwave.entities.SurveyType;
 import epamers.surwave.entities.User;
 import epamers.surwave.services.SurveyService;
@@ -49,6 +51,10 @@ public class VoteListValidator implements Validator<List<VoteForm>> {
         .orElseThrow();
     Survey survey = surveyService.getById(surveyId);
     User participant = userService.getCurrent();
+
+    if (survey.getState() != SurveyState.STARTED) {
+      throw new VotingException(VOTING_WRONG_SURVEY_STATE);
+    }
 
     if (survey.isUserVoted(participant)) {
       throw new VotingException(VOTING_ALREADY_VOTED);

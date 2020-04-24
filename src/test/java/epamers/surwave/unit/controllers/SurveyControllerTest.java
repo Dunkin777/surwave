@@ -7,10 +7,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import epamers.surwave.controllers.SurveyController;
+import epamers.surwave.dtos.OptionForm;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.dtos.VoteForm;
 import epamers.surwave.entities.ClassicSurvey;
+import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyType;
 import epamers.surwave.entities.User;
@@ -53,10 +55,13 @@ public class SurveyControllerTest {
   private SurveyView surveyView;
   private VoteForm voteForm;
   private List<VoteForm> voteForms;
+  private User currentUser;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
+
+    currentUser = new User();
 
     surveyForm = SurveyForm.builder()
         .build();
@@ -140,22 +145,35 @@ public class SurveyControllerTest {
   }
 
   @Test
-  public void getAllForUser_success() {
-    User user = new User();
-    when(surveyService.getAllFiltered(user)).thenReturn(surveys);
+  public void getAllFiltered_success() {
+    when(surveyService.getAllFiltered(currentUser)).thenReturn(surveys);
 
-    List<SurveyView> returnedSurveys = surveyController.getAllFiltered(user);
+    List<SurveyView> returnedSurveys = surveyController.getAllFiltered(currentUser);
 
     assertEquals(2, returnedSurveys.size());
   }
 
   @Test
-  public void getForUser_success() {
-    User user = new User();
-    when(surveyService.getByIdFiltered(SURVEY_ID, user)).thenReturn(survey);
+  public void getByIdFiltered_success() {
+    when(surveyService.getByIdFiltered(SURVEY_ID, currentUser)).thenReturn(survey);
 
-    SurveyView returnedSurveys = surveyController.getFiltered(user, SURVEY_ID);
+    SurveyView returnedSurveys = surveyController.getFiltered(currentUser, SURVEY_ID);
 
     assertEquals(surveyView, returnedSurveys);
+  }
+
+  @Test
+  public void addOption_success() {
+    OptionForm optionForm = OptionForm.builder()
+        .build();
+    Option option = Option.builder()
+        .id(OPTION_ID)
+        .build();
+    when(converter.convert(optionForm, Option.class)).thenReturn(option);
+    when(surveyService.addOption(SURVEY_ID, option, currentUser)).thenReturn(option);
+
+    surveyController.addOption(currentUser, SURVEY_ID, optionForm, response);
+
+    verify(response).addHeader("Location", SURVEY_URL + "/" + OPTION_ID);
   }
 }

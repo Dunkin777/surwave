@@ -2,6 +2,7 @@ package epamers.surwave.controllers;
 
 import static epamers.surwave.core.Contract.OPTION_URL;
 import static epamers.surwave.core.Contract.SURVEY_URL;
+import static epamers.surwave.core.Contract.VOTE_URL;
 import static java.util.stream.Collectors.toList;
 
 import epamers.surwave.dtos.OptionForm;
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +36,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(SURVEY_URL)
@@ -137,12 +140,12 @@ public class SurveyController {
     surveyService.removeOption(optionId);
   }
 
-  @PutMapping("/{surveyId}/vote")
+  @PutMapping("/{surveyId}" + VOTE_URL)
   @ApiOperation(
       value = "Add Collection of Votes to Survey",
       notes = "Awaits Survey ID as a path variable and Collection of VoteForms as body."
   )
-  public void addVotes(@PathVariable Long surveyId, @ApiParam(value = "Votes to add") @RequestBody @Valid List<VoteForm> voteForms) {
+  public void addVotes(@PathVariable Long surveyId, @ApiParam(value = "Votes to add") @RequestBody List<@Valid VoteForm> voteForms) {
     voteListValidator.validate(voteForms);
 
     List<Vote> votes = voteForms.stream()

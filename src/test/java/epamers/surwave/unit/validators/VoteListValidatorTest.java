@@ -79,7 +79,7 @@ public class VoteListValidatorTest {
     options.add(otherOption);
 
     survey = ClassicSurvey.builder()
-        .state(SurveyState.CREATED)
+        .state(SurveyState.STARTED)
         .choicesByUser(SURVEY_VOTES_BY_USER)
         .id(SURVEY_ID)
         .options(options)
@@ -151,6 +151,13 @@ public class VoteListValidatorTest {
   @Test(expected = VotingException.class)
   public void addVotes_invalidRating_exception() {
     voteForm.setRating(15);
+
+    voteListValidator.validate(voteForms);
+  }
+
+  @Test(expected = VotingException.class)
+  public void addVotes_wrongSurveyState_exception() {
+    survey.setState(SurveyState.CREATED);
 
     voteListValidator.validate(voteForms);
   }
