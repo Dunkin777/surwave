@@ -1,12 +1,14 @@
 package epamers.surwave.controllers;
 
 import static epamers.surwave.core.Contract.OPTION_URL;
+import static epamers.surwave.core.Contract.RESULT_URL;
 import static epamers.surwave.core.Contract.SURVEY_URL;
 import static epamers.surwave.core.Contract.VOTE_URL;
 import static java.util.stream.Collectors.toList;
 
 import epamers.surwave.dtos.OptionForm;
 import epamers.surwave.dtos.SurveyForm;
+import epamers.surwave.dtos.SurveyResultView;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.dtos.VoteForm;
 import epamers.surwave.entities.Option;
@@ -14,7 +16,7 @@ import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.User;
 import epamers.surwave.entities.Vote;
 import epamers.surwave.services.SurveyService;
-import epamers.surwave.validators.Validator;
+import epamers.surwave.validators.SurwaveValidator;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
@@ -44,7 +46,7 @@ public class SurveyController {
 
   private final SurveyService surveyService;
   private final ConversionService converter;
-  private final Validator<List<VoteForm>> voteListValidator;
+  private final SurwaveValidator<List<VoteForm>> voteListValidator;
 
   @GetMapping("/all")
   @ApiOperation(
@@ -152,6 +154,17 @@ public class SurveyController {
         .map(voteForm -> converter.convert(voteForm, Vote.class))
         .collect(toList());
 
-    surveyService.addVotes(surveyId, votes);
+    surveyService.addVotes(votes);
+  }
+
+  @GetMapping("/{surveyId}" + RESULT_URL)
+  @ApiOperation(
+      value = "Get survey results",
+      notes = "Awaits Survey ID as a path variable."
+  )
+  public SurveyResultView getResult(@ApiParam(value = "Survey ID") @PathVariable Long surveyId) {
+    Survey survey = surveyService.getByIdForRating(surveyId);
+
+    return converter.convert(survey, SurveyResultView.class);
   }
 }
