@@ -1,11 +1,14 @@
 package epamers.surwave.controllers;
 
 import static epamers.surwave.core.Contract.OPTION_URL;
+import static epamers.surwave.core.Contract.RESULT_URL;
 import static epamers.surwave.core.Contract.SURVEY_URL;
+import static epamers.surwave.core.Contract.VOTE_URL;
 import static java.util.stream.Collectors.toList;
 
 import epamers.surwave.dtos.OptionForm;
 import epamers.surwave.dtos.SurveyForm;
+import epamers.surwave.dtos.SurveyResultView;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.dtos.VoteForm;
 import epamers.surwave.entities.Option;
@@ -13,7 +16,7 @@ import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.User;
 import epamers.surwave.entities.Vote;
 import epamers.surwave.services.SurveyService;
-import epamers.surwave.validators.Validator;
+import epamers.surwave.validators.SurwaveValidator;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
@@ -23,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +38,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(SURVEY_URL)
@@ -41,7 +46,7 @@ public class SurveyController {
 
   private final SurveyService surveyService;
   private final ConversionService converter;
-  private final Validator<List<VoteForm>> voteListValidator;
+  private final SurwaveValidator<List<VoteForm>> voteListValidator;
 
   @GetMapping("/all")
   @ApiOperation(
@@ -137,18 +142,29 @@ public class SurveyController {
     surveyService.removeOption(optionId);
   }
 
-  @PutMapping("/{surveyId}/vote")
+  @PutMapping("/{surveyId}" + VOTE_URL)
   @ApiOperation(
       value = "Add Collection of Votes to Survey",
       notes = "Awaits Survey ID as a path variable and Collection of VoteForms as body."
   )
-  public void addVotes(@PathVariable Long surveyId, @ApiParam(value = "Votes to add") @RequestBody @Valid List<VoteForm> voteForms) {
+  public void addVotes(@PathVariable Long surveyId, @ApiParam(value = "Votes to add") @RequestBody List<@Valid VoteForm> voteForms) {
     voteListValidator.validate(voteForms);
 
     List<Vote> votes = voteForms.stream()
         .map(voteForm -> converter.convert(voteForm, Vote.class))
         .collect(toList());
 
-    surveyService.addVotes(surveyId, votes);
+    surveyService.addVotes(votes);
+  }
+
+  @GetMapping("/{surveyId}" + RESULT_URL)
+  @ApiOperation(
+      value = "Get survey results",
+      notes = "Awaits Survey ID as a path variable."
+  )
+  public SurveyResultView getResult(@ApiParam(value = "Survey ID") @PathVariable Long surveyId) {
+    Survey survey = surveyService.getByIdForRating(surveyId);
+
+    return converter.convert(survey, SurveyResultView.class);
   }
 }

@@ -16,7 +16,6 @@ public class OptionView {
   @ApiModelProperty(notes = "Song that this Option is based on.")
   private SongView song;
 
-  @ApiModelProperty(notes = "Notes from user who suggested this song for other voters.",
-      example = "Everybody knows the lyrics, will sing along. But let's play it faster.")
+  @ApiModelProperty(notes = "Notes from user who suggested this song for other voters.")
   private String comment;
 }

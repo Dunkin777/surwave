@@ -24,23 +24,19 @@ public class SurveyView {
   @ApiModelProperty(notes = "Stage of Survey's lifecycle.")
   private SurveyState state;
 
-  @ApiModelProperty(notes = "Title of whole survey, usually its purpose.",
-      example = "Songs for New Year party")
+  @ApiModelProperty(notes = "Title of whole survey, usually its purpose.")
   private String title;
 
-  @ApiModelProperty(notes = "Message left by Survey creator for every user who wants to vote.",
-      example = "Please, propose only sad songs. And not too famous, or we will get sued.")
+  @ApiModelProperty(notes = "Message left by Survey creator for every user who wants to vote.")
   private String description;
 
   @ApiModelProperty(notes = "Collection of Options, each representing one Song")
   private Set<OptionView> options;
 
-  @ApiModelProperty(notes = "How many songs one user should add to this survey.",
-      example = "5")
+  @ApiModelProperty(notes = "How many songs one user should add to this survey.")
   private Integer proposalsByUser;
 
-  @ApiModelProperty(notes = "How many songs user should pick when voting. Only for CLASSIC surveys.",
-      example = "1")
+  @ApiModelProperty(notes = "How many songs user should pick when voting. Only for CLASSIC surveys.")
   private Integer choicesByUser;
 
   @ApiModelProperty(notes = "If 'true' then survey should not be visible for non-admins.")

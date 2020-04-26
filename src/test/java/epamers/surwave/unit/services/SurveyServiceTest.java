@@ -8,7 +8,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import epamers.surwave.core.exceptions.ResultsException;
 import epamers.surwave.entities.ClassicSurvey;
+import epamers.surwave.entities.Features;
 import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javax.persistence.EntityNotFoundException;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -70,15 +73,24 @@ public class SurveyServiceTest {
   private Vote vote;
   private Set<Option> options;
   private List<Vote> votes;
+  private Song song;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
-    Song song = Song.builder()
+
+    Features features = Features.builder()
+        .danceability(1.0)
+        .energy(0.1)
+        .valence(0.5)
+        .build();
+
+    song = Song.builder()
         .performer(SONG_PERFORMER)
         .title(SONG_TITLE)
         .storageKey("")
         .id(SONG_ID)
+        .features(features)
         .build();
 
     currentUser = User.builder()
@@ -254,8 +266,30 @@ public class SurveyServiceTest {
 
   @Test
   public void addVotes_allValid_voteSaved() {
-    surveyService.addVotes(SURVEY_ID, votes);
+    surveyService.addVotes(votes);
 
     verify(voteRepository).save(any(Vote.class));
+  }
+
+  @Test
+  public void getByIdForRating_allValid_returnSurvey() {
+    survey.setState(SurveyState.STOPPED);
+
+    Survey returnedSurvey = surveyService.getByIdForRating(SURVEY_ID);
+
+    Assertions.assertThat(returnedSurvey).isEqualTo(survey);
+  }
+
+  @Test(expected = ResultsException.class)
+  public void getByIdForRating_wrongSurveyState_exception() {
+    surveyService.getByIdForRating(SURVEY_ID);
+  }
+
+  @Test(expected = ResultsException.class)
+  public void getByIdForRating_noFeatures_exception() {
+    survey.setState(SurveyState.STOPPED);
+    song.setFeatures(null);
+
+    surveyService.getByIdForRating(SURVEY_ID);
   }
 }
