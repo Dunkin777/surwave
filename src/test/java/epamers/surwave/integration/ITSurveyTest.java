@@ -168,7 +168,6 @@ public class ITSurveyTest extends SecurityTest {
     surveyForm.setState(CREATED);
 
     //Update some data
-
     surveyForm.setDescription(SURVEY_NEW_DESCRIPTION);
 
     givenJson()
@@ -210,30 +209,7 @@ public class ITSurveyTest extends SecurityTest {
     //Let's create another user's option to vote for it
     Long newOptionId = createNewOption(surveyId);
 
-    //Vote with incorrect Dto
-    VoteForm voteForm = VoteForm.builder()
-        .optionId(newOptionId)
-        .rating(1)
-        .build();
-
-    List<VoteForm> votes = List.of(voteForm);
-
-    givenJson()
-        .body(votes)
-        .put(newSurveyURI + VOTE_URL)
-        .then()
-        .statusCode(SC_BAD_REQUEST);
-
-    //Vote with correct Dto but in wrong Survey state
-    voteForm.setSurveyId(surveyId);
-
-    givenJson()
-        .body(votes)
-        .put(newSurveyURI + VOTE_URL)
-        .then()
-        .statusCode(SC_BAD_REQUEST);
-
-    //Change Survey state
+    //Change Survey State
     surveyForm.setState(STARTED);
 
     givenJson()
@@ -249,7 +225,23 @@ public class ITSurveyTest extends SecurityTest {
         .statusCode(SC_OK)
         .body("state", equalTo(STARTED.toString()));
 
-    //Vote correctly
+    //vote with incorrect Dto
+    VoteForm voteForm = VoteForm.builder()
+        .optionId(newOptionId)
+        .rating(1)
+        .build();
+
+    List<VoteForm> votes = List.of(voteForm);
+
+    givenJson()
+        .body(votes)
+        .put(newSurveyURI + VOTE_URL)
+        .then()
+        .statusCode(SC_BAD_REQUEST);
+
+    //vote with correct Dto
+    voteForm.setSurveyId(surveyId);
+
     givenJson()
         .body(votes)
         .put(newSurveyURI + VOTE_URL)

@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class VoteListValidator implements Validator<List<VoteForm>> {
+public class VoteListValidator implements SurwaveValidator<List<VoteForm>> {
 
   private final UserService userService;
   private final SurveyService surveyService;

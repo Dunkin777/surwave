@@ -2,6 +2,8 @@ package epamers.surwave.core;
 
 import epamers.surwave.core.exceptions.FileStorageException;
 import epamers.surwave.core.exceptions.NotAuthenticatedException;
+import epamers.surwave.core.exceptions.ResultsException;
+import epamers.surwave.core.exceptions.ResultsException;
 import epamers.surwave.core.exceptions.VotingException;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
@@ -19,7 +21,7 @@ public class GlobalExceptionHandler {
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class, VotingException.class, FileStorageException.class,
-      EntityNotFoundException.class, ConstraintViolationException.class})
+      EntityNotFoundException.class, ConstraintViolationException.class, ResultsException.class})
   public String handleIllegalArgumentException(RuntimeException ex) {
     log.debug(EXCEPTION_MESSAGE, 400, ex);
 

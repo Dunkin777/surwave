@@ -1,6 +1,7 @@
 package epamers.surwave.unit.controllers;
 
 import static epamers.surwave.core.Contract.SURVEY_URL;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -9,6 +10,7 @@ import static org.mockito.Mockito.when;
 import epamers.surwave.controllers.SurveyController;
 import epamers.surwave.dtos.OptionForm;
 import epamers.surwave.dtos.SurveyForm;
+import epamers.surwave.dtos.SurveyResultView;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.dtos.VoteForm;
 import epamers.surwave.entities.ClassicSurvey;
@@ -18,9 +20,10 @@ import epamers.surwave.entities.SurveyType;
 import epamers.surwave.entities.User;
 import epamers.surwave.entities.Vote;
 import epamers.surwave.services.SurveyService;
-import epamers.surwave.validators.Validator;
+import epamers.surwave.validators.SurwaveValidator;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Validator;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -46,7 +49,7 @@ public class SurveyControllerTest {
   private ConversionService converter;
 
   @Mock
-  private Validator<List<VoteForm>> voteListValidator;
+  private SurwaveValidator<List<VoteForm>> voteListValidator;
 
   private Survey survey;
   private Vote vote;
@@ -141,7 +144,7 @@ public class SurveyControllerTest {
     surveyController.addVotes(SURVEY_ID, voteForms);
 
     verify(voteListValidator).validate(voteForms);
-    verify(surveyService).addVotes(SURVEY_ID, List.of(vote));
+    verify(surveyService).addVotes(List.of(vote));
   }
 
   @Test
@@ -175,5 +178,16 @@ public class SurveyControllerTest {
     surveyController.addOption(currentUser, SURVEY_ID, optionForm, response);
 
     verify(response).addHeader("Location", SURVEY_URL + "/" + OPTION_ID);
+  }
+
+  @Test
+  public void getResult_success() {
+    SurveyResultView surveyResultView = SurveyResultView.builder().build();
+    when(converter.convert(survey, SurveyResultView.class)).thenReturn(surveyResultView);
+    when(surveyService.getByIdForRating(SURVEY_ID)).thenReturn(survey);
+
+    SurveyResultView returnedResult = surveyController.getResult(SURVEY_ID);
+
+    assertThat(returnedResult).isEqualTo(surveyResultView);
   }
 }

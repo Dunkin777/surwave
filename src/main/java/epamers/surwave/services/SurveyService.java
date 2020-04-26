@@ -1,7 +1,10 @@
 package epamers.surwave.services;
 
+import static epamers.surwave.core.ExceptionMessageContract.RESULTS_INVALID_SURVEY_STATE;
+import static epamers.surwave.core.ExceptionMessageContract.RESULTS_SONGS_NOT_PROCESSED;
 import static java.util.stream.Collectors.toSet;
 
+import epamers.surwave.core.exceptions.ResultsException;
 import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
@@ -38,6 +41,22 @@ public class SurveyService {
         .orElseThrow(() -> new EntityNotFoundException("Survey with id " + id + " was not found in database."));
     Set<Song> songs = survey.getSongs();
     songs.forEach(song -> song.setMediaURL(mediaFileService.getMediaPresignedUrl(song.getStorageKey())));
+
+    return survey;
+  }
+
+  public Survey getByIdForRating(Long id) {
+    Survey survey = getById(id);
+
+    if (survey.getState() != SurveyState.STOPPED) {
+      throw new ResultsException(RESULTS_INVALID_SURVEY_STATE);
+    }
+
+    for (Song song : survey.getSongs()) {
+      if (song.getFeatures() == null) {
+        throw new ResultsException(RESULTS_SONGS_NOT_PROCESSED);
+      }
+    }
 
     return survey;
   }
@@ -133,7 +152,7 @@ public class SurveyService {
   }
 
   @Transactional
-  public void addVotes(Long surveyId, List<Vote> votes) {
+  public void addVotes(List<Vote> votes) {
     for (Vote vote : votes) {
       Long optionId = vote.getOption().getId();
       Option option = getOptionById(optionId);

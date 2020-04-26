@@ -12,15 +12,15 @@ import lombok.Data;
 @ApiModel(description = "User information")
 public class UserView {
 
-  @ApiModelProperty(notes = "Google account's id.", example = "1942578382034356")
+  @ApiModelProperty(notes = "Google account's id.")
   private String id;
 
-  @ApiModelProperty(notes = "User's name in his google account.", example = "Elvis Presley")
+  @ApiModelProperty(notes = "User's name in his google account.")
   private String username;
 
-  @ApiModelProperty(notes = "Url of user's google account photo.", example = "https://lh0.googleusercontent.com/a-/AAAAAAA")
+  @ApiModelProperty(notes = "Url of user's google account photo.")
   private String avatarUrl;
 
-  @ApiModelProperty(notes = "Access level. USER or ADMIN.", example = "USER")
+  @ApiModelProperty(notes = "Access level. USER or ADMIN.")
   private Set<Role> roles;
 }
