@@ -1,5 +1,7 @@
 package epamers.surwave.integration;
 
+import static epamers.surwave.TestUtils.getValidClassicSurvey;
+import static epamers.surwave.TestUtils.getValidUser;
 import static epamers.surwave.core.Contract.OPTION_URL;
 import static epamers.surwave.core.Contract.SURVEY_URL;
 import static epamers.surwave.core.Contract.VOTE_URL;
@@ -21,6 +23,7 @@ import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.VoteForm;
 import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Song;
+import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.User;
 import epamers.surwave.repos.OptionRepository;
 import epamers.surwave.repos.SongRepository;
@@ -30,7 +33,7 @@ import epamers.surwave.repos.VoteRepository;
 import epamers.surwave.services.S3Service;
 import epamers.surwave.services.SurveyService;
 import java.util.List;
-import java.util.Map;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -250,15 +253,7 @@ public class ITSurveyTest extends SecurityTest {
   }
 
   private Long createNewOption(Long surveyId) {
-    Map<String, Object> googleData = Map.of(
-        "sub", "12345",
-        "name", "name",
-        "email", "name@name",
-        "locale", "GB/en",
-        "picture", "www.com"
-    );
-
-    User anotherUser = new User(googleData);
+    User anotherUser = getValidUser();
     userRepository.save(anotherUser);
 
     Option option = Option.builder()
@@ -269,5 +264,27 @@ public class ITSurveyTest extends SecurityTest {
         .build();
 
     return surveyService.addOption(surveyId, option, anotherUser).getId();
+  }
+
+  private Long createNewSurvey() {
+    Survey survey = getValidClassicSurvey();
+
+    survey = surveyRepository.save(survey);
+
+    return survey.getId();
+  }
+
+  @Test
+  public void surveyController_optionCommentTooLong_error() {
+    Long surveyId = createNewSurvey();
+
+    String commentOver150Chars = RandomStringUtils.randomAlphabetic(151);
+    optionForm.setComment(commentOver150Chars);
+
+    givenJson()
+        .body(optionForm)
+        .post(SURVEY_URL + "/" + surveyId + OPTION_URL)
+        .then()
+        .statusCode(SC_BAD_REQUEST);
   }
 }

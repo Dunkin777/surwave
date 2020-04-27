@@ -1,5 +1,7 @@
 package epamers.surwave.unit.services;
 
+import static epamers.surwave.TestUtils.SONG_ID;
+import static epamers.surwave.TestUtils.getValidSong;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -7,7 +9,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import epamers.surwave.entities.Features;
 import epamers.surwave.entities.Song;
 import epamers.surwave.repos.SongRepository;
 import epamers.surwave.services.MediaFileService;
@@ -24,11 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class SongServiceTest {
 
-  private static final Long SONG_ID = 156L;
   private static final Long SONG_NONEXISTENT_ID = 36L;
-  private static final String SONG_PERFORMER = "Felix Mendelssohn";
-  private static final String SONG_TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
-  private static final String SONG_MEDIA_PATH = "/data/1.mp3";
 
   @InjectMocks
   SongService songService;
@@ -47,19 +44,8 @@ public class SongServiceTest {
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
-    Features features = Features.builder()
-        .danceability(0.6)
-        .energy(0.59)
-        .valence(0.9999)
-        .build();
 
-    song = Song.builder()
-        .performer(SONG_PERFORMER)
-        .title(SONG_TITLE)
-        .id(SONG_ID)
-        .storageKey(SONG_MEDIA_PATH)
-        .features(features)
-        .build();
+    song = getValidSong();
 
     when(songRepository.existsById(SONG_ID)).thenReturn(true);
     when(songRepository.existsById(SONG_NONEXISTENT_ID)).thenReturn(false);
@@ -101,7 +87,7 @@ public class SongServiceTest {
 
   @Test
   public void getOrCreate_existingSong_notCreated() {
-    Song existingSong = Song.builder().build();
+    Song existingSong = getValidSong();
     when(songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(any(), any())).thenReturn(Optional.of(existingSong));
 
     Song returnedSong = songService.getOrCreate(song, multipartFile);

@@ -1,5 +1,10 @@
 package epamers.surwave.unit.services;
 
+import static epamers.surwave.TestUtils.OPTION_ID;
+import static epamers.surwave.TestUtils.SURVEY_ID;
+import static epamers.surwave.TestUtils.getValidClassicSurvey;
+import static epamers.surwave.TestUtils.getValidOption;
+import static epamers.surwave.TestUtils.getValidSong;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -10,7 +15,6 @@ import static org.mockito.Mockito.when;
 
 import epamers.surwave.core.exceptions.ResultsException;
 import epamers.surwave.entities.ClassicSurvey;
-import epamers.surwave.entities.Features;
 import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
@@ -38,17 +42,9 @@ import org.mockito.MockitoAnnotations;
 
 public class SurveyServiceTest {
 
-  private static final Long SONG_ID = 156L;
-  private static final Long OPTION_ID = 1L;
   private static final Long OTHER_OPTION_ID = 2L;
-  private static final String SONG_PERFORMER = "Bee Gees";
-  private static final String SONG_TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
-  private static final Long SURVEY_ID = 35L;
   private static final Long NONEXISTENT_SURVEY_ID = 100L;
-  private static final String SURVEY_DESCRIPTION = "Please think twice before choosing!";
   private static final String CURRENT_USER_ID = "someGoogleId";
-  private static final String OTHER_USER_ID = "anotherGoogleId";
-  private static final Integer SURVEY_PROPOSALS_BY_USER = 5;
 
   @InjectMocks
   private SurveyService surveyService;
@@ -66,86 +62,36 @@ public class SurveyServiceTest {
   VoteRepository voteRepository;
 
   private User currentUser;
-  private User otherUser;
   private Survey survey;
   private Option yourOption;
   private Option otherOption;
-  private Vote vote;
   private Set<Option> options;
-  private List<Vote> votes;
-  private Song song;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
 
-    Features features = Features.builder()
-        .danceability(1.0)
-        .energy(0.1)
-        .valence(0.5)
-        .build();
-
-    song = Song.builder()
-        .performer(SONG_PERFORMER)
-        .title(SONG_TITLE)
-        .storageKey("")
-        .id(SONG_ID)
-        .features(features)
-        .build();
-
     currentUser = User.builder()
         .id(CURRENT_USER_ID)
         .build();
 
-    otherUser = User.builder()
-        .id(OTHER_USER_ID)
-        .build();
+    yourOption = getValidOption();
+    yourOption.setUser(currentUser);
 
-    yourOption = Option.builder()
-        .id(OPTION_ID)
-        .user(currentUser)
-        .song(song)
-        .survey(survey)
-        .votes(new HashSet<>())
-        .build();
-
-    otherOption = Option.builder()
-        .id(OTHER_OPTION_ID)
-        .user(otherUser)
-        .song(song)
-        .survey(survey)
-        .votes(new HashSet<>())
-        .build();
+    otherOption = getValidOption();
+    otherOption.setId(OTHER_OPTION_ID);
 
     options = new HashSet<>();
     options.add(yourOption);
     options.add(otherOption);
 
-    currentUser.setOptions(options);
+    survey = getValidClassicSurvey();
+    survey.setOptions(options);
 
-    survey = ClassicSurvey.builder()
-        .state(SurveyState.CREATED)
-        .choicesByUser(1)
-        .description(SURVEY_DESCRIPTION)
-        .id(SURVEY_ID)
-        .proposalsByUser(SURVEY_PROPOSALS_BY_USER)
-        .options(options)
-        .build();
-
-    vote = Vote.builder()
-        .option(otherOption)
-        .participant(currentUser)
-        .rating(1)
-        .build();
-
-    votes = new ArrayList<>();
-    votes.add(vote);
-
+    when(surveyRepository.existsById(SURVEY_ID)).thenReturn(true);
     when(surveyRepository.findById(SURVEY_ID)).thenReturn(Optional.of(survey));
     when(surveyRepository.findAll()).thenReturn(List.of(survey));
     when(surveyRepository.save(survey)).thenReturn(survey);
-    when(surveyRepository.existsById(SURVEY_ID)).thenReturn(true);
-
     when(optionRepository.findById(OPTION_ID)).thenReturn(Optional.of(yourOption));
     when(optionRepository.findById(OTHER_OPTION_ID)).thenReturn(Optional.of(otherOption));
   }
@@ -201,8 +147,8 @@ public class SurveyServiceTest {
 
     assertEquals(newDescription, survey.getDescription());
     assertEquals(newTitle, survey.getTitle());
-    assertEquals(SURVEY_PROPOSALS_BY_USER, survey.getProposalsByUser());
-    assertEquals(SurveyType.CLASSIC, survey.getType());
+    assertNotEquals(newProposalsByUser, survey.getProposalsByUser());
+    assertNotEquals(SurveyType.RANGED, survey.getType());
   }
 
   @Test(expected = EntityNotFoundException.class)
@@ -217,8 +163,6 @@ public class SurveyServiceTest {
 
   @Test
   public void removeOption_existentOption_songRemovedAndDeleted() {
-    when(optionRepository.findById(OPTION_ID)).thenReturn(Optional.of(yourOption));
-
     surveyService.removeOption(OPTION_ID);
 
     verify(optionRepository).delete(any());
@@ -235,14 +179,6 @@ public class SurveyServiceTest {
 
   @Test
   public void getByIdFiltered_createdState_returnOnlyUserOptions() {
-    Option otherOption = Option.builder()
-        .song(Song.builder().build())
-        .user(User.builder()
-            .id("anotherUserId")
-            .build())
-        .build();
-    options.add(otherOption);
-
     Survey returnedSurvey = surveyService.getByIdFiltered(SURVEY_ID, currentUser);
 
     returnedSurvey.getOptions().forEach(o -> assertEquals(currentUser, o.getUser()));
@@ -250,13 +186,6 @@ public class SurveyServiceTest {
 
   @Test
   public void getByIdFiltered_startedState_returnNotUserOptions() {
-    Option otherOption = Option.builder()
-        .song(Song.builder().build())
-        .user(User.builder()
-            .id("anotherUserId")
-            .build())
-        .build();
-    options.add(otherOption);
     survey.setState(SurveyState.STARTED);
 
     Survey returnedSurvey = surveyService.getByIdFiltered(SURVEY_ID, currentUser);
@@ -266,6 +195,15 @@ public class SurveyServiceTest {
 
   @Test
   public void addVotes_allValid_voteSaved() {
+    Vote vote = Vote.builder()
+        .option(otherOption)
+        .participant(currentUser)
+        .rating(1)
+        .build();
+
+    List<Vote> votes = new ArrayList<>();
+    votes.add(vote);
+
     surveyService.addVotes(votes);
 
     verify(voteRepository).save(any(Vote.class));
@@ -288,7 +226,9 @@ public class SurveyServiceTest {
   @Test(expected = ResultsException.class)
   public void getByIdForRating_noFeatures_exception() {
     survey.setState(SurveyState.STOPPED);
+    Song song = getValidSong();
     song.setFeatures(null);
+    yourOption.setSong(song);
 
     surveyService.getByIdForRating(SURVEY_ID);
   }
