@@ -65,7 +65,6 @@ public class SurveyServiceTest {
   private Survey survey;
   private Option yourOption;
   private Option otherOption;
-  private Set<Option> options;
 
   @Before
   public void setUp() {
@@ -81,7 +80,7 @@ public class SurveyServiceTest {
     otherOption = getValidOption();
     otherOption.setId(OTHER_OPTION_ID);
 
-    options = new HashSet<>();
+    Set<Option> options = new HashSet<>();
     options.add(yourOption);
     options.add(otherOption);
 

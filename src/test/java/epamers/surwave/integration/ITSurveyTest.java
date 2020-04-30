@@ -41,10 +41,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-public class ITSurveyTest extends SecurityTest {
+public class ITSurveyTest extends IntegrationTest {
 
-  private static final Long SONG_ID = 1L;
-  private static final Long ANOTHER_SONG_ID = 2L;
   private static final String SONG_PERFORMER = "Elton John Lennon";
   private static final String SONG_TITLE = "Korobeiniki (feat. George Gershwin)";
   private static final String SURVEY_TITLE = "Sergei Yurzin Birthday's Songs";
@@ -90,26 +88,23 @@ public class ITSurveyTest extends SecurityTest {
         .build();
 
     Song song = Song.builder()
-        .id(SONG_ID)
         .performer(SONG_PERFORMER)
         .title(SONG_TITLE)
         .storageKey("storageKey")
         .build();
+    song = songRepository.save(song);
 
     anotherSong = Song.builder()
-        .id(ANOTHER_SONG_ID)
         .performer(SONG_PERFORMER)
         .title(SONG_TITLE)
         .storageKey("storageKey2")
         .build();
+    anotherSong = songRepository.save(anotherSong);
 
     optionForm = OptionForm.builder()
-        .songId(SONG_ID)
+        .songId(song.getId())
         .comment(OPTION_COMMENT)
         .build();
-
-    songRepository.save(song);
-    songRepository.save(anotherSong);
 
     Mockito.when(s3Service.getPresignedURL(any())).thenReturn("www.someurl.com/1.mp3");
   }
@@ -120,7 +115,7 @@ public class ITSurveyTest extends SecurityTest {
     optionRepository.deleteAll();
     surveyRepository.deleteAll();
     songRepository.deleteAll();
-    userRepository.deleteAll();
+    //userRepository.deleteAll();
   }
 
   @Test

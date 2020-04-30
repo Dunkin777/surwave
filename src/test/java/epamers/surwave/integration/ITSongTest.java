@@ -58,6 +58,7 @@ public class ITSongTest extends IntegrationTest {
 
     //Create a new Song
     Response response = given()
+        .with().auth().basic("guest", "guest")
         .multiPart("mediaFile", new File("./readme.md"))
         .formParam("performer", SONG_PERFORMER)
         .formParam("title", SONG_TITLE)
@@ -84,6 +85,7 @@ public class ITSongTest extends IntegrationTest {
 
     //Try to add already existing Song
     given()
+        .with().auth().basic("guest", "guest")
         .multiPart("mediaFile", new File("./readme.md"))
         .formParam("performer", SONG_PERFORMER)
         .formParam("title", SONG_TITLE)

@@ -12,16 +12,16 @@ import java.util.HashSet;
 
 public class TestUtils {
 
+  public static final String USER_ID = "someGoogleId";
+  public static final String USER_NAME = "Velimir Mstislavovich";
+  public static final String USER_EMAIL = "velya@home.su";
+
   public static final String SONG_PERFORMER = "Elton John Lennon";
   public static final String SONG_TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
   public static final String SONG_STORAGE_KEY = "/data/1.mp3";
   public static final Long SONG_ID = 156L;
 
   public static final Long OPTION_ID = 1L;
-
-  public static final String USER_ID = "someGoogleId";
-  public static final String USER_NAME = "Velimir Mstislavovich";
-  public static final String USER_EMAIL = "velya@home.su";
 
   public static final String SURVEY_TITLE = "Sergei Yurzin Birthday's Songs";
   public static final String SURVEY_DESCRIPTION = "Please think twice before choosing!";
