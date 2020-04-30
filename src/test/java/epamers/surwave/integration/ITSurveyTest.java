@@ -81,6 +81,7 @@ public class ITSurveyTest extends IntegrationTest {
 
     surveyForm = SurveyForm.builder()
         .type(CLASSIC)
+        .title(SURVEY_TITLE)
         .choicesByUser(1)
         .description(SURVEY_DESCRIPTION)
         .proposalsByUser(4)
@@ -115,7 +116,6 @@ public class ITSurveyTest extends IntegrationTest {
     optionRepository.deleteAll();
     surveyRepository.deleteAll();
     songRepository.deleteAll();
-    //userRepository.deleteAll();
   }
 
   @Test
@@ -127,16 +127,7 @@ public class ITSurveyTest extends IntegrationTest {
         .statusCode(SC_OK)
         .body("$", hasSize(0));
 
-    //Try to create Survey without mandatory data (title)
-    givenJson()
-        .body(surveyForm)
-        .post(SURVEY_URL)
-        .then()
-        .statusCode(SC_BAD_REQUEST);
-
-    //Successfully create new blank Survey
-    surveyForm.setTitle(SURVEY_TITLE);
-
+    //Create new blank Survey
     Response response = givenJson()
         .body(surveyForm)
         .post(SURVEY_URL)
@@ -223,22 +214,13 @@ public class ITSurveyTest extends IntegrationTest {
         .statusCode(SC_OK)
         .body("state", equalTo(STARTED.toString()));
 
-    //vote with incorrect Dto
+    //Vote
     VoteForm voteForm = VoteForm.builder()
         .optionId(newOptionId)
+        .surveyId(surveyId)
         .rating(1)
         .build();
-
     List<VoteForm> votes = List.of(voteForm);
-
-    givenJson()
-        .body(votes)
-        .put(newSurveyURI + VOTE_URL)
-        .then()
-        .statusCode(SC_BAD_REQUEST);
-
-    //vote with correct Dto
-    voteForm.setSurveyId(surveyId);
 
     givenJson()
         .body(votes)
@@ -270,7 +252,19 @@ public class ITSurveyTest extends IntegrationTest {
   }
 
   @Test
-  public void surveyController_optionCommentTooLong_error() {
+  public void createSurvey_descriptionTooLong_error() {
+    String descriptionOver300Chars = RandomStringUtils.randomAlphabetic(301);
+    surveyForm.setDescription(descriptionOver300Chars);
+
+    givenJson()
+        .body(surveyForm)
+        .post(SURVEY_URL)
+        .then()
+        .statusCode(SC_BAD_REQUEST);
+  }
+
+  @Test
+  public void addOptionToSurvey_commentTooLong_error() {
     Long surveyId = createNewSurvey();
 
     String commentOver150Chars = RandomStringUtils.randomAlphabetic(151);
