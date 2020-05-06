@@ -1,5 +1,7 @@
 package epamers.surwave.integration;
 
+import static epamers.surwave.TestUtils.getValidClassicSurvey;
+import static epamers.surwave.TestUtils.getValidUser;
 import static epamers.surwave.core.Contract.OPTION_URL;
 import static epamers.surwave.core.Contract.SURVEY_URL;
 import static epamers.surwave.core.Contract.VOTE_URL;
@@ -21,6 +23,7 @@ import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.VoteForm;
 import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Song;
+import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.User;
 import epamers.surwave.repos.OptionRepository;
 import epamers.surwave.repos.SongRepository;
@@ -30,7 +33,7 @@ import epamers.surwave.repos.VoteRepository;
 import epamers.surwave.services.S3Service;
 import epamers.surwave.services.SurveyService;
 import java.util.List;
-import java.util.Map;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,10 +41,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-public class ITSurveyTest extends SecurityTest {
+public class ITSurveyTest extends IntegrationTest {
 
-  private static final Long SONG_ID = 1L;
-  private static final Long ANOTHER_SONG_ID = 2L;
   private static final String SONG_PERFORMER = "Elton John Lennon";
   private static final String SONG_TITLE = "Korobeiniki (feat. George Gershwin)";
   private static final String SURVEY_TITLE = "Sergei Yurzin Birthday's Songs";
@@ -80,6 +81,7 @@ public class ITSurveyTest extends SecurityTest {
 
     surveyForm = SurveyForm.builder()
         .type(CLASSIC)
+        .title(SURVEY_TITLE)
         .choicesByUser(1)
         .description(SURVEY_DESCRIPTION)
         .proposalsByUser(4)
@@ -87,26 +89,23 @@ public class ITSurveyTest extends SecurityTest {
         .build();
 
     Song song = Song.builder()
-        .id(SONG_ID)
         .performer(SONG_PERFORMER)
         .title(SONG_TITLE)
         .storageKey("storageKey")
         .build();
+    song = songRepository.save(song);
 
     anotherSong = Song.builder()
-        .id(ANOTHER_SONG_ID)
         .performer(SONG_PERFORMER)
         .title(SONG_TITLE)
         .storageKey("storageKey2")
         .build();
+    anotherSong = songRepository.save(anotherSong);
 
     optionForm = OptionForm.builder()
-        .songId(SONG_ID)
+        .songId(song.getId())
         .comment(OPTION_COMMENT)
         .build();
-
-    songRepository.save(song);
-    songRepository.save(anotherSong);
 
     Mockito.when(s3Service.getPresignedURL(any())).thenReturn("www.someurl.com/1.mp3");
   }
@@ -117,7 +116,6 @@ public class ITSurveyTest extends SecurityTest {
     optionRepository.deleteAll();
     surveyRepository.deleteAll();
     songRepository.deleteAll();
-    userRepository.deleteAll();
   }
 
   @Test
@@ -129,16 +127,7 @@ public class ITSurveyTest extends SecurityTest {
         .statusCode(SC_OK)
         .body("$", hasSize(0));
 
-    //Try to create Survey without mandatory data (title)
-    givenJson()
-        .body(surveyForm)
-        .post(SURVEY_URL)
-        .then()
-        .statusCode(SC_BAD_REQUEST);
-
-    //Successfully create new blank Survey
-    surveyForm.setTitle(SURVEY_TITLE);
-
+    //Create new blank Survey
     Response response = givenJson()
         .body(surveyForm)
         .post(SURVEY_URL)
@@ -225,22 +214,13 @@ public class ITSurveyTest extends SecurityTest {
         .statusCode(SC_OK)
         .body("state", equalTo(STARTED.toString()));
 
-    //vote with incorrect Dto
+    //Vote
     VoteForm voteForm = VoteForm.builder()
         .optionId(newOptionId)
+        .surveyId(surveyId)
         .rating(1)
         .build();
-
     List<VoteForm> votes = List.of(voteForm);
-
-    givenJson()
-        .body(votes)
-        .put(newSurveyURI + VOTE_URL)
-        .then()
-        .statusCode(SC_BAD_REQUEST);
-
-    //vote with correct Dto
-    voteForm.setSurveyId(surveyId);
 
     givenJson()
         .body(votes)
@@ -250,15 +230,7 @@ public class ITSurveyTest extends SecurityTest {
   }
 
   private Long createNewOption(Long surveyId) {
-    Map<String, Object> googleData = Map.of(
-        "sub", "12345",
-        "name", "name",
-        "email", "name@name",
-        "locale", "GB/en",
-        "picture", "www.com"
-    );
-
-    User anotherUser = new User(googleData);
+    User anotherUser = getValidUser();
     userRepository.save(anotherUser);
 
     Option option = Option.builder()
@@ -269,5 +241,39 @@ public class ITSurveyTest extends SecurityTest {
         .build();
 
     return surveyService.addOption(surveyId, option, anotherUser).getId();
+  }
+
+  private Long createNewSurvey() {
+    Survey survey = getValidClassicSurvey();
+
+    survey = surveyRepository.save(survey);
+
+    return survey.getId();
+  }
+
+  @Test
+  public void createSurvey_descriptionTooLong_error() {
+    String descriptionOver300Chars = RandomStringUtils.randomAlphabetic(301);
+    surveyForm.setDescription(descriptionOver300Chars);
+
+    givenJson()
+        .body(surveyForm)
+        .post(SURVEY_URL)
+        .then()
+        .statusCode(SC_BAD_REQUEST);
+  }
+
+  @Test
+  public void addOptionToSurvey_commentTooLong_error() {
+    Long surveyId = createNewSurvey();
+
+    String commentOver150Chars = RandomStringUtils.randomAlphabetic(151);
+    optionForm.setComment(commentOver150Chars);
+
+    givenJson()
+        .body(optionForm)
+        .post(SURVEY_URL + "/" + surveyId + OPTION_URL)
+        .then()
+        .statusCode(SC_BAD_REQUEST);
   }
 }

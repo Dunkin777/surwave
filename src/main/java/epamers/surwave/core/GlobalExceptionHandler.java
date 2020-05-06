@@ -3,7 +3,6 @@ package epamers.surwave.core;
 import epamers.surwave.core.exceptions.FileStorageException;
 import epamers.surwave.core.exceptions.NotAuthenticatedException;
 import epamers.surwave.core.exceptions.ResultsException;
-import epamers.surwave.core.exceptions.ResultsException;
 import epamers.surwave.core.exceptions.VotingException;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;

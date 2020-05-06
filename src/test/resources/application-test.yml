@@ -14,4 +14,9 @@ spring:
       max-request-size: 20MB
 
 surwave:
-  authType: disabled
+  authType: basic
+  uploadDir: data
+
+logging:
+  level:
+    ROOT: DEBUG
