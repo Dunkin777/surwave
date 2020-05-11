@@ -2,13 +2,13 @@ package epamers.surwave.integration;
 
 import static com.jayway.restassured.RestAssured.given;
 import static epamers.surwave.core.Contract.SONG_URL;
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -18,6 +18,7 @@ import com.jayway.restassured.response.Response;
 import epamers.surwave.repos.SongRepository;
 import epamers.surwave.services.S3Service;
 import java.io.File;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,6 +59,7 @@ public class ITSongTest extends IntegrationTest {
 
     //Create a new Song
     Response response = given()
+        .with().auth().basic("guest", "guest")
         .multiPart("mediaFile", new File("./readme.md"))
         .formParam("performer", SONG_PERFORMER)
         .formParam("title", SONG_TITLE)
@@ -81,25 +83,20 @@ public class ITSongTest extends IntegrationTest {
         .body("mediaPath", not(isEmptyOrNullString()))
         .body("title", hasItem(SONG_TITLE))
         .body("performer", hasItem(SONG_PERFORMER));
+  }
 
-    //Try to add already existing Song
+  @Test
+  public void createSong_titleTooLong_error() {
+    String tooLongTitle = RandomStringUtils.randomAlphabetic(101);
+
     given()
+        .with().auth().basic("guest", "guest")
         .multiPart("mediaFile", new File("./readme.md"))
         .formParam("performer", SONG_PERFORMER)
-        .formParam("title", SONG_TITLE)
+        .formParam("title", tooLongTitle)
         .when()
         .post(SONG_URL)
         .then()
-        .statusCode(SC_CREATED);
-
-    //Check that it has returned the same location
-    assertEquals(newSongUri, response.getHeader("Location"));
-
-    //Check that we still have one Song
-    givenJson()
-        .get(SONG_URL + "/all")
-        .then()
-        .statusCode(SC_OK)
-        .body("$", hasSize(1));
+        .statusCode(SC_BAD_REQUEST);
   }
 }
