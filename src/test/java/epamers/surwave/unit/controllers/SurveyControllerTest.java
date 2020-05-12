@@ -23,7 +23,6 @@ import epamers.surwave.services.SurveyService;
 import epamers.surwave.validators.SurwaveValidator;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Validator;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -94,6 +93,7 @@ public class SurveyControllerTest {
     surveys = List.of(survey, hiddenSurvey);
 
     when(surveyService.getAll()).thenReturn(surveys);
+    when(surveyService.getByIdWithSongURLs(SURVEY_ID)).thenReturn(survey);
     when(surveyService.getById(SURVEY_ID)).thenReturn(survey);
     when(surveyService.create(survey)).thenReturn(survey);
     when(converter.convert(survey, SurveyView.class)).thenReturn(surveyView);

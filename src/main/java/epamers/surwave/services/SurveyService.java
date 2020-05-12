@@ -37,16 +37,21 @@ public class SurveyService {
   }
 
   public Survey getById(Long id) {
-    Survey survey = surveyRepository.findById(id)
+    return surveyRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Survey with id " + id + " was not found in database."));
+  }
+
+  public Survey getByIdWithSongURLs(Long id) {
+    Survey survey = getById(id);
     Set<Song> songs = survey.getSongs();
+
     songs.forEach(song -> song.setMediaURL(mediaFileService.getMediaPresignedUrl(song.getStorageKey())));
 
     return survey;
   }
 
   public Survey getByIdForRating(Long id) {
-    Survey survey = getById(id);
+    Survey survey = getByIdWithSongURLs(id);
 
     if (survey.getState() != SurveyState.STOPPED) {
       throw new ResultsException(RESULTS_INVALID_SURVEY_STATE);
@@ -66,7 +71,7 @@ public class SurveyService {
   }
 
   public Survey getByIdFiltered(Long id, User user) {
-    Survey survey = getById(id);
+    Survey survey = getByIdWithSongURLs(id);
 
     return filterOptions(survey, user);
   }
