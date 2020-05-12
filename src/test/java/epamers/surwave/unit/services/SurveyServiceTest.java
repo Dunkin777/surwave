@@ -1,10 +1,14 @@
 package epamers.surwave.unit.services;
 
 import static epamers.surwave.TestUtils.OPTION_ID;
+import static epamers.surwave.TestUtils.SONG_MEDIA_URL;
+import static epamers.surwave.TestUtils.SONG_STORAGE_KEY;
 import static epamers.surwave.TestUtils.SURVEY_ID;
 import static epamers.surwave.TestUtils.getValidClassicSurvey;
 import static epamers.surwave.TestUtils.getValidOption;
 import static epamers.surwave.TestUtils.getValidSong;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -33,7 +37,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javax.persistence.EntityNotFoundException;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -93,6 +96,8 @@ public class SurveyServiceTest {
     when(surveyRepository.save(survey)).thenReturn(survey);
     when(optionRepository.findById(OPTION_ID)).thenReturn(Optional.of(yourOption));
     when(optionRepository.findById(OTHER_OPTION_ID)).thenReturn(Optional.of(otherOption));
+
+    when(mediaFileService.getMediaPresignedUrl(SONG_STORAGE_KEY)).thenReturn(SONG_MEDIA_URL);
   }
 
   @Test
@@ -113,6 +118,22 @@ public class SurveyServiceTest {
   @Test(expected = EntityNotFoundException.class)
   public void getById_nonexistentID_exception() {
     surveyService.getById(NONEXISTENT_SURVEY_ID);
+  }
+
+  @Test
+  public void getByIdWithSongURLs_existingId_success() {
+    Survey foundSurvey = surveyService.getByIdWithSongURLs(SURVEY_ID);
+
+    assertEquals(survey, foundSurvey);
+
+    assertThat(foundSurvey.getSongs())
+        .extracting(Song::getMediaURL)
+        .contains(SONG_MEDIA_URL);
+  }
+
+  @Test
+  public void getByIdWithSongURLs_nonexistentID_exception() {
+    assertThatThrownBy(() -> surveyService.getByIdWithSongURLs(NONEXISTENT_SURVEY_ID)).isInstanceOf(EntityNotFoundException.class);
   }
 
   @Test
@@ -214,7 +235,7 @@ public class SurveyServiceTest {
 
     Survey returnedSurvey = surveyService.getByIdForRating(SURVEY_ID);
 
-    Assertions.assertThat(returnedSurvey).isEqualTo(survey);
+    assertThat(returnedSurvey).isEqualTo(survey);
   }
 
   @Test(expected = ResultsException.class)

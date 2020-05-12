@@ -76,7 +76,7 @@ public class SurveyController {
       notes = "Awaits Survey ID as path variable. Returns SurveyView. Songs for all users, without filtration."
   )
   public SurveyView get(@ApiParam(value = "Survey ID") @PathVariable Long id) {
-    Survey survey = surveyService.getById(id);
+    Survey survey = surveyService.getByIdWithSongURLs(id);
 
     return converter.convert(survey, SurveyView.class);
   }
