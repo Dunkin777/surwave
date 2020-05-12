@@ -18,6 +18,7 @@ surwave:
   authType: basic
   s3-bucket: surwtest
   uploadDir: surwave_media
+  analyticsUrl: http://surwave-analytics:5000
 
 security:
   oauth2:

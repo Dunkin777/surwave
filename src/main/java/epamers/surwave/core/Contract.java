@@ -12,4 +12,5 @@ public class Contract {
   public static final String USER_URL = "/user";
   public static final String VOTE_URL = "/vote";
   public static final String RESULT_URL = "/result";
+  public static final String FEATURES_URL = "/features";
 }
