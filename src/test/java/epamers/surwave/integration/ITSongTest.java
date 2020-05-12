@@ -15,6 +15,8 @@ import static org.mockito.Mockito.when;
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
+import epamers.surwave.clients.AnalyticsClient;
+import epamers.surwave.dtos.FeaturesDto;
 import epamers.surwave.repos.SongRepository;
 import epamers.surwave.services.S3Service;
 import java.io.File;
@@ -34,13 +36,23 @@ public class ITSongTest extends IntegrationTest {
   @MockBean
   private S3Service s3Service;
 
+  @MockBean
+  private AnalyticsClient analyticsClient;
+
   @Autowired
   private SongRepository songRepository;
 
   @Before
   public void setUp() {
     RestAssured.port = port;
+    FeaturesDto featuresDto = FeaturesDto.builder()
+        .danceability(0.466)
+        .energy(0.84)
+        .valence(0.0)
+        .build();
+
     when(s3Service.putObject(anyString(), any(), any())).thenReturn(S3_FILE_KEY);
+    when(analyticsClient.getFeatures(any(), any())).thenReturn(featuresDto);
   }
 
   @After
