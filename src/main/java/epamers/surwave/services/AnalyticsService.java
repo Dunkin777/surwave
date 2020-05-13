@@ -1,11 +1,10 @@
 package epamers.surwave.services;
 
-import static javax.transaction.Transactional.TxType.*;
-
 import epamers.surwave.clients.AnalyticsClient;
 import epamers.surwave.dtos.FeaturesDto;
 import epamers.surwave.entities.Features;
 import epamers.surwave.entities.Song;
+import epamers.surwave.repos.SongRepository;
 import feign.FeignException;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,22 +20,22 @@ public class AnalyticsService {
 
   private final AnalyticsClient analyticsClient;
   private final ConversionService converter;
+  private final SongRepository songRepository;
 
   @Async
-  @Transactional(REQUIRES_NEW)
-  public void fillSongFeatures(Song song) {
+  @Transactional
+  public void fillSongFeatures(Long songId) {
     FeaturesDto featuresDto;
+    Song song = songRepository.findById(songId).orElseThrow();
 
     try {
-      featuresDto = analyticsClient.getFeatures(song.getId(), song.getStorageKey());
+      featuresDto = analyticsClient.getFeatures(songId, song.getStorageKey());
 
+      Features features = converter.convert(featuresDto, Features.class);
+      song.setFeatures(features);
     } catch (FeignException e) {
       log.error(String.valueOf(e.status()));
       log.error(e.contentUTF8());
-      return;
     }
-
-    Features features = converter.convert(featuresDto, Features.class);
-    song.setFeatures(features);
   }
 }

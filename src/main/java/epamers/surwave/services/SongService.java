@@ -37,7 +37,7 @@ public class SongService {
 
           String mediaPath = mediaFileService.upload(mediaFile, newSong.getId());
           newSong.setStorageKey(mediaPath);
-          analyticsService.fillSongFeatures(newSong);
+          analyticsService.fillSongFeatures(newSong.getId());
 
           return newSong;
         });
