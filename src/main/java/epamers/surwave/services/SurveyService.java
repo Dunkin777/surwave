@@ -1,7 +1,13 @@
 package epamers.surwave.services;
 
+import static epamers.surwave.core.ExceptionMessageContract.OPTION_ALREADY_EXISTS;
+import static epamers.surwave.core.ExceptionMessageContract.OPTION_IS_NULL_CREATION;
+import static epamers.surwave.core.ExceptionMessageContract.OPTION_NOT_FOUND;
 import static epamers.surwave.core.ExceptionMessageContract.RESULTS_INVALID_SURVEY_STATE;
 import static epamers.surwave.core.ExceptionMessageContract.RESULTS_SONGS_NOT_PROCESSED;
+import static epamers.surwave.core.ExceptionMessageContract.SURVEY_IS_NULL_CREATION;
+import static epamers.surwave.core.ExceptionMessageContract.SURVEY_IS_NULL_MODIFICATION;
+import static epamers.surwave.core.ExceptionMessageContract.SURVEY_NOT_FOUND;
 import static java.util.stream.Collectors.toSet;
 
 import epamers.surwave.core.exceptions.ResultsException;
@@ -38,7 +44,7 @@ public class SurveyService {
 
   public Survey getById(Long id) {
     return surveyRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Survey with id " + id + " was not found in database."));
+        .orElseThrow(() -> new EntityNotFoundException(String.format(SURVEY_NOT_FOUND, id)));
   }
 
   public Survey getByIdWithSongURLs(Long id) {
@@ -67,7 +73,7 @@ public class SurveyService {
   }
 
   public Option getOptionById(Long id) {
-    return optionRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Option with id " + id + " was not found in database."));
+    return optionRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format(OPTION_NOT_FOUND, id)));
   }
 
   public Survey getByIdFiltered(Long id, User user) {
@@ -109,7 +115,7 @@ public class SurveyService {
   @Transactional
   public Survey create(Survey survey) {
     if (survey == null) {
-      throw new IllegalArgumentException("Given survey is NULL, cannot create.");
+      throw new IllegalArgumentException(SURVEY_IS_NULL_CREATION);
     }
 
     survey.setState(SurveyState.CREATED);
@@ -120,7 +126,7 @@ public class SurveyService {
   @Transactional
   public void update(Long id, Survey survey) {
     if (survey == null) {
-      throw new IllegalArgumentException("Given survey is NULL, cannot update.");
+      throw new IllegalArgumentException(SURVEY_IS_NULL_MODIFICATION);
     }
 
     Survey storedSurvey = getById(id);
@@ -139,14 +145,14 @@ public class SurveyService {
   @Transactional
   public Option addOption(Long surveyId, Option option, User currentUser) {
     if (option == null) {
-      throw new IllegalArgumentException("Cannot add NULL option to a survey.");
+      throw new IllegalArgumentException(OPTION_IS_NULL_CREATION);
     }
 
     Survey survey = getById(surveyId);
     Song song = songService.getById(option.getSong().getId());
 
     if (survey.getSongs().contains(song)) {
-      throw new IllegalArgumentException("Given survey already contains this song.");
+      throw new IllegalArgumentException(OPTION_ALREADY_EXISTS);
     }
 
     option.setSurvey(survey);

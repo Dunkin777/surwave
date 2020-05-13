@@ -1,5 +1,8 @@
 package epamers.surwave.configuration.security.basic;
 
+import static epamers.surwave.core.ExceptionMessageContract.USER_CANNOT_CHANGE_PASSWORD;
+import static epamers.surwave.core.ExceptionMessageContract.USER_NOT_FOUND_BY_NAME;
+
 import epamers.surwave.entities.User;
 import epamers.surwave.repos.UserRepository;
 import javax.persistence.EntityNotFoundException;
@@ -33,7 +36,7 @@ public class BasicUserDetailsManager implements UserDetailsManager {
 
   @Override
   public void changePassword(String oldPassword, String newPassword) {
-    throw new UnsupportedOperationException("Cannot change password of OAuth user.");
+    throw new UnsupportedOperationException(USER_CANNOT_CHANGE_PASSWORD);
   }
 
   @Override
@@ -44,6 +47,6 @@ public class BasicUserDetailsManager implements UserDetailsManager {
   @Override
   public UserDetails loadUserByUsername(String username) {
     return userRepository.findByUsername(username)
-        .orElseThrow(() -> new EntityNotFoundException("User with name " + username + " was not found in database."));
+        .orElseThrow(() -> new EntityNotFoundException(String.format(USER_NOT_FOUND_BY_NAME, username)));
   }
 }

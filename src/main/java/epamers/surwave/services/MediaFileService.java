@@ -1,5 +1,7 @@
 package epamers.surwave.services;
 
+import static epamers.surwave.core.ExceptionMessageContract.SONG_UPLOAD_FAILED;
+
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import epamers.surwave.core.exceptions.FileStorageException;
@@ -14,6 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class MediaFileService {
 
+  public static final String SONG_SUCCESSFULLY_UPLOADED = "Song with ID %s was successfully uploaded.";
+  public static final String FAILED_TO_LOAD_FILE = "Failed to load file";
+
   private final S3Service s3Service;
 
   public String upload(MultipartFile file, Long songId) {
@@ -21,11 +26,12 @@ public class MediaFileService {
 
     try {
       String storageKey = s3Service.putObject(songS3Key, file.getInputStream(), new ObjectMetadata());
-      log.info("Song ID={} was successfully uploaded.", songId);
+      log.info(String.format(SONG_SUCCESSFULLY_UPLOADED, songId));
+
       return storageKey;
     } catch (IOException | SdkClientException e) {
-      log.error("Failed to load file", e);
-      throw new FileStorageException("Could not store file " + file.getOriginalFilename(), e);
+      log.error(FAILED_TO_LOAD_FILE, e);
+      throw new FileStorageException(String.format(SONG_UPLOAD_FAILED, file.getOriginalFilename()), e);
     }
   }
 

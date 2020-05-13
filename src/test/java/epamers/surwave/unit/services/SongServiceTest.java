@@ -100,25 +100,4 @@ public class SongServiceTest {
   public void getOrCreate_nullSong_exception() {
     songService.getOrCreate(null, multipartFile);
   }
-
-  @Test
-  public void update_validCase_success() {
-    songService.update(SONG_ID, song);
-
-    verify(songRepository).save(song);
-  }
-
-  @Test(expected = EntityNotFoundException.class)
-  public void update_nonExistingId_exception() {
-    songService.update(SONG_NONEXISTENT_ID, song);
-
-    verify(songRepository, never()).save(song);
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void update_nullSong_exception() {
-    songService.update(SONG_ID, null);
-
-    verify(songRepository, never()).save(song);
-  }
 }
