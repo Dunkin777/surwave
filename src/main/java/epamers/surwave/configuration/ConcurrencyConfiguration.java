@@ -13,9 +13,9 @@ public class ConcurrencyConfiguration {
   @Bean
   public Executor threadPoolExecutor() {
     ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-    executor.setCorePoolSize(4);
-    executor.setMaxPoolSize(100);
-    executor.setQueueCapacity(4);
+    executor.setCorePoolSize(2);
+    executor.setMaxPoolSize(8);
+    executor.setQueueCapacity(10);
     executor.setThreadNamePrefix("threadPoolExecutor-");
     executor.initialize();
 
