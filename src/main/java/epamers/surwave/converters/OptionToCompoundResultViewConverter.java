@@ -4,17 +4,19 @@ import epamers.surwave.dtos.CompoundResultView;
 import epamers.surwave.entities.Features;
 import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Song;
+import epamers.surwave.entities.User;
 import epamers.surwave.entities.Vote;
 import java.util.Set;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OptionToSongResultViewConverter implements Converter<Option, CompoundResultView> {
+public class OptionToCompoundResultViewConverter implements Converter<Option, CompoundResultView> {
 
   @Override
   public CompoundResultView convert(Option option) {
     Song song = option.getSong();
+    User user = option.getUser();
     Features features = song.getFeatures();
 
     Double rating = countFinalRating(option);
@@ -29,6 +31,7 @@ public class OptionToSongResultViewConverter implements Converter<Option, Compou
         .danceability(features.getDanceability())
         .energy(features.getEnergy())
         .valence(features.getValence())
+        .proposer(user.getUsername())
         .build();
   }
 

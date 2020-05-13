@@ -37,4 +37,7 @@ public class CompoundResultView {
 
   @ApiModelProperty(notes = "Sum of all votes.")
   private Double rating;
+
+  @ApiModelProperty(notes = "Creator of Option.")
+  private String proposer;
 }
