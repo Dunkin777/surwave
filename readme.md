@@ -29,3 +29,13 @@ For default basic security credentials will be "guest/guest" for user role and "
 **If you want to run backend part with Google authorization set authType property to `oauth2` in `application-local.yml` or run last step without CORE_PROFILES**
 
 **Before adding any code, please, import surwaveCodeStyle.xml (can be found in the project root) as a project codestyle.**
+
+**To work with aws services:**
+
+1 - Receive your account temporary credentials from dev team
+
+2 - Change your temporary password
+
+3 - Generate `access key id` and `secret access key` as described in https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey
+
+4 - Use one of available access methods from https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/credentials.html
