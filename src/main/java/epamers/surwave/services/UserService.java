@@ -1,5 +1,9 @@
 package epamers.surwave.services;
 
+import static epamers.surwave.core.ExceptionMessageContract.USER_NOT_AUTHENTICATED;
+import static epamers.surwave.core.ExceptionMessageContract.USER_NOT_FOUND_BY_ID;
+import static epamers.surwave.core.ExceptionMessageContract.USER_NOT_FOUND_BY_NAME;
+
 import epamers.surwave.core.exceptions.NotAuthenticatedException;
 import epamers.surwave.entities.User;
 import epamers.surwave.repos.UserRepository;
@@ -24,7 +28,7 @@ public class UserService implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return userRepository.findByUsername(username)
-        .orElseThrow(() -> new EntityNotFoundException("User with name " + username + " was not found in database."));
+        .orElseThrow(() -> new EntityNotFoundException(String.format(USER_NOT_FOUND_BY_NAME, username)));
   }
 
   public User getOrCreateFromGoogleData(Map<String, Object> googleData) {
@@ -39,7 +43,7 @@ public class UserService implements UserDetailsService {
   public User getCurrent() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication.getPrincipal() == "anonymousUser") {
-      throw new NotAuthenticatedException("Anonymous requests are not supported. Please, use /login");
+      throw new NotAuthenticatedException(USER_NOT_AUTHENTICATED);
     }
 
     return (User) authentication.getPrincipal();
@@ -47,7 +51,7 @@ public class UserService implements UserDetailsService {
 
   @Transactional
   public User getById(String id) {
-    return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User with id " + id + " was not found in database."));
+    return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format(USER_NOT_FOUND_BY_ID, id)));
   }
 
   @Transactional

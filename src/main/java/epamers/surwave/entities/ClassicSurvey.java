@@ -1,5 +1,7 @@
 package epamers.surwave.entities;
 
+import static epamers.surwave.core.ExceptionMessageContract.USER_INVALID_NUMBER_OF_VOTES;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import lombok.AllArgsConstructor;
@@ -27,11 +29,13 @@ public class ClassicSurvey extends Survey {
     int currentVotes = getVotesByUserId(user.getId()).size();
 
     if (currentVotes == 0) {
+
       return false;
     } else if (currentVotes == choicesByUser) {
+
       return true;
     } else {
-      throw new IllegalArgumentException("Found inconsistent number of votes for current user.");
+      throw new IllegalArgumentException(USER_INVALID_NUMBER_OF_VOTES);
     }
   }
 }

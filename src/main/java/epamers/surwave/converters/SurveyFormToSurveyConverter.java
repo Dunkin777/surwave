@@ -1,5 +1,7 @@
 package epamers.surwave.converters;
 
+import static epamers.surwave.core.ExceptionMessageContract.SURVEY_UNKNOWN_TYPE;
+
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.entities.ClassicSurvey;
 import epamers.surwave.entities.RangedSurvey;
@@ -21,12 +23,14 @@ public class SurveyFormToSurveyConverter implements Converter<SurveyForm, Survey
       survey = ClassicSurvey.builder()
           .choicesByUser(surveyForm.getChoicesByUser())
           .build();
+
     } else if (surveyForm.getType() == SurveyType.RANGED) {
       survey = RangedSurvey.builder()
           .logarithmicRatingScale(surveyForm.getLogarithmicRatingScale())
           .build();
+
     } else {
-      throw new IllegalArgumentException("Got unsupported survey type " + surveyForm.getType());
+      throw new IllegalArgumentException(String.format(SURVEY_UNKNOWN_TYPE, surveyForm.getType()));
     }
 
     survey.setTitle(surveyForm.getTitle());

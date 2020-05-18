@@ -1,5 +1,8 @@
 package epamers.surwave.services;
 
+import static epamers.surwave.core.ExceptionMessageContract.SONG_IS_NULL_CREATION;
+import static epamers.surwave.core.ExceptionMessageContract.SONG_NOT_FOUND;
+
 import epamers.surwave.entities.Song;
 import epamers.surwave.repos.SongRepository;
 import java.util.List;
@@ -21,13 +24,13 @@ public class SongService {
   }
 
   public Song getById(Long id) {
-    return songRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Song with id " + id + " was not found in database."));
+    return songRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format(SONG_NOT_FOUND, id)));
   }
 
   @Transactional
   public Song getOrCreate(Song song, MultipartFile mediaFile) {
     if (song == null) {
-      throw new IllegalArgumentException("Got NULL song, cannot create.");
+      throw new IllegalArgumentException(SONG_IS_NULL_CREATION);
     }
 
     return songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(song.getTitle(), song.getPerformer())
@@ -38,19 +41,5 @@ public class SongService {
 
           return newSong;
         });
-  }
-
-  @Transactional
-  public void update(Long id, Song song) {
-    if (song == null) {
-      throw new IllegalArgumentException("Got NULL song, cannot update.");
-    }
-
-    if (!songRepository.existsById(id)) {
-      throw new EntityNotFoundException("Song with id " + id + " was not found in database.");
-    }
-
-    song.setId(id);
-    songRepository.save(song);
   }
 }
