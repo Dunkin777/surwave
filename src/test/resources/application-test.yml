@@ -16,6 +16,7 @@ spring:
 surwave:
   authType: basic
   uploadDir: data
+  analyticsUrl: http://surwave-analytics:5000
 
 logging:
   level:

@@ -18,6 +18,7 @@ public class SongService {
 
   private final SongRepository songRepository;
   private final MediaFileService mediaFileService;
+  private final AnalyticsService analyticsService;
 
   public List<Song> getAll() {
     return songRepository.findAll();
@@ -36,8 +37,10 @@ public class SongService {
     return songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(song.getTitle(), song.getPerformer())
         .orElseGet(() -> {
           Song newSong = songRepository.save(song);
+
           String mediaPath = mediaFileService.upload(mediaFile, newSong.getId());
           newSong.setStorageKey(mediaPath);
+          analyticsService.fillSongFeatures(newSong.getId());
 
           return newSong;
         });

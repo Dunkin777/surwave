@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import epamers.surwave.entities.Song;
 import epamers.surwave.repos.SongRepository;
+import epamers.surwave.services.AnalyticsService;
 import epamers.surwave.services.MediaFileService;
 import epamers.surwave.services.SongService;
 import java.util.List;
@@ -38,6 +39,9 @@ public class SongServiceTest {
 
   @Mock
   MultipartFile multipartFile;
+
+  @Mock
+  AnalyticsService analyticsService;
 
   private Song song;
 
