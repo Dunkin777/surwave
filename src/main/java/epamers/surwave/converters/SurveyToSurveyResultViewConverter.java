@@ -13,12 +13,12 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SurveyToSurveyResultViewConverter implements Converter<Survey, SurveyResultView> {
 
-  private final OptionToSongResultViewConverter optionToSongResultViewConverter;
+  private final OptionToCompoundResultViewConverter optionToCompoundResultViewConverter;
 
   @Override
   public SurveyResultView convert(Survey survey) {
     List<CompoundResultView> songResults = survey.getOptions().stream()
-        .map(optionToSongResultViewConverter::convert)
+        .map(optionToCompoundResultViewConverter::convert)
         .collect(Collectors.toList());
 
     Double ratingsSum = songResults.stream()
