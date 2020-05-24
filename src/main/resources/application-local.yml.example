@@ -2,6 +2,9 @@ server:
   port: 8080
 
 spring:
+  profiles:
+    active:
+      - no-cache
   jpa:
     database: POSTGRESQL
     show-sql: true
@@ -13,6 +16,11 @@ spring:
     multipart:
       max-file-size: 20MB
       max-request-size: 20MB
+
+  redis:
+    host: localhost
+    port: 6379
+    database: 1
 
 surwave:
   authType: basic

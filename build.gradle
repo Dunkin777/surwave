@@ -32,13 +32,16 @@ def aws_sdk_ver = "2.11.0"
 def s3_sdk_ver = "1.11.750"
 def feignJackson_ver = "10.2.3"
 def feignStarter_ver = "2.1.5.RELEASE"
+def redisson_ver = '3.12.5'
 
 dependencies {
 	implementation platform("software.amazon.awssdk:bom:$aws_sdk_ver")
 	implementation "software.amazon.awssdk:kinesis"
 	implementation "com.amazonaws:aws-java-sdk-s3:$s3_sdk_ver"
+	implementation "org.redisson:redisson:$redisson_ver"
 	implementation "org.springframework.boot:spring-boot-starter-data-jpa"
 	implementation "org.springframework.boot:spring-boot-starter-web"
+	implementation "org.springframework.boot:spring-boot-starter-data-redis"
 	implementation "org.springframework.cloud:spring-cloud-starter-openfeign:$feignStarter_ver"
 	implementation "io.github.openfeign:feign-jackson:$feignJackson_ver"
 	implementation "org.flywaydb:flyway-core"

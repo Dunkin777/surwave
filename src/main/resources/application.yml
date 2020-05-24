@@ -2,6 +2,10 @@ server:
   port: 8080
 
 spring:
+  profiles:
+    active:
+      - redis-cache
+
   jpa:
     database: POSTGRESQL
     show-sql: true
@@ -13,11 +17,18 @@ spring:
       max-file-size: 20MB
       max-request-size: 20MB
 
+  redis:
+    host: redis
+    port: 6379
+    database: 1
+
 surwave:
   authType: oauth2
   s3-bucket: surwtest
   uploadDir: surwave_media
   analyticsUrl: http://surwave-analytics:5000
+  cache-ttl:
+    media-url: 60  #Cache TTL in minutes
 
 security:
   oauth2:

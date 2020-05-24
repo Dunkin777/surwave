@@ -26,6 +26,9 @@ public class S3Service {
   @Value("${surwave.s3-bucket:surwtest}")
   private String bucketName;
 
+  @Value("${surwave.cache-ttl.media-url:60}")
+  private Long mediaUrlDuration;
+
   private AmazonS3 s3client;
 
   @PostConstruct
@@ -43,7 +46,7 @@ public class S3Service {
   }
 
   public String getPresignedURL(String objectKey) {
-    OffsetDateTime currentTime = OffsetDateTime.now(ZoneOffset.UTC).plusHours(1);
+    OffsetDateTime currentTime = OffsetDateTime.now(ZoneOffset.UTC).plusMinutes(mediaUrlDuration);
     Date expiration = Date.from(currentTime.toInstant());
 
     GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, objectKey)

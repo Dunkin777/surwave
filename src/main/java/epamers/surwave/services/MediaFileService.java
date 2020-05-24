@@ -4,10 +4,12 @@ import static epamers.surwave.core.ExceptionMessageContract.SONG_UPLOAD_FAILED;
 
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import epamers.surwave.configuration.cache.CacheConstants;
 import epamers.surwave.core.exceptions.FileStorageException;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,6 +37,7 @@ public class MediaFileService {
     }
   }
 
+  @Cacheable(value = CacheConstants.MEDIA_URLS, keyGenerator = CacheConstants.COMMON_KEY_GENERATOR)
   public String getMediaPresignedUrl(String objectKey) {
     return s3Service.getPresignedURL(objectKey);
   }
