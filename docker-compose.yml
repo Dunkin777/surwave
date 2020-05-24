@@ -33,6 +33,12 @@ services:
     networks:
       - surwavenet
 
+  redis:
+    image: "redis:6.0.2"
+    container_name: redis
+    ports:
+      - "6379:6379"
+
 networks:
   surwavenet:
     name: surwavenet
