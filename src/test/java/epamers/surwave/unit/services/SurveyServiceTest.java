@@ -6,7 +6,6 @@ import static epamers.surwave.TestUtils.SONG_STORAGE_KEY;
 import static epamers.surwave.TestUtils.SURVEY_ID;
 import static epamers.surwave.TestUtils.getValidClassicSurvey;
 import static epamers.surwave.TestUtils.getValidOption;
-import static epamers.surwave.TestUtils.getValidSong;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
@@ -240,16 +239,6 @@ public class SurveyServiceTest {
 
   @Test(expected = ResultsException.class)
   public void getByIdForRating_wrongSurveyState_exception() {
-    surveyService.getByIdForRating(SURVEY_ID);
-  }
-
-  @Test(expected = ResultsException.class)
-  public void getByIdForRating_noFeatures_exception() {
-    survey.setState(SurveyState.STOPPED);
-    Song song = getValidSong();
-    song.setFeatures(null);
-    yourOption.setSong(song);
-
     surveyService.getByIdForRating(SURVEY_ID);
   }
 }

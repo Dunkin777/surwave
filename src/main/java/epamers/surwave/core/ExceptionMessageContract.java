@@ -22,7 +22,6 @@ public class ExceptionMessageContract {
   public static final String VOTING_WRONG_SURVEY_STATE = "Voting is impossible in that Survey state.";
 
   public static final String RESULTS_INVALID_SURVEY_STATE = "Results are available only for surveys in 'STOPPED' state.";
-  public static final String RESULTS_SONGS_NOT_PROCESSED = "Cannot return results because survey songs were not processed yet.";
 
   public static final String SONG_FILE_IS_TOO_BIG = "Cannot upload, file is too big. Maximum allowed size is 20MB.";
   public static final String SONG_UPLOAD_FAILED = "Could not store file '%s.'";

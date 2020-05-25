@@ -4,7 +4,6 @@ import static epamers.surwave.core.ExceptionMessageContract.OPTION_ALREADY_EXIST
 import static epamers.surwave.core.ExceptionMessageContract.OPTION_IS_NULL_CREATION;
 import static epamers.surwave.core.ExceptionMessageContract.OPTION_NOT_FOUND;
 import static epamers.surwave.core.ExceptionMessageContract.RESULTS_INVALID_SURVEY_STATE;
-import static epamers.surwave.core.ExceptionMessageContract.RESULTS_SONGS_NOT_PROCESSED;
 import static epamers.surwave.core.ExceptionMessageContract.SURVEY_IS_NULL_CREATION;
 import static epamers.surwave.core.ExceptionMessageContract.SURVEY_IS_NULL_MODIFICATION;
 import static epamers.surwave.core.ExceptionMessageContract.SURVEY_NOT_FOUND;
@@ -61,12 +60,6 @@ public class SurveyService {
 
     if (survey.getState() != SurveyState.STOPPED) {
       throw new ResultsException(RESULTS_INVALID_SURVEY_STATE);
-    }
-
-    for (Song song : survey.getSongs()) {
-      if (song.getFeatures() == null) {
-        throw new ResultsException(RESULTS_SONGS_NOT_PROCESSED);
-      }
     }
 
     return survey;
