@@ -17,22 +17,26 @@ public class OptionToCompoundResultViewConverter implements Converter<Option, Co
   public CompoundResultView convert(Option option) {
     Song song = option.getSong();
     User user = option.getUser();
-    Features features = song.getFeatures();
-
     Double rating = countFinalRating(option);
 
-    return CompoundResultView.builder()
+    CompoundResultView result = CompoundResultView.builder()
         .id(song.getId())
         .performer(song.getPerformer())
         .title(song.getTitle())
         .comment(option.getComment())
         .mediaURL(song.getMediaURL())
         .rating(rating)
-        .danceability(features.getDanceability())
-        .energy(features.getEnergy())
-        .valence(features.getValence())
         .proposer(user.getUsername())
         .build();
+
+    Features features = song.getFeatures();
+    if(features != null) {
+      result.setDanceability(features.getDanceability());
+      result.setEnergy(features.getEnergy());
+      result.setValence(features.getValence());
+    }
+
+    return result;
   }
 
   private Double countFinalRating(Option option) {
