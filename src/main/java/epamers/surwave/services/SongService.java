@@ -28,7 +28,6 @@ public class SongService {
     return songRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format(SONG_NOT_FOUND, id)));
   }
 
-  @Transactional
   public Song getOrCreate(Song song, MultipartFile mediaFile) {
     if (song == null) {
       throw new IllegalArgumentException(SONG_IS_NULL_CREATION);
@@ -36,13 +35,26 @@ public class SongService {
 
     return songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(song.getTitle(), song.getPerformer())
         .orElseGet(() -> {
-          Song newSong = songRepository.save(song);
-
-          String mediaPath = mediaFileService.upload(mediaFile, newSong.getId());
-          newSong.setStorageKey(mediaPath);
+          Song newSong = create(song, mediaFile);
           analyticsService.fillSongFeatures(newSong.getId());
 
           return newSong;
         });
+  }
+
+  @Transactional
+  public Song create(Song song, MultipartFile mediaFile) {
+    Song newSong = songRepository.save(song);
+    String mediaPath = mediaFileService.upload(mediaFile, newSong.getId());
+    newSong.setStorageKey(mediaPath);
+
+    return newSong;
+  }
+
+  public Song fillWithMediaUrl(Song song) {
+    String songUrl = mediaFileService.getMediaPresignedUrl(song.getStorageKey());
+    song.setMediaURL(songUrl);
+
+    return song;
   }
 }

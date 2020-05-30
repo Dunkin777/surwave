@@ -35,7 +35,6 @@ public class SurveyService {
   private final SongService songService;
   private final OptionRepository optionRepository;
   private final VoteRepository voteRepository;
-  private final MediaFileService mediaFileService;
 
   public List<Survey> getAll() {
     return surveyRepository.findAll();
@@ -48,9 +47,7 @@ public class SurveyService {
 
   public Survey getByIdWithSongURLs(Long id) {
     Survey survey = getById(id);
-    Set<Song> songs = survey.getSongs();
-
-    songs.forEach(song -> song.setMediaURL(mediaFileService.getMediaPresignedUrl(song.getStorageKey())));
+    survey.getSongs().forEach(songService::fillWithMediaUrl);
 
     return survey;
   }

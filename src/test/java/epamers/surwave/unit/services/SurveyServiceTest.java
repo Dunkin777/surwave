@@ -1,13 +1,12 @@
 package epamers.surwave.unit.services;
 
 import static epamers.surwave.TestUtils.OPTION_ID;
-import static epamers.surwave.TestUtils.SONG_MEDIA_URL;
-import static epamers.surwave.TestUtils.SONG_STORAGE_KEY;
 import static epamers.surwave.TestUtils.SURVEY_ID;
 import static epamers.surwave.TestUtils.getValidClassicSurvey;
 import static epamers.surwave.TestUtils.getValidOption;
+import static epamers.surwave.core.ExceptionMessageContract.SURVEY_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -19,7 +18,6 @@ import static org.mockito.Mockito.when;
 import epamers.surwave.core.exceptions.ResultsException;
 import epamers.surwave.entities.ClassicSurvey;
 import epamers.surwave.entities.Option;
-import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyState;
 import epamers.surwave.entities.SurveyType;
@@ -28,7 +26,7 @@ import epamers.surwave.entities.Vote;
 import epamers.surwave.repos.OptionRepository;
 import epamers.surwave.repos.SurveyRepository;
 import epamers.surwave.repos.VoteRepository;
-import epamers.surwave.services.MediaFileService;
+import epamers.surwave.services.SongService;
 import epamers.surwave.services.SurveyService;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -58,10 +56,10 @@ public class SurveyServiceTest {
   private OptionRepository optionRepository;
 
   @Mock
-  private MediaFileService mediaFileService;
+  private SongService songService;
 
   @Mock
-  VoteRepository voteRepository;
+  private VoteRepository voteRepository;
 
   private User currentUser;
   private Survey survey;
@@ -95,8 +93,6 @@ public class SurveyServiceTest {
     when(surveyRepository.save(survey)).thenReturn(survey);
     when(optionRepository.findById(OPTION_ID)).thenReturn(Optional.of(yourOption));
     when(optionRepository.findById(OTHER_OPTION_ID)).thenReturn(Optional.of(otherOption));
-
-    when(mediaFileService.getMediaPresignedUrl(SONG_STORAGE_KEY)).thenReturn(SONG_MEDIA_URL);
   }
 
   @Test
@@ -125,14 +121,17 @@ public class SurveyServiceTest {
 
     assertEquals(survey, foundSurvey);
 
-    assertThat(foundSurvey.getSongs())
-        .extracting(Song::getMediaURL)
-        .contains(SONG_MEDIA_URL);
+    verify(songService).fillWithMediaUrl(any());
   }
 
   @Test
   public void getByIdWithSongURLs_nonexistentID_exception() {
-    assertThatThrownBy(() -> surveyService.getByIdWithSongURLs(NONEXISTENT_SURVEY_ID)).isInstanceOf(EntityNotFoundException.class);
+    String expectedMessage = String.format(SURVEY_NOT_FOUND, NONEXISTENT_SURVEY_ID);
+
+    Throwable thrown = catchThrowable(() -> surveyService.getByIdWithSongURLs(NONEXISTENT_SURVEY_ID));
+
+    assertThat(thrown).isInstanceOf(EntityNotFoundException.class)
+        .hasMessage(expectedMessage);
   }
 
   @Test
