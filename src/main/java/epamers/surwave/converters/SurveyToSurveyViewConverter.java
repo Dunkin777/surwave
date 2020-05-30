@@ -6,6 +6,10 @@ import epamers.surwave.dtos.OptionView;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.services.UserService;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -27,10 +31,17 @@ public abstract class SurveyToSurveyViewConverter {
         .type(survey.getType())
         .title(survey.getTitle())
         .description(survey.getDescription())
-        .options(options)
+        .options(shuffle(options))
         .state(survey.getState())
         .proposalsByUser(survey.getProposalsByUser())
         .isHidden(survey.getIsHidden())
         .build();
+  }
+
+  private Set<OptionView> shuffle(Set<OptionView> options) {
+    List<OptionView> optionList = new ArrayList<>(options);
+    Collections.shuffle(optionList);
+
+    return new HashSet<>(optionList);
   }
 }
