@@ -1,12 +1,13 @@
 package epamers.surwave.converters;
 
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.toList;
 
 import epamers.surwave.dtos.OptionView;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.services.UserService;
-import java.util.Set;
+import java.util.Comparator;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,9 +19,10 @@ public abstract class SurveyToSurveyViewConverter {
   protected final UserService userService;
 
   public SurveyView convert(Survey survey) {
-    Set<OptionView> options = survey.getOptions().stream()
+    List<OptionView> options = survey.getOptions().stream()
         .map(optionToOptionViewConverter::convert)
-        .collect(toSet());
+        .sorted(Comparator.comparing(s -> s.getSong().getPerformer()))
+        .collect(toList());
 
     return SurveyView.builder()
         .id(survey.getId())

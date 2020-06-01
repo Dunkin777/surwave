@@ -6,7 +6,7 @@ import epamers.surwave.entities.SurveyState;
 import epamers.surwave.entities.SurveyType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.Set;
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 
@@ -31,7 +31,7 @@ public class SurveyView {
   private String description;
 
   @ApiModelProperty(notes = "Collection of Options, each representing one Song")
-  private Set<OptionView> options;
+  private List<OptionView> options;
 
   @ApiModelProperty(notes = "How many songs one user should add to this survey.")
   private Integer proposalsByUser;
