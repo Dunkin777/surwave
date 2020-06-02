@@ -10,6 +10,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -23,7 +24,7 @@ public class GlobalExceptionHandler {
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class, VotingException.class, FileStorageException.class,
-      EntityNotFoundException.class, ConstraintViolationException.class, ResultsException.class})
+      EntityNotFoundException.class, ConstraintViolationException.class, ResultsException.class, MethodArgumentNotValidException.class})
   public String handleIllegalArgumentException(RuntimeException ex) {
     log.debug(EXCEPTION_MESSAGE, 400, ex);
 
