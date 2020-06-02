@@ -24,11 +24,23 @@ public class GlobalExceptionHandler {
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class, VotingException.class, FileStorageException.class,
-      EntityNotFoundException.class, ConstraintViolationException.class, ResultsException.class, MethodArgumentNotValidException.class})
+      EntityNotFoundException.class, ConstraintViolationException.class, ResultsException.class})
   public String handleIllegalArgumentException(RuntimeException ex) {
     log.debug(EXCEPTION_MESSAGE, 400, ex);
 
     return ex.getMessage();
+  }
+
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler({MethodArgumentNotValidException.class})
+  public String handleJavaxValidationException(MethodArgumentNotValidException ex) {
+    log.debug(EXCEPTION_MESSAGE, 400, ex);
+
+    StringBuilder message = new StringBuilder();
+
+    ex.getBindingResult().getAllErrors().forEach(e -> message.append(e.getDefaultMessage()).append(" "));
+
+    return message.toString().trim();
   }
 
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
