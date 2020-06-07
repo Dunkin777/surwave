@@ -23,7 +23,10 @@ public class ExceptionMessageContract {
 
   public static final String RESULTS_INVALID_SURVEY_STATE = "Results are available only for surveys in 'STOPPED' state.";
 
+  public static final String REQUEST_SIZE_IS_TOO_BIG = "Maximum allowed request size is 21MB.";
+
   public static final String SONG_FILE_IS_TOO_BIG = "Cannot upload, file is too big. Maximum allowed size is 20MB.";
+  public static final String SONG_FILE_INVALID_EXTENSION = "Given file extension is not supported.";
   public static final String SONG_UPLOAD_FAILED = "Could not store file '%s.'";
   public static final String SONG_IS_NULL_CREATION = "Got NULL song, cannot create.";
   public static final String SONG_NOT_FOUND = "Song with id %d was not found in database.";

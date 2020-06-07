@@ -45,8 +45,9 @@ public class SongService {
   @Transactional
   public Song create(Song song, MultipartFile mediaFile) {
     Song newSong = songRepository.save(song);
-    String mediaPath = mediaFileService.upload(mediaFile, newSong.getId());
-    newSong.setStorageKey(mediaPath);
+    String storageKey = mediaFileService.upload(mediaFile, newSong.getId());
+    newSong.setStorageKey(storageKey);
+    songRepository.flush();
 
     return newSong;
   }
