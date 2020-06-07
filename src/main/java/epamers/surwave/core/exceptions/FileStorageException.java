@@ -12,6 +12,10 @@ public class FileStorageException extends RuntimeException {
     this.msg = msg;
   }
 
+  public FileStorageException(String msg) {
+    this.msg = msg;
+  }
+
   @Override
   public String getMessage() {
     return msg;

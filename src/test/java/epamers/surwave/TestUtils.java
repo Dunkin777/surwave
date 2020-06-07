@@ -19,7 +19,6 @@ public class TestUtils {
   public static final String SONG_PERFORMER = "Elton John Lennon";
   public static final String SONG_TITLE = "Komarinskaya (feat. Ella Fitzgerald)";
   public static final String SONG_STORAGE_KEY = "/data/1.mp3";
-  public static final String SONG_MEDIA_URL = "www.amazom.com/1.mp3";
   public static final Long SONG_ID = 156L;
 
   public static final Long OPTION_ID = 1L;

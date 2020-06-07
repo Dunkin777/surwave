@@ -20,10 +20,13 @@ import epamers.surwave.dtos.FeaturesDto;
 import epamers.surwave.repos.SongRepository;
 import epamers.surwave.services.S3Service;
 import java.io.File;
+import java.io.IOException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -41,6 +44,9 @@ public class ITSongTest extends IntegrationTest {
 
   @Autowired
   private SongRepository songRepository;
+
+  @Rule
+  public TemporaryFolder folder = new TemporaryFolder();
 
   @Before
   public void setUp() {
@@ -61,7 +67,7 @@ public class ITSongTest extends IntegrationTest {
   }
 
   @Test
-  public void songController_successCase() {
+  public void songController_successCase() throws IOException {
     //Check that we have zero Songs at the start
     givenJson()
         .get(SONG_URL + "/all")
@@ -72,7 +78,7 @@ public class ITSongTest extends IntegrationTest {
     //Create a new Song
     Response response = given()
         .with().auth().basic("guest", "guest")
-        .multiPart("mediaFile", new File("./readme.md"))
+        .multiPart("mediaFile", folder.newFile("song.mp3"))
         .formParam("performer", SONG_PERFORMER)
         .formParam("title", SONG_TITLE)
         .when()

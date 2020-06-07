@@ -1,5 +1,6 @@
 package epamers.surwave.core;
 
+import static epamers.surwave.core.ExceptionMessageContract.REQUEST_SIZE_IS_TOO_BIG;
 import static epamers.surwave.core.ExceptionMessageContract.SONG_FILE_IS_TOO_BIG;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -10,6 +11,7 @@ import epamers.surwave.core.exceptions.VotingException;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.FileUploadBase.SizeLimitExceededException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.util.StringUtils;
@@ -75,5 +77,13 @@ public class GlobalExceptionHandler {
     log.debug(EXCEPTION_MESSAGE, 413, ex);
 
     return SONG_FILE_IS_TOO_BIG;
+  }
+
+  @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
+  @ExceptionHandler(SizeLimitExceededException.class)
+  public String handleRequestException(SizeLimitExceededException ex) {
+    log.debug(EXCEPTION_MESSAGE, 413, ex);
+
+    return REQUEST_SIZE_IS_TOO_BIG;
   }
 }

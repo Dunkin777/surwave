@@ -15,7 +15,7 @@ spring:
   servlet:
     multipart:
       max-file-size: 20MB
-      max-request-size: 20MB
+      max-request-size: 21MB
 
   redis:
     host: localhost
@@ -25,7 +25,7 @@ spring:
 surwave:
   authType: basic
   s3-bucket: surwtest
-  uploadDir: surwave_media
+  uploadDir: surwave_media_local
   analyticsUrl: http://surwave-analytics:5000
 
 security:

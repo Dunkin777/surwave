@@ -45,6 +45,7 @@ public class MediaFileServiceTest {
   public void upload_success() {
     String storageKey = "some_dir/" + SONG_ID + ".mp3";
     when(s3Service.putObject(stringArgumentCaptor.capture(), any(), any())).thenReturn(storageKey);
+    when(multipartFile.getOriginalFilename()).thenReturn("filename.mp3");
 
     String songS3Key = mediaFileService.upload(multipartFile, SONG_ID);
 
