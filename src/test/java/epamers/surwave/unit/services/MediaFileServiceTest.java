@@ -1,7 +1,8 @@
 package epamers.surwave.unit.services;
 
+import static epamers.surwave.core.ExceptionMessageContract.SONG_UPLOAD_FAILED;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class MediaFileServiceTest {
 
   private static final Long SONG_ID = 42L;
+  public static final String FILE_NAME = "filename.mp3";
 
   @InjectMocks
   private MediaFileService mediaFileService;
@@ -39,13 +41,15 @@ public class MediaFileServiceTest {
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
+
+    when(multipartFile.getOriginalFilename()).thenReturn(FILE_NAME);
   }
 
   @Test
   public void upload_success() {
     String storageKey = "some_dir/" + SONG_ID + ".mp3";
     when(s3Service.putObject(stringArgumentCaptor.capture(), any(), any())).thenReturn(storageKey);
-    when(multipartFile.getOriginalFilename()).thenReturn("filename.mp3");
+
 
     String songS3Key = mediaFileService.upload(multipartFile, SONG_ID);
 
@@ -54,21 +58,29 @@ public class MediaFileServiceTest {
   }
 
   @Test
-  public void upload_exceptionFromAws() {
+  public void upload_s3ServiceFailed_exception() {
+    String expectedMessage = String.format(SONG_UPLOAD_FAILED, FILE_NAME);
     when(s3Service.putObject(any(), any(), any())).thenThrow(new SdkClientException("..."));
 
-    assertThatThrownBy(() -> mediaFileService.upload(multipartFile, SONG_ID)).isInstanceOf(FileStorageException.class);
+    Throwable thrown = catchThrowable(() -> mediaFileService.upload(multipartFile, SONG_ID));
+
+    assertThat(thrown).isInstanceOf(FileStorageException.class)
+        .hasMessage(expectedMessage);
   }
 
   @Test
-  public void upload_exceptionFromFile() throws IOException {
+  public void upload_fileInputStreamFailed_exception() throws IOException {
+    String expectedMessage = String.format(SONG_UPLOAD_FAILED, multipartFile.getOriginalFilename());
     when(multipartFile.getInputStream()).thenThrow(new IOException());
 
-    assertThatThrownBy(() -> mediaFileService.upload(multipartFile, SONG_ID)).isInstanceOf(FileStorageException.class);
+    Throwable thrown = catchThrowable(() -> mediaFileService.upload(multipartFile, SONG_ID));
+
+    assertThat(thrown).isInstanceOf(FileStorageException.class)
+        .hasMessage(expectedMessage);
   }
 
   @Test
-  public void getMediaPresignedUrl() {
+  public void getMediaPresignedUrl_success() {
     String mediaURL = RandomStringUtils.randomAlphabetic(5);
     when(s3Service.getPresignedURL(any())).thenReturn(mediaURL);
 

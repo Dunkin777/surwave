@@ -27,14 +27,16 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 @Slf4j
 public class GlobalExceptionHandler {
 
-  private static final String EXCEPTION_MESSAGE = "Responded with {} code because of exception: ";
+  private static final String EXCEPTION_MESSAGE = "Responded with {} code because of exception: {}";
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class, VotingException.class, FileStorageException.class,
       EntityNotFoundException.class, ConstraintViolationException.class, ResultsException.class, HttpMessageNotReadableException.class,
       InvalidFormatException.class})
   public String handleIllegalArgumentException(RuntimeException ex) {
-    log.debug(EXCEPTION_MESSAGE, 400, ex);
+    log.info(EXCEPTION_MESSAGE, 400, ex.getMessage());
+    log.debug("Stacktrace: ", ex);
+
 
     return ex.getMessage();
   }
@@ -42,12 +44,14 @@ public class GlobalExceptionHandler {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler({MethodArgumentNotValidException.class})
   public String handleJavaxValidationException(MethodArgumentNotValidException ex) {
-    log.debug(EXCEPTION_MESSAGE, 400, ex);
+    StringBuilder messageBuilder = new StringBuilder();
+    ex.getBindingResult().getAllErrors().forEach(e -> messageBuilder.append(buildFieldError(e)));
+    String message = messageBuilder.toString().trim();
 
-    StringBuilder message = new StringBuilder();
-    ex.getBindingResult().getAllErrors().forEach(e -> message.append(buildFieldError(e)));
+    log.info(EXCEPTION_MESSAGE, 400, message);
+    log.debug("Stacktrace: ", ex);
 
-    return message.toString().trim();
+    return message;
   }
 
   private String buildFieldError(ObjectError objectError) {
@@ -66,7 +70,8 @@ public class GlobalExceptionHandler {
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   @ExceptionHandler(NotAuthenticatedException.class)
   public String handleNotAuthenticatedException(RuntimeException ex) {
-    log.debug(EXCEPTION_MESSAGE, 401, ex);
+    log.info(EXCEPTION_MESSAGE, 401, ex.getMessage());
+    log.debug("Stacktrace: ", ex);
 
     return ex.getMessage();
   }
@@ -74,7 +79,8 @@ public class GlobalExceptionHandler {
   @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
   @ExceptionHandler(MaxUploadSizeExceededException.class)
   public String handleMultipartException(MaxUploadSizeExceededException ex) {
-    log.debug(EXCEPTION_MESSAGE, 413, ex);
+    log.info(EXCEPTION_MESSAGE, 413, ex.getMessage());
+    log.debug("Stacktrace: ", ex);
 
     return SONG_FILE_IS_TOO_BIG;
   }
@@ -82,7 +88,8 @@ public class GlobalExceptionHandler {
   @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
   @ExceptionHandler(SizeLimitExceededException.class)
   public String handleRequestException(SizeLimitExceededException ex) {
-    log.debug(EXCEPTION_MESSAGE, 413, ex);
+    log.info(EXCEPTION_MESSAGE, 413, ex.getMessage());
+    log.debug("Stacktrace: ", ex);
 
     return REQUEST_SIZE_IS_TOO_BIG;
   }

@@ -2,6 +2,10 @@ package epamers.surwave.unit.services;
 
 import static epamers.surwave.TestUtils.SONG_ID;
 import static epamers.surwave.TestUtils.getValidSong;
+import static epamers.surwave.core.ExceptionMessageContract.SONG_IS_NULL_CREATION;
+import static epamers.surwave.core.ExceptionMessageContract.SONG_NOT_FOUND;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -73,11 +77,15 @@ public class SongServiceTest {
     assertEquals(song, returnedSong);
   }
 
-  @Test(expected = EntityNotFoundException.class)
+  @Test
   public void getById_nonExistingId_exception() {
+    Long nonexistantId = 13L;
+    String expectedMessage = String.format(SONG_NOT_FOUND, nonexistantId);
     when(songRepository.existsById(SONG_ID)).thenReturn(false);
 
-    songService.getById(13L);
+    Throwable thrown = catchThrowable(() -> songService.getById(nonexistantId));
+
+    assertThat(thrown).isInstanceOf(EntityNotFoundException.class).hasMessage(expectedMessage);
   }
 
   @Test
@@ -100,8 +108,11 @@ public class SongServiceTest {
     assertEquals(existingSong, returnedSong);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getOrCreate_nullSong_exception() {
-    songService.getOrCreate(null, multipartFile);
+    Throwable thrown = catchThrowable(() -> songService.getOrCreate(null, multipartFile));
+
+    assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage(SONG_IS_NULL_CREATION);
   }
 }

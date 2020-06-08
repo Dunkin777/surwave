@@ -1,5 +1,14 @@
 package epamers.surwave.unit.validators;
 
+import static epamers.surwave.core.ExceptionMessageContract.VOTING_ALREADY_VOTED;
+import static epamers.surwave.core.ExceptionMessageContract.VOTING_CHOICES_BY_USER_NOT_SATISFIED;
+import static epamers.surwave.core.ExceptionMessageContract.VOTING_FOR_YOUR_OPTION;
+import static epamers.surwave.core.ExceptionMessageContract.VOTING_FOR_ZERO_OPTIONS;
+import static epamers.surwave.core.ExceptionMessageContract.VOTING_INVALID_RATING_FOR_CLASSIC_TYPE;
+import static epamers.surwave.core.ExceptionMessageContract.VOTING_MORE_THAN_ONE_VOTE_FOR_OPTION;
+import static epamers.surwave.core.ExceptionMessageContract.VOTING_WRONG_SURVEY_STATE;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.when;
 
 import epamers.surwave.core.exceptions.VotingException;
@@ -105,60 +114,81 @@ public class VoteListValidatorTest {
     voteListValidator.validate(voteForms);
   }
 
-  @Test(expected = VotingException.class)
+  @Test
   public void addVotes_notEnoughVotes_exception() {
     voteForms = new ArrayList<>();
 
-    voteListValidator.validate(voteForms);
+    Throwable thrown = catchThrowable(() -> voteListValidator.validate(voteForms));
+
+    assertThat(thrown).isInstanceOf(VotingException.class)
+        .hasMessage(VOTING_FOR_ZERO_OPTIONS);
   }
 
-  @Test(expected = VotingException.class)
+  @Test
   public void addVotes_twoVotesForOneOption_exception() {
     voteForms.add(voteForm);
 
-    voteListValidator.validate(voteForms);
+    Throwable thrown = catchThrowable(() -> voteListValidator.validate(voteForms));
+
+    assertThat(thrown).isInstanceOf(VotingException.class)
+        .hasMessage(VOTING_MORE_THAN_ONE_VOTE_FOR_OPTION);
   }
 
-  @Test(expected = VotingException.class)
+  @Test
   public void addVotes_votingForYourOption_exception() {
     voteForm.setOptionId(YOUR_OPTION_ID);
 
-    voteListValidator.validate(voteForms);
+    Throwable thrown = catchThrowable(() -> voteListValidator.validate(voteForms));
+
+    assertThat(thrown).isInstanceOf(VotingException.class)
+        .hasMessage(VOTING_FOR_YOUR_OPTION);
   }
 
-  @Test(expected = VotingException.class)
+  @Test
   public void addVotes_tooMuchVotes_exception() {
     VoteForm anotherForm = VoteForm.builder()
         .surveyId(SURVEY_ID)
         .rating(VOTE_RATING)
         .build();
-
     voteForms.add(anotherForm);
+    String expectedMessage = String.format(VOTING_CHOICES_BY_USER_NOT_SATISFIED, SURVEY_VOTES_BY_USER, voteForms.size());
 
-    voteListValidator.validate(voteForms);
+    Throwable thrown = catchThrowable(() -> voteListValidator.validate(voteForms));
+
+    assertThat(thrown).isInstanceOf(VotingException.class)
+        .hasMessage(expectedMessage);
   }
 
-  @Test(expected = VotingException.class)
+  @Test
   public void addVotes_alreadyVoted_exception() {
     Vote vote2 = Vote.builder()
         .participant(currentUser)
         .build();
     otherOption.getVotes().add(vote2);
 
-    voteListValidator.validate(voteForms);
+    Throwable thrown = catchThrowable(() -> voteListValidator.validate(voteForms));
+
+    assertThat(thrown).isInstanceOf(VotingException.class)
+        .hasMessage(VOTING_ALREADY_VOTED);
   }
 
-  @Test(expected = VotingException.class)
+  @Test
   public void addVotes_invalidRating_exception() {
     voteForm.setRating(15);
 
-    voteListValidator.validate(voteForms);
+    Throwable thrown = catchThrowable(() -> voteListValidator.validate(voteForms));
+
+    assertThat(thrown).isInstanceOf(VotingException.class)
+        .hasMessage(VOTING_INVALID_RATING_FOR_CLASSIC_TYPE);
   }
 
-  @Test(expected = VotingException.class)
+  @Test
   public void addVotes_wrongSurveyState_exception() {
     survey.setState(SurveyState.CREATED);
 
-    voteListValidator.validate(voteForms);
+    Throwable thrown = catchThrowable(() -> voteListValidator.validate(voteForms));
+
+    assertThat(thrown).isInstanceOf(VotingException.class)
+        .hasMessage(VOTING_WRONG_SURVEY_STATE);
   }
 }

@@ -8,7 +8,7 @@ spring:
 
   jpa:
     database: POSTGRESQL
-    show-sql: true
+    show-sql: false
     properties:
       dialect: org.hibernate.dialect.PostgreSQLDialect
       hibernate.temp.use_jdbc_metadata_defaults: false
