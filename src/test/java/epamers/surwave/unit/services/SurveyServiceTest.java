@@ -4,6 +4,10 @@ import static epamers.surwave.TestUtils.OPTION_ID;
 import static epamers.surwave.TestUtils.SURVEY_ID;
 import static epamers.surwave.TestUtils.getValidClassicSurvey;
 import static epamers.surwave.TestUtils.getValidOption;
+import static epamers.surwave.core.ExceptionMessageContract.OPTION_NOT_FOUND;
+import static epamers.surwave.core.ExceptionMessageContract.RESULTS_INVALID_SURVEY_STATE;
+import static epamers.surwave.core.ExceptionMessageContract.SURVEY_IS_NULL_CREATION;
+import static epamers.surwave.core.ExceptionMessageContract.SURVEY_IS_NULL_MODIFICATION;
 import static epamers.surwave.core.ExceptionMessageContract.SURVEY_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -110,9 +114,14 @@ public class SurveyServiceTest {
     assertEquals(survey, foundSurvey);
   }
 
-  @Test(expected = EntityNotFoundException.class)
+  @Test
   public void getById_nonexistentID_exception() {
-    surveyService.getById(NONEXISTENT_SURVEY_ID);
+    String expectedMessage = String.format(SURVEY_NOT_FOUND, NONEXISTENT_SURVEY_ID);
+
+    Throwable thrown = catchThrowable(() ->surveyService.getById(NONEXISTENT_SURVEY_ID));
+
+    assertThat(thrown).isInstanceOf(EntityNotFoundException.class)
+        .hasMessage(expectedMessage);
   }
 
   @Test
@@ -143,9 +152,12 @@ public class SurveyServiceTest {
     assertEquals(SurveyState.CREATED, survey.getState());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void create_nullSurvey_success() {
-    surveyService.create(null);
+    Throwable thrown = catchThrowable(() -> surveyService.create(null));
+
+    assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage(SURVEY_IS_NULL_CREATION);
   }
 
   @Test
@@ -169,14 +181,22 @@ public class SurveyServiceTest {
     assertNotEquals(SurveyType.RANGED, survey.getType());
   }
 
-  @Test(expected = EntityNotFoundException.class)
+  @Test
   public void update_nonexistentId_exception() {
-    surveyService.update(NONEXISTENT_SURVEY_ID, survey);
+    String expectedMessage = String.format(SURVEY_NOT_FOUND, NONEXISTENT_SURVEY_ID);
+
+    Throwable thrown = catchThrowable(() -> surveyService.update(NONEXISTENT_SURVEY_ID, survey));
+
+    assertThat(thrown).isInstanceOf(EntityNotFoundException.class)
+        .hasMessage(expectedMessage);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void update_nullSurvey_exception() {
-    surveyService.update(SURVEY_ID, null);
+    Throwable thrown = catchThrowable(() -> surveyService.update(SURVEY_ID, null));
+
+    assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage(SURVEY_IS_NULL_MODIFICATION);
   }
 
   @Test
@@ -186,13 +206,16 @@ public class SurveyServiceTest {
     verify(optionRepository).delete(any());
   }
 
-  @Test(expected = EntityNotFoundException.class)
+  @Test
   public void removeOption_nonExistentOption_nothingRemoved() {
     Long otherOptionId = 40L;
+    String expectedMessage = String.format(OPTION_NOT_FOUND, otherOptionId);
 
-    surveyService.removeOption(otherOptionId);
+    Throwable thrown = catchThrowable(() -> surveyService.removeOption(otherOptionId));
 
     verify(optionRepository, never()).delete(any());
+    assertThat(thrown).isInstanceOf(EntityNotFoundException.class)
+        .hasMessage(expectedMessage);
   }
 
   @Test
@@ -236,8 +259,11 @@ public class SurveyServiceTest {
     assertThat(returnedSurvey).isEqualTo(survey);
   }
 
-  @Test(expected = ResultsException.class)
+  @Test
   public void getByIdForRating_wrongSurveyState_exception() {
-    surveyService.getByIdForRating(SURVEY_ID);
+    Throwable thrown = catchThrowable(() -> surveyService.getByIdForRating(SURVEY_ID));
+
+    assertThat(thrown).isInstanceOf(ResultsException.class)
+        .hasMessage(RESULTS_INVALID_SURVEY_STATE);
   }
 }

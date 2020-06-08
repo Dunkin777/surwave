@@ -23,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class MediaFileService {
 
   public static final String SONG_SUCCESSFULLY_UPLOADED = "Song with ID %s was successfully uploaded.";
-  public static final String FAILED_TO_LOAD_FILE = "Failed to load file";
   public static final Set<String> SUPPORTED_EXTENSIONS = Set.of("wav", "mp3", "mp4", "aiff", "aif", "flac", "wma", "ogg", "opus");
 
   private final S3Service s3Service;
@@ -43,7 +42,7 @@ public class MediaFileService {
 
       return storageKey;
     } catch (IOException | SdkClientException e) {
-      log.error(FAILED_TO_LOAD_FILE, e);
+      log.error(String.format(SONG_UPLOAD_FAILED, file.getOriginalFilename()), e);
       throw new FileStorageException(String.format(SONG_UPLOAD_FAILED, file.getOriginalFilename()), e);
     }
   }
