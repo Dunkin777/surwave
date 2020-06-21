@@ -30,7 +30,4 @@ public class SurveyResultView {
 
   @ApiModelProperty(notes = "Sum of ratings of all songs in that survey.")
   private Double ratingsSum;
-
-  @ApiModelProperty(notes = "Number of voting participants.")
-  private Long votersNumber;
 }
