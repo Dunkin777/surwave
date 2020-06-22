@@ -1,10 +1,10 @@
 package epamers.surwave.core.exceptions;
 
-public class NotAuthenticatedException extends RuntimeException {
+public class ValidationException extends RuntimeException {
 
   private final String message;
 
-  public NotAuthenticatedException(String message) {
+  public ValidationException(String message) {
     this.message = message;
   }
 

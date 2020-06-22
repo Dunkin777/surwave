@@ -9,7 +9,7 @@ import static epamers.surwave.core.ExceptionMessageContract.SURVEY_IS_NULL_MODIF
 import static epamers.surwave.core.ExceptionMessageContract.SURVEY_NOT_FOUND;
 import static java.util.stream.Collectors.toSet;
 
-import epamers.surwave.core.exceptions.ResultsException;
+import epamers.surwave.core.exceptions.ValidationException;
 import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Song;
 import epamers.surwave.entities.Survey;
@@ -56,7 +56,7 @@ public class SurveyService {
     Survey survey = getByIdWithSongURLs(id);
 
     if (survey.getState() != SurveyState.STOPPED) {
-      throw new ResultsException(RESULTS_INVALID_SURVEY_STATE);
+      throw new ValidationException(RESULTS_INVALID_SURVEY_STATE);
     }
 
     return survey;

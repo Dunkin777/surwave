@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.when;
 
-import epamers.surwave.core.exceptions.VotingException;
+import epamers.surwave.core.exceptions.ValidationException;
 import epamers.surwave.dtos.VoteForm;
 import epamers.surwave.entities.ClassicSurvey;
 import epamers.surwave.entities.Option;
@@ -120,7 +120,7 @@ public class VoteListValidatorTest {
 
     Throwable thrown = catchThrowable(() -> voteListValidator.validate(voteForms));
 
-    assertThat(thrown).isInstanceOf(VotingException.class)
+    assertThat(thrown).isInstanceOf(ValidationException.class)
         .hasMessage(VOTING_FOR_ZERO_OPTIONS);
   }
 
@@ -130,7 +130,7 @@ public class VoteListValidatorTest {
 
     Throwable thrown = catchThrowable(() -> voteListValidator.validate(voteForms));
 
-    assertThat(thrown).isInstanceOf(VotingException.class)
+    assertThat(thrown).isInstanceOf(ValidationException.class)
         .hasMessage(VOTING_MORE_THAN_ONE_VOTE_FOR_OPTION);
   }
 
@@ -140,7 +140,7 @@ public class VoteListValidatorTest {
 
     Throwable thrown = catchThrowable(() -> voteListValidator.validate(voteForms));
 
-    assertThat(thrown).isInstanceOf(VotingException.class)
+    assertThat(thrown).isInstanceOf(ValidationException.class)
         .hasMessage(VOTING_FOR_YOUR_OPTION);
   }
 
@@ -155,7 +155,7 @@ public class VoteListValidatorTest {
 
     Throwable thrown = catchThrowable(() -> voteListValidator.validate(voteForms));
 
-    assertThat(thrown).isInstanceOf(VotingException.class)
+    assertThat(thrown).isInstanceOf(ValidationException.class)
         .hasMessage(expectedMessage);
   }
 
@@ -168,7 +168,7 @@ public class VoteListValidatorTest {
 
     Throwable thrown = catchThrowable(() -> voteListValidator.validate(voteForms));
 
-    assertThat(thrown).isInstanceOf(VotingException.class)
+    assertThat(thrown).isInstanceOf(ValidationException.class)
         .hasMessage(VOTING_ALREADY_VOTED);
   }
 
@@ -178,7 +178,7 @@ public class VoteListValidatorTest {
 
     Throwable thrown = catchThrowable(() -> voteListValidator.validate(voteForms));
 
-    assertThat(thrown).isInstanceOf(VotingException.class)
+    assertThat(thrown).isInstanceOf(ValidationException.class)
         .hasMessage(VOTING_INVALID_RATING_FOR_CLASSIC_TYPE);
   }
 
@@ -188,7 +188,7 @@ public class VoteListValidatorTest {
 
     Throwable thrown = catchThrowable(() -> voteListValidator.validate(voteForms));
 
-    assertThat(thrown).isInstanceOf(VotingException.class)
+    assertThat(thrown).isInstanceOf(ValidationException.class)
         .hasMessage(VOTING_WRONG_SURVEY_STATE);
   }
 }
