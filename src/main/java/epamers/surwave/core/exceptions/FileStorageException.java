@@ -5,19 +5,19 @@ import lombok.Getter;
 @Getter
 public class FileStorageException extends RuntimeException {
 
-  private final String msg;
+  private final String message;
 
-  public FileStorageException(String msg, Exception originalException) {
+  public FileStorageException(String message, Exception originalException) {
     super(originalException);
-    this.msg = msg;
+    this.message = message;
   }
 
-  public FileStorageException(String msg) {
-    this.msg = msg;
+  public FileStorageException(String message) {
+    this.message = message;
   }
 
   @Override
   public String getMessage() {
-    return msg;
+    return message;
   }
 }

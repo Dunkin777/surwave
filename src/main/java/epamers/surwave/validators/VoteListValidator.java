@@ -10,7 +10,7 @@ import static epamers.surwave.core.ExceptionMessageContract.VOTING_NOT_ONE_SURVE
 import static epamers.surwave.core.ExceptionMessageContract.VOTING_WRONG_SURVEY_STATE;
 import static java.util.stream.Collectors.toSet;
 
-import epamers.surwave.core.exceptions.VotingException;
+import epamers.surwave.core.exceptions.ValidationException;
 import epamers.surwave.dtos.VoteForm;
 import epamers.surwave.entities.ClassicSurvey;
 import epamers.surwave.entities.Option;
@@ -35,7 +35,7 @@ public class VoteListValidator implements SurwaveValidator<List<VoteForm>> {
   @Override
   public void validate(List<VoteForm> votes) {
     if (votes.isEmpty()) {
-      throw new VotingException(VOTING_FOR_ZERO_OPTIONS);
+      throw new ValidationException(VOTING_FOR_ZERO_OPTIONS);
     }
 
     Set<Long> surveyIds = votes.stream()
@@ -43,7 +43,7 @@ public class VoteListValidator implements SurwaveValidator<List<VoteForm>> {
         .collect(toSet());
 
     if (surveyIds.size() != 1) {
-      throw new VotingException(VOTING_NOT_ONE_SURVEY);
+      throw new ValidationException(VOTING_NOT_ONE_SURVEY);
     }
 
     Long surveyId = surveyIds.stream()
@@ -53,11 +53,11 @@ public class VoteListValidator implements SurwaveValidator<List<VoteForm>> {
     User participant = userService.getCurrent();
 
     if (survey.getState() != SurveyState.STARTED) {
-      throw new VotingException(VOTING_WRONG_SURVEY_STATE);
+      throw new ValidationException(VOTING_WRONG_SURVEY_STATE);
     }
 
     if (survey.isUserVoted(participant)) {
-      throw new VotingException(VOTING_ALREADY_VOTED);
+      throw new ValidationException(VOTING_ALREADY_VOTED);
     }
 
     checkNumberOfVotes(survey, votes);
@@ -71,14 +71,14 @@ public class VoteListValidator implements SurwaveValidator<List<VoteForm>> {
         .collect(toSet()).size();
 
     if (votes.size() > optionsChecked) {
-      throw new VotingException(VOTING_MORE_THAN_ONE_VOTE_FOR_OPTION);
+      throw new ValidationException(VOTING_MORE_THAN_ONE_VOTE_FOR_OPTION);
     }
 
     if (survey.getType().equals(SurveyType.CLASSIC)) {
       Integer choicesByUser = ((ClassicSurvey) survey).getChoicesByUser();
 
       if (choicesByUser != votes.size()) {
-        throw new VotingException(String.format(VOTING_CHOICES_BY_USER_NOT_SATISFIED, choicesByUser, optionsChecked));
+        throw new ValidationException(String.format(VOTING_CHOICES_BY_USER_NOT_SATISFIED, choicesByUser, optionsChecked));
       }
     }
   }
@@ -87,11 +87,11 @@ public class VoteListValidator implements SurwaveValidator<List<VoteForm>> {
     Option option = surveyService.getOptionById(vote.getOptionId());
 
     if (option.getUser().equals(participant)) {
-      throw new VotingException(VOTING_FOR_YOUR_OPTION);
+      throw new ValidationException(VOTING_FOR_YOUR_OPTION);
     }
 
     if (survey.getType().equals(SurveyType.CLASSIC) && vote.getRating() != 1) {
-      throw new VotingException(VOTING_INVALID_RATING_FOR_CLASSIC_TYPE);
+      throw new ValidationException(VOTING_INVALID_RATING_FOR_CLASSIC_TYPE);
     }
   }
 }

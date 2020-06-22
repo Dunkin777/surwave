@@ -19,7 +19,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import epamers.surwave.core.exceptions.ResultsException;
+import epamers.surwave.core.exceptions.ValidationException;
 import epamers.surwave.entities.ClassicSurvey;
 import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Survey;
@@ -263,7 +263,7 @@ public class SurveyServiceTest {
   public void getByIdForRating_wrongSurveyState_exception() {
     Throwable thrown = catchThrowable(() -> surveyService.getByIdForRating(SURVEY_ID));
 
-    assertThat(thrown).isInstanceOf(ResultsException.class)
+    assertThat(thrown).isInstanceOf(ValidationException.class)
         .hasMessage(RESULTS_INVALID_SURVEY_STATE);
   }
 }
