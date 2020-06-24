@@ -2,6 +2,8 @@ server:
   port: 8080
 
 spring:
+  application:
+    name: SURWAVE
   profiles:
     active:
       - redis-cache
@@ -24,6 +26,11 @@ spring:
 
 logging:
   level:
+    com:
+      netflix:
+        config:
+          sources:
+            URLConfigurationSource: ERROR
     root: INFO
     epamers.surwave.clients.AnalyticsClient: DEBUG
 
