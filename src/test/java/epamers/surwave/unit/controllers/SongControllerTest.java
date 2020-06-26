@@ -1,8 +1,7 @@
 package epamers.surwave.unit.controllers;
 
 import static epamers.surwave.core.Contract.SONG_URL;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -75,9 +74,9 @@ public class SongControllerTest {
   public void getAll_success() {
     List<SongView> returnedSongs = songController.getAll();
 
-    assertEquals(1, returnedSongs.size());
     verify(converter).convert(song, SongView.class);
-    assertTrue(returnedSongs.contains(songView));
+    assertThat(returnedSongs.size()).isEqualTo(1);
+    assertThat(returnedSongs).contains(songView);
   }
 
   @Test
@@ -86,7 +85,6 @@ public class SongControllerTest {
     Song createdSong = Song.builder()
         .id(newSongId)
         .build();
-
     when(songService.getOrCreate(eq(song), any())).thenReturn(createdSong);
 
     songController.create(songForm, response);

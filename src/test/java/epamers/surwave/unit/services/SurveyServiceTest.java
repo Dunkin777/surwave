@@ -9,11 +9,12 @@ import static epamers.surwave.core.ExceptionMessageContract.RESULTS_INVALID_SURV
 import static epamers.surwave.core.ExceptionMessageContract.SURVEY_IS_NULL_CREATION;
 import static epamers.surwave.core.ExceptionMessageContract.SURVEY_IS_NULL_MODIFICATION;
 import static epamers.surwave.core.ExceptionMessageContract.SURVEY_NOT_FOUND;
+import static epamers.surwave.entities.SurveyState.CREATED;
+import static epamers.surwave.entities.SurveyType.RANGED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -24,7 +25,6 @@ import epamers.surwave.entities.ClassicSurvey;
 import epamers.surwave.entities.Option;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.SurveyState;
-import epamers.surwave.entities.SurveyType;
 import epamers.surwave.entities.User;
 import epamers.surwave.entities.Vote;
 import epamers.surwave.repos.OptionRepository;
@@ -67,7 +67,6 @@ public class SurveyServiceTest {
 
   private User currentUser;
   private Survey survey;
-  private Option yourOption;
   private Option otherOption;
 
   @Before
@@ -78,7 +77,7 @@ public class SurveyServiceTest {
         .id(CURRENT_USER_ID)
         .build();
 
-    yourOption = getValidOption();
+    Option yourOption = getValidOption();
     yourOption.setUser(currentUser);
 
     otherOption = getValidOption();
@@ -103,22 +102,22 @@ public class SurveyServiceTest {
   public void getAll_oneSurveyInRepo_gotOneSurvey() {
     List<Survey> surveys = surveyService.getAll();
 
-    assertEquals(1, surveys.size());
-    assertTrue(surveys.contains(survey));
+    assertThat(surveys.size()).isEqualTo(1);
+    assertThat(surveys).contains(survey);
   }
 
   @Test
   public void getById_existingId_success() {
     Survey foundSurvey = surveyService.getById(SURVEY_ID);
 
-    assertEquals(survey, foundSurvey);
+    assertThat(foundSurvey).isEqualTo(survey);
   }
 
   @Test
   public void getById_nonexistentID_exception() {
     String expectedMessage = String.format(SURVEY_NOT_FOUND, NONEXISTENT_SURVEY_ID);
 
-    Throwable thrown = catchThrowable(() ->surveyService.getById(NONEXISTENT_SURVEY_ID));
+    Throwable thrown = catchThrowable(() -> surveyService.getById(NONEXISTENT_SURVEY_ID));
 
     assertThat(thrown).isInstanceOf(EntityNotFoundException.class)
         .hasMessage(expectedMessage);
@@ -128,8 +127,7 @@ public class SurveyServiceTest {
   public void getByIdWithSongURLs_existingId_success() {
     Survey foundSurvey = surveyService.getByIdWithSongURLs(SURVEY_ID);
 
-    assertEquals(survey, foundSurvey);
-
+    assertThat(foundSurvey).isEqualTo(survey);
     verify(songService).fillWithMediaUrl(any());
   }
 
@@ -148,8 +146,8 @@ public class SurveyServiceTest {
     Survey createdSurvey = surveyService.create(survey);
 
     verify(surveyRepository).save(survey);
-    assertEquals(survey, createdSurvey);
-    assertEquals(SurveyState.CREATED, survey.getState());
+    assertThat(createdSurvey).isEqualTo(survey);
+    assertThat(survey.getState()).isEqualTo(CREATED);
   }
 
   @Test
@@ -170,15 +168,16 @@ public class SurveyServiceTest {
         .title(newTitle)
         .description(newDescription)
         .proposalsByUser(newProposalsByUser)
-        .type(SurveyType.RANGED)
+        .type(RANGED)
         .build();
 
     surveyService.update(SURVEY_ID, surveyNewValues);
 
-    assertEquals(newDescription, survey.getDescription());
-    assertEquals(newTitle, survey.getTitle());
-    assertNotEquals(newProposalsByUser, survey.getProposalsByUser());
-    assertNotEquals(SurveyType.RANGED, survey.getType());
+    assertThat(survey).extracting(Survey::getDescription, Survey::getTitle)
+        .contains(newDescription, newTitle);
+
+    assertThat(survey.getProposalsByUser()).isNotEqualTo(newProposalsByUser);
+    assertThat(survey.getType()).isNotEqualTo(RANGED);
   }
 
   @Test
@@ -241,7 +240,6 @@ public class SurveyServiceTest {
         .participant(currentUser)
         .rating(1)
         .build();
-
     List<Vote> votes = new ArrayList<>();
     votes.add(vote);
 
