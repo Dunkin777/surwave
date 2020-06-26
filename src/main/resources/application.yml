@@ -26,12 +26,8 @@ spring:
 
 logging:
   level:
-    com:
-      netflix:
-        config:
-          sources:
-            URLConfigurationSource: ERROR
     root: INFO
+    com.netflix.config.sources.URLConfigurationSource: ERROR
     epamers.surwave.clients.AnalyticsClient: DEBUG
 
 surwave:
