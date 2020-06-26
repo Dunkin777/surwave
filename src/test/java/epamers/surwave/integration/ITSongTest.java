@@ -46,7 +46,7 @@ public class ITSongTest extends IntegrationTest {
   private SongRepository songRepository;
 
   @Rule
-  public TemporaryFolder folder = new TemporaryFolder();
+  public final TemporaryFolder folder = new TemporaryFolder();
 
   @Before
   public void setUp() {

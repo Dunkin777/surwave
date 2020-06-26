@@ -1,7 +1,6 @@
 package epamers.surwave.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;

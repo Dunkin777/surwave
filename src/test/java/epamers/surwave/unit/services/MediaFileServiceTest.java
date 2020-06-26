@@ -50,7 +50,6 @@ public class MediaFileServiceTest {
     String storageKey = "some_dir/" + SONG_ID + ".mp3";
     when(s3Service.putObject(stringArgumentCaptor.capture(), any(), any())).thenReturn(storageKey);
 
-
     String songS3Key = mediaFileService.upload(multipartFile, SONG_ID);
 
     assertThat(stringArgumentCaptor.getValue()).isEqualTo(SONG_ID + ".mp3");
