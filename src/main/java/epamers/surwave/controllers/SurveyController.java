@@ -6,12 +6,14 @@ import static epamers.surwave.core.Contract.SURVEY_URL;
 import static epamers.surwave.core.Contract.VOTE_URL;
 import static java.util.stream.Collectors.toList;
 
+import epamers.surwave.core.annotations.RoleRestricted;
 import epamers.surwave.dtos.OptionForm;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyResultView;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.dtos.VoteForm;
 import epamers.surwave.entities.Option;
+import epamers.surwave.entities.Role;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.User;
 import epamers.surwave.entities.Vote;
@@ -99,6 +101,7 @@ public class SurveyController {
       value = "Create Survey",
       notes = "Awaits SongForm as body. Returns new entity url in 'Location' header. Creates new Survey with 0 Songs."
   )
+  @RoleRestricted(role = Role.ADMIN)
   public void create(
       @ApiParam(value = "Data for new Survey") @RequestBody @Valid SurveyForm surveyForm,
       @ApiIgnore HttpServletResponse response) {
@@ -112,6 +115,7 @@ public class SurveyController {
       value = "Update Survey",
       notes = "Awaits Survey ID as a path variable and SurveyForm as body. Allows to change basic Survey properties."
   )
+  @RoleRestricted(role = Role.ADMIN)
   public void update(@ApiParam(value = "Survey ID") @PathVariable Long id,
       @ApiParam(value = "Updated Survey data") @RequestBody @Valid SurveyForm surveyForm) {
     Survey survey = converter.convert(surveyForm, Survey.class);

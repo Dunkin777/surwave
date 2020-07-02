@@ -6,6 +6,7 @@ import static epamers.surwave.core.ExceptionMessageContract.SONG_FILE_IS_TOO_BIG
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import epamers.surwave.core.exceptions.FileStorageException;
 import epamers.surwave.core.exceptions.NotAuthenticatedException;
+import epamers.surwave.core.exceptions.RoleRestrictionException;
 import epamers.surwave.core.exceptions.ValidationException;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
@@ -93,6 +94,12 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(SizeLimitExceededException.class)
   public ExceptionMessage handleRequestException(SizeLimitExceededException ex) {
     return buildMessage(ex, 413, REQUEST_SIZE_IS_TOO_BIG);
+  }
+
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  @ExceptionHandler(RoleRestrictionException.class)
+  public ExceptionMessage handleRoleRestrictedException(RoleRestrictionException ex) {
+    return buildMessage(ex, 403);
   }
 
   private ExceptionMessage buildMessage(Exception ex, int code) {
