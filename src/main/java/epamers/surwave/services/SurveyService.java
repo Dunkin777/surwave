@@ -114,12 +114,12 @@ public class SurveyService {
   }
 
   @Transactional
-  public void update(Long id, Survey survey) {
+  public void update(Survey survey) {
     if (survey == null) {
       throw new IllegalArgumentException(SURVEY_IS_NULL_MODIFICATION);
     }
 
-    Survey storedSurvey = getById(id);
+    Survey storedSurvey = getById(survey.getId());
     storedSurvey.setDescription(survey.getDescription());
     storedSurvey.setTitle(survey.getTitle());
     storedSurvey.setState(survey.getState());

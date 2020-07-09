@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 @Builder
 @Data
@@ -17,6 +18,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @ApiModel(description = "Resembles Survey with its properties.")
 public class SurveyForm {
+
+  @JsonIgnore
+  private Long id;
 
   @NotNull
   @ApiModelProperty(required = true, notes = "Type of Survey. RANGED is currently unused.", example = "CLASSIC")

@@ -167,13 +167,14 @@ public class SurveyServiceTest {
     final Integer newProposalsByUser = 66;
 
     Survey surveyNewValues = ClassicSurvey.builder()
+        .id(SURVEY_ID)
         .title(newTitle)
         .description(newDescription)
         .proposalsByUser(newProposalsByUser)
         .type(SurveyType.RANGED)
         .build();
 
-    surveyService.update(SURVEY_ID, surveyNewValues);
+    surveyService.update(surveyNewValues);
 
     assertEquals(newDescription, survey.getDescription());
     assertEquals(newTitle, survey.getTitle());
@@ -184,8 +185,9 @@ public class SurveyServiceTest {
   @Test
   public void update_nonexistentId_exception() {
     String expectedMessage = String.format(SURVEY_NOT_FOUND, NONEXISTENT_SURVEY_ID);
+    survey.setId(NONEXISTENT_SURVEY_ID);
 
-    Throwable thrown = catchThrowable(() -> surveyService.update(NONEXISTENT_SURVEY_ID, survey));
+    Throwable thrown = catchThrowable(() -> surveyService.update(survey));
 
     assertThat(thrown).isInstanceOf(EntityNotFoundException.class)
         .hasMessage(expectedMessage);
@@ -193,7 +195,7 @@ public class SurveyServiceTest {
 
   @Test
   public void update_nullSurvey_exception() {
-    Throwable thrown = catchThrowable(() -> surveyService.update(SURVEY_ID, null));
+    Throwable thrown = catchThrowable(() -> surveyService.update(null));
 
     assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
         .hasMessage(SURVEY_IS_NULL_MODIFICATION);

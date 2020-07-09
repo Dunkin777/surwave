@@ -49,6 +49,7 @@ public class SurveyController {
   private final SurveyService surveyService;
   private final ConversionService converter;
   private final SurwaveValidator<List<VoteForm>> voteListValidator;
+  private final SurwaveValidator<Survey> surveyValidator;
 
   @GetMapping("/all")
   @ApiOperation(
@@ -118,8 +119,10 @@ public class SurveyController {
   @RoleRestricted(role = Role.ADMIN)
   public void update(@ApiParam(value = "Survey ID") @PathVariable Long id,
       @ApiParam(value = "Updated Survey data") @RequestBody @Valid SurveyForm surveyForm) {
+    surveyForm.setId(id);
     Survey survey = converter.convert(surveyForm, Survey.class);
-    surveyService.update(id, survey);
+    surveyValidator.validate(survey);
+    surveyService.update(survey);
   }
 
   @PostMapping("/{surveyId}" + OPTION_URL)
