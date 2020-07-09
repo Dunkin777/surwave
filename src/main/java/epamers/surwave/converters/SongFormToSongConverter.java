@@ -13,6 +13,7 @@ public class SongFormToSongConverter implements Converter<SongForm, Song> {
     return Song.builder()
         .performer(songForm.getPerformer())
         .title(songForm.getTitle())
+        .mediaURL(songForm.getSourceLink())
         .build();
   }
 }

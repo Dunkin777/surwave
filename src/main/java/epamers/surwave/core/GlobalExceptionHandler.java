@@ -2,11 +2,13 @@ package epamers.surwave.core;
 
 import static epamers.surwave.core.ExceptionMessageContract.REQUEST_SIZE_IS_TOO_BIG;
 import static epamers.surwave.core.ExceptionMessageContract.SONG_FILE_IS_TOO_BIG;
+import static epamers.surwave.core.ExceptionMessageContract.UNEXPECTED_EXCEPTION;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import epamers.surwave.core.exceptions.FileStorageException;
 import epamers.surwave.core.exceptions.NotAuthenticatedException;
 import epamers.surwave.core.exceptions.ValidationException;
+import epamers.surwave.core.exceptions.YouTubeException;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +35,7 @@ public class GlobalExceptionHandler {
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   @ExceptionHandler(Exception.class)
   public ExceptionMessage handleUnexpectedException(Exception ex) {
-    String message = "Unexpected internal error occurred on the server";
+    String message = String.format(UNEXPECTED_EXCEPTION, ex.getMessage());
 
     return buildMessage(ex, 500, message);
   }
@@ -63,6 +65,14 @@ public class GlobalExceptionHandler {
     String message = messageBuilder.toString().trim();
 
     return buildMessage(ex, 400, message);
+  }
+
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(YouTubeException.class)
+  public ExceptionMessage handleYouTubeException(YouTubeException ex) {
+    log.error("YouTube Exception: ", ex);
+
+    return buildMessage(ex, 400, ex.getMessage());
   }
 
   private String buildFieldError(ObjectError objectError) {

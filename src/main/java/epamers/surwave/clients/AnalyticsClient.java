@@ -11,5 +11,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface AnalyticsClient {
 
   @GetMapping(SONG_URL + "/{songId}" + FEATURES_URL)
-  FeaturesDto getFeatures(@PathVariable Long songId, @RequestParam("song_key") String songKey);
+  FeaturesDto getFeatures(@PathVariable("songId") Long songId, @RequestParam("song_key") String songKey);
 }

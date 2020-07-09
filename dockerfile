@@ -1,4 +1,4 @@
-FROM openjdk:11-jre-slim
+FROM obosya/surwave
 WORKDIR /srv
 
 ENV VERSION=0.0.1

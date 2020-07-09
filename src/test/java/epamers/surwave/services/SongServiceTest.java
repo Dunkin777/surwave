@@ -1,4 +1,4 @@
-package epamers.surwave.unit.services;
+package epamers.surwave.services;
 
 import static epamers.surwave.TestUtils.SONG_ID;
 import static epamers.surwave.TestUtils.getValidSong;
@@ -13,9 +13,6 @@ import static org.mockito.Mockito.when;
 
 import epamers.surwave.entities.Song;
 import epamers.surwave.repos.SongRepository;
-import epamers.surwave.services.AnalyticsService;
-import epamers.surwave.services.MediaFileService;
-import epamers.surwave.services.SongService;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityNotFoundException;

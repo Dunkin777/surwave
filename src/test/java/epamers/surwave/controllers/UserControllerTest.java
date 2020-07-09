@@ -1,9 +1,8 @@
-package epamers.surwave.unit.controllers;
+package epamers.surwave.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import epamers.surwave.controllers.UserController;
 import epamers.surwave.dtos.UserView;
 import epamers.surwave.entities.Role;
 import epamers.surwave.entities.User;

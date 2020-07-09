@@ -7,7 +7,7 @@ stages:
 
 unit-tests:
   stage: unit-tests
-  script: gradle test --tests 'epamers.surwave.unit.*'
+  script: gradle unitTest
 
 integration-tests:
   stage: integration-tests
