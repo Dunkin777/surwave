@@ -2,8 +2,6 @@ package epamers.surwave.unit.controllers;
 
 import static epamers.surwave.core.Contract.SURVEY_URL;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -55,7 +53,6 @@ public class SurveyControllerTest {
   private List<Survey> surveys;
   private SurveyForm surveyForm;
   private SurveyView surveyView;
-  private VoteForm voteForm;
   private List<VoteForm> voteForms;
   private User currentUser;
 
@@ -68,7 +65,7 @@ public class SurveyControllerTest {
     surveyForm = SurveyForm.builder()
         .build();
 
-    voteForm = VoteForm.builder()
+    VoteForm voteForm = VoteForm.builder()
         .build();
 
     voteForms = List.of(voteForm);
@@ -106,15 +103,15 @@ public class SurveyControllerTest {
   public void getAll_success() {
     List<SurveyView> returnedSurveys = surveyController.getAll();
 
-    assertEquals(2, returnedSurveys.size());
-    assertTrue(returnedSurveys.contains(surveyView));
+    assertThat(returnedSurveys.size()).isEqualTo(2);
+    assertThat(returnedSurveys).contains(surveyView);
   }
 
   @Test
   public void get_success() {
     SurveyView returnedSurvey = surveyController.get(SURVEY_ID);
 
-    assertEquals(surveyView, returnedSurvey);
+    assertThat(returnedSurvey).isEqualTo(surveyView);
   }
 
   @Test
@@ -154,7 +151,7 @@ public class SurveyControllerTest {
 
     List<SurveyView> returnedSurveys = surveyController.getAllFiltered(currentUser);
 
-    assertEquals(2, returnedSurveys.size());
+    assertThat(returnedSurveys.size()).isEqualTo(2);
   }
 
   @Test
@@ -163,7 +160,7 @@ public class SurveyControllerTest {
 
     SurveyView returnedSurveys = surveyController.getFiltered(currentUser, SURVEY_ID);
 
-    assertEquals(surveyView, returnedSurveys);
+    assertThat(returnedSurveys).isEqualTo(surveyView);
   }
 
   @Test

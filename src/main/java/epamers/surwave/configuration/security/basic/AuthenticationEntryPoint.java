@@ -20,7 +20,7 @@ public class AuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
   }
 
   @Override
-  public void afterPropertiesSet() throws Exception {
+  public void afterPropertiesSet() {
     setRealmName("SURWAVE");
     super.afterPropertiesSet();
   }

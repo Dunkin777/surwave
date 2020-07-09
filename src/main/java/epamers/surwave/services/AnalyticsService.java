@@ -18,24 +18,37 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AnalyticsService {
 
+  private static final int SECONDS_BETWEEN_RETRIES = 15;
+
   private final AnalyticsClient analyticsClient;
   private final ConversionService converter;
   private final SongRepository songRepository;
 
   @Async
-  @Transactional
   public void fillSongFeatures(Long songId) {
-    FeaturesDto featuresDto;
+
+    for (int attempts = 0; attempts < 3; attempts++) {
+      try {
+        tryFillSongFeatures(songId);
+        break;
+      } catch (FeignException e) {
+        log.error(String.valueOf(e.status()));
+        log.error(e.contentUTF8());
+      }
+
+      try {
+        Thread.sleep(SECONDS_BETWEEN_RETRIES * 1000);
+      } catch (InterruptedException ignored) {
+      }
+    }
+  }
+
+  @Transactional
+  private void tryFillSongFeatures(Long songId) throws FeignException {
     Song song = songRepository.findById(songId).orElseThrow();
 
-    try {
-      featuresDto = analyticsClient.getFeatures(songId, song.getStorageKey());
-
-      Features features = converter.convert(featuresDto, Features.class);
-      song.setFeatures(features);
-    } catch (FeignException e) {
-      log.error(String.valueOf(e.status()));
-      log.error(e.contentUTF8());
-    }
+    FeaturesDto featuresDto = analyticsClient.getFeatures(songId, song.getStorageKey());
+    Features features = converter.convert(featuresDto, Features.class);
+    song.setFeatures(features);
   }
 }

@@ -1,6 +1,6 @@
 package epamers.surwave.unit.controllers;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import epamers.surwave.controllers.UserController;
@@ -31,14 +31,13 @@ public class UserControllerTest {
   @Mock
   private ConversionService converter;
 
-  private User user;
   private UserView userView;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
 
-    user = User.builder()
+    User user = User.builder()
         .avatarUrl(AVATAR_URL)
         .id(USER_ID)
         .username(USERNAME)
@@ -60,6 +59,6 @@ public class UserControllerTest {
   public void getUserInfo_success() {
     UserView returnedUser = userController.getInfo();
 
-    assertEquals(userView, returnedUser);
+    assertThat(returnedUser).isEqualTo(userView);
   }
 }

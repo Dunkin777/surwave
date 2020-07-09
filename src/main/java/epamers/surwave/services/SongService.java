@@ -52,10 +52,8 @@ public class SongService {
     return newSong;
   }
 
-  public Song fillWithMediaUrl(Song song) {
+  public void fillWithMediaUrl(Song song) {
     String songUrl = mediaFileService.getMediaPresignedUrl(song.getStorageKey());
     song.setMediaURL(songUrl);
-
-    return song;
   }
 }

@@ -6,8 +6,6 @@ import static epamers.surwave.core.ExceptionMessageContract.SONG_IS_NULL_CREATIO
 import static epamers.surwave.core.ExceptionMessageContract.SONG_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -66,15 +64,15 @@ public class SongServiceTest {
   public void getAll_success() {
     List<Song> songs = songService.getAll();
 
-    assertEquals(1, songs.size());
-    assertTrue(songs.contains(song));
+    assertThat(songs.size()).isEqualTo(1);
+    assertThat(songs).contains(song);
   }
 
   @Test
   public void getById_existingId_success() {
     Song returnedSong = songService.getById(SONG_ID);
 
-    assertEquals(song, returnedSong);
+    assertThat(returnedSong).isEqualTo(song);
   }
 
   @Test
@@ -94,7 +92,7 @@ public class SongServiceTest {
 
     verify(songRepository).save(song);
     verify(mediaFileService).upload(multipartFile, song.getId());
-    assertEquals(song, returnedSong);
+    assertThat(returnedSong).isEqualTo(song);
   }
 
   @Test
@@ -105,7 +103,7 @@ public class SongServiceTest {
     Song returnedSong = songService.getOrCreate(song, multipartFile);
 
     verify(songRepository, never()).save(any());
-    assertEquals(existingSong, returnedSong);
+    assertThat(returnedSong).isEqualTo(existingSong);
   }
 
   @Test
