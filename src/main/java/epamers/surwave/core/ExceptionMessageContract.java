@@ -11,7 +11,6 @@ public class ExceptionMessageContract {
   public static final String USER_NOT_FOUND_BY_ID = "User with id %s was not found in database";
   public static final String USER_INVALID_NUMBER_OF_VOTES = "Found inconsistent number of votes for current user";
   public static final String USER_NOT_AUTHENTICATED = "Anonymous requests are not supported. Please, use /login";
-  public static final String USER_HAVE_INSUFFICIENT_PERMISSIONS = "User %s have not enough permissions for this action.";
 
   public static final String VOTING_FOR_ZERO_OPTIONS = "Cannot vote for zero options";
   public static final String VOTING_NOT_ONE_SURVEY = "Got incorrect number of surveys involved in voting";

@@ -6,7 +6,6 @@ import static epamers.surwave.core.ExceptionMessageContract.SONG_FILE_IS_TOO_BIG
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import epamers.surwave.core.exceptions.FileStorageException;
 import epamers.surwave.core.exceptions.NotAuthenticatedException;
-import epamers.surwave.core.exceptions.RoleRestrictionException;
 import epamers.surwave.core.exceptions.ValidationException;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
@@ -14,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -97,8 +97,8 @@ public class GlobalExceptionHandler {
   }
 
   @ResponseStatus(HttpStatus.FORBIDDEN)
-  @ExceptionHandler(RoleRestrictionException.class)
-  public ExceptionMessage handleRoleRestrictedException(RoleRestrictionException ex) {
+  @ExceptionHandler(AccessDeniedException.class)
+  public ExceptionMessage handleAccessDeniedException(AccessDeniedException ex) {
     return buildMessage(ex, 403);
   }
 

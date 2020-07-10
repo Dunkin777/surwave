@@ -6,7 +6,6 @@ import static epamers.surwave.core.Contract.SURVEY_URL;
 import static epamers.surwave.core.Contract.VOTE_URL;
 import static java.util.stream.Collectors.toList;
 
-import epamers.surwave.core.annotations.RoleRestricted;
 import epamers.surwave.dtos.OptionForm;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyResultView;
@@ -27,6 +26,7 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -102,7 +102,7 @@ public class SurveyController {
       value = "Create Survey",
       notes = "Awaits SongForm as body. Returns new entity url in 'Location' header. Creates new Survey with 0 Songs."
   )
-  @RoleRestricted(role = Role.ADMIN)
+  @Secured(Role.Name.ADMIN)
   public void create(
       @ApiParam(value = "Data for new Survey") @RequestBody @Valid SurveyForm surveyForm,
       @ApiIgnore HttpServletResponse response) {
@@ -116,7 +116,7 @@ public class SurveyController {
       value = "Update Survey",
       notes = "Awaits Survey ID as a path variable and SurveyForm as body. Allows to change basic Survey properties."
   )
-  @RoleRestricted(role = Role.ADMIN)
+  @Secured(Role.Name.ADMIN)
   public void update(@ApiParam(value = "Survey ID") @PathVariable Long id,
       @ApiParam(value = "Updated Survey data") @RequestBody @Valid SurveyForm surveyForm) {
     surveyForm.setId(id);
