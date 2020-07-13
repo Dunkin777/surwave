@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -93,6 +94,12 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(SizeLimitExceededException.class)
   public ExceptionMessage handleRequestException(SizeLimitExceededException ex) {
     return buildMessage(ex, 413, REQUEST_SIZE_IS_TOO_BIG);
+  }
+
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  @ExceptionHandler(AccessDeniedException.class)
+  public ExceptionMessage handleAccessDeniedException(AccessDeniedException ex) {
+    return buildMessage(ex, 403);
   }
 
   private ExceptionMessage buildMessage(Exception ex, int code) {

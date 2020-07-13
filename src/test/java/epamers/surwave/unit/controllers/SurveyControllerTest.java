@@ -46,7 +46,7 @@ public class SurveyControllerTest {
   private ConversionService converter;
 
   @Mock
-  private SurwaveValidator<List<VoteForm>> voteListValidator;
+  private SurwaveValidator surwaveValidator;
 
   private Survey survey;
   private Vote vote;
@@ -126,7 +126,8 @@ public class SurveyControllerTest {
   public void update_success() {
     surveyController.update(SURVEY_ID, surveyForm);
 
-    verify(surveyService).update(SURVEY_ID, survey);
+    verify(surwaveValidator).validate(survey);
+    verify(surveyService).update(survey);
   }
 
   @Test
@@ -140,7 +141,7 @@ public class SurveyControllerTest {
   public void addVotes_success() {
     surveyController.addVotes(SURVEY_ID, voteForms);
 
-    verify(voteListValidator).validate(voteForms);
+    verify(surwaveValidator).validate(voteForms);
     verify(surveyService).addVotes(List.of(vote));
   }
 

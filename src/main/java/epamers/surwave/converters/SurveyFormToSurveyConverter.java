@@ -33,6 +33,7 @@ public class SurveyFormToSurveyConverter implements Converter<SurveyForm, Survey
       throw new IllegalArgumentException(String.format(SURVEY_UNKNOWN_TYPE, surveyForm.getType()));
     }
 
+    survey.setId(surveyForm.getId());
     survey.setTitle(surveyForm.getTitle());
     survey.setDescription(surveyForm.getDescription());
     survey.setProposalsByUser(surveyForm.getProposalsByUser());

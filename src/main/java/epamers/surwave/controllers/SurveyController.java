@@ -12,6 +12,7 @@ import epamers.surwave.dtos.SurveyResultView;
 import epamers.surwave.dtos.SurveyView;
 import epamers.surwave.dtos.VoteForm;
 import epamers.surwave.entities.Option;
+import epamers.surwave.entities.Role;
 import epamers.surwave.entities.Survey;
 import epamers.surwave.entities.User;
 import epamers.surwave.entities.Vote;
@@ -25,6 +26,7 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,6 +49,7 @@ public class SurveyController {
   private final SurveyService surveyService;
   private final ConversionService converter;
   private final SurwaveValidator<List<VoteForm>> voteListValidator;
+  private final SurwaveValidator<Survey> surveyValidator;
 
   @GetMapping("/all")
   @ApiOperation(
@@ -99,6 +102,7 @@ public class SurveyController {
       value = "Create Survey",
       notes = "Awaits SongForm as body. Returns new entity url in 'Location' header. Creates new Survey with 0 Songs."
   )
+  @Secured(Role.Name.ADMIN)
   public void create(
       @ApiParam(value = "Data for new Survey") @RequestBody @Valid SurveyForm surveyForm,
       @ApiIgnore HttpServletResponse response) {
@@ -112,10 +116,13 @@ public class SurveyController {
       value = "Update Survey",
       notes = "Awaits Survey ID as a path variable and SurveyForm as body. Allows to change basic Survey properties."
   )
+  @Secured(Role.Name.ADMIN)
   public void update(@ApiParam(value = "Survey ID") @PathVariable Long id,
       @ApiParam(value = "Updated Survey data") @RequestBody @Valid SurveyForm surveyForm) {
+    surveyForm.setId(id);
     Survey survey = converter.convert(surveyForm, Survey.class);
-    surveyService.update(id, survey);
+    surveyValidator.validate(survey);
+    surveyService.update(survey);
   }
 
   @PostMapping("/{surveyId}" + OPTION_URL)
