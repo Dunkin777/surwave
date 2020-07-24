@@ -1,25 +1,22 @@
 package epamers.surwave.entities;
 
+import java.io.Serializable;
 import java.util.Arrays;
-import org.springframework.security.core.GrantedAuthority;
 
-public enum Role implements GrantedAuthority {
+public enum Role implements Serializable {
   ADMIN,
   USER;
 
   public static String[] getAllowedAuthorities() {
     return Arrays.stream(values())
-        .map(Role::getAuthority)
+        .map(Role::getAuthorityTitle)
         .toArray(String[]::new);
   }
 
-  @Override
-  public String getAuthority() {
-    return name();
+  public String getAuthorityTitle() {
+    return "ROLE_" + name();
   }
 
-  public static class Name {
-    public static final String ADMIN = "ADMIN";
-    public static final String USER = "USER";
-  }
+  public static final String ROLE_ADMIN = "ROLE_ADMIN";
+  public static final String ROLE_USER = "ROLE_USER";
 }

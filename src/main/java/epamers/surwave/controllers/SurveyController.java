@@ -102,7 +102,7 @@ public class SurveyController {
       value = "Create Survey",
       notes = "Awaits SongForm as body. Returns new entity url in 'Location' header. Creates new Survey with 0 Songs."
   )
-  @Secured(Role.Name.ADMIN)
+  @Secured(Role.ROLE_ADMIN)
   public void create(
       @ApiParam(value = "Data for new Survey") @RequestBody @Valid SurveyForm surveyForm,
       @ApiIgnore HttpServletResponse response) {
@@ -116,7 +116,7 @@ public class SurveyController {
       value = "Update Survey",
       notes = "Awaits Survey ID as a path variable and SurveyForm as body. Allows to change basic Survey properties."
   )
-  @Secured(Role.Name.ADMIN)
+  @Secured(Role.ROLE_ADMIN)
   public void update(@ApiParam(value = "Survey ID") @PathVariable Long id,
       @ApiParam(value = "Updated Survey data") @RequestBody @Valid SurveyForm surveyForm) {
     surveyForm.setId(id);
