@@ -1,4 +1,4 @@
-package epamers.surwave.unit.services;
+package epamers.surwave.services;
 
 import static epamers.surwave.TestUtils.OPTION_ID;
 import static epamers.surwave.TestUtils.SURVEY_ID;
@@ -30,8 +30,6 @@ import epamers.surwave.entities.Vote;
 import epamers.surwave.repos.OptionRepository;
 import epamers.surwave.repos.SurveyRepository;
 import epamers.surwave.repos.VoteRepository;
-import epamers.surwave.services.SongService;
-import epamers.surwave.services.SurveyService;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

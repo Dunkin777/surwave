@@ -1,11 +1,10 @@
-package epamers.surwave.unit.controllers;
+package epamers.surwave.controllers;
 
 import static epamers.surwave.core.Contract.SURVEY_URL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import epamers.surwave.controllers.SurveyController;
 import epamers.surwave.dtos.OptionForm;
 import epamers.surwave.dtos.SurveyForm;
 import epamers.surwave.dtos.SurveyResultView;

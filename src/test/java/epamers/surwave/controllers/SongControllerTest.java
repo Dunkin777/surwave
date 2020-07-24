@@ -1,18 +1,19 @@
-package epamers.surwave.unit.controllers;
+package epamers.surwave.controllers;
 
 import static epamers.surwave.core.Contract.SONG_URL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import epamers.surwave.controllers.SongController;
 import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SongView;
 import epamers.surwave.entities.Song;
 import epamers.surwave.services.AnalyticsService;
 import epamers.surwave.services.SongService;
+import epamers.surwave.validators.SurwaveValidator;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.Before;
@@ -37,6 +38,9 @@ public class SongControllerTest {
 
   @Mock
   ConversionService converter;
+
+  @Mock
+  SurwaveValidator<SongForm> validator;
 
   @Mock
   HttpServletResponse response;
@@ -68,6 +72,7 @@ public class SongControllerTest {
     when(songService.getAll()).thenReturn(List.of(song));
     when(converter.convert(song, SongView.class)).thenReturn(songView);
     when(converter.convert(songForm, Song.class)).thenReturn(song);
+    doNothing().when(validator).validate(any());
   }
 
   @Test

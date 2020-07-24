@@ -27,7 +27,9 @@ public class SongForm {
   @ApiModelProperty(required = true, notes = "Name of the composition/track.", example = "Fly As A Bird")
   private String title;
 
-  @NotNull
-  @ApiModelProperty(required = true, notes = "File")
+  @ApiModelProperty(notes = "File")
   private MultipartFile mediaFile;
+
+  @ApiModelProperty(notes = "A link to source", example = "https://www.youtube.com/watch?v=ntZ3KFJupi0")
+  private String sourceLink;
 }

@@ -1,4 +1,4 @@
-package epamers.surwave.unit.services;
+package epamers.surwave.services;
 
 import static epamers.surwave.core.ExceptionMessageContract.SONG_UPLOAD_FAILED;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -8,8 +8,6 @@ import static org.mockito.Mockito.when;
 
 import com.amazonaws.SdkClientException;
 import epamers.surwave.core.exceptions.FileStorageException;
-import epamers.surwave.services.MediaFileService;
-import epamers.surwave.services.S3Service;
 import java.io.IOException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;

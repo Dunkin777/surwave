@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExceptionMessageContract {
 
+  public static final String OBJECT_IS_NULL = "Received NULL object";
+
   public static final String USER_CANNOT_CHANGE_PASSWORD = "Cannot change password of OAuth user";
   public static final String USER_NOT_FOUND_BY_NAME = "User with name '%s' was not found in database";
   public static final String USER_NOT_FOUND_BY_ID = "User with id %s was not found in database";
@@ -40,4 +42,11 @@ public class ExceptionMessageContract {
   public static final String OPTION_NOT_FOUND = "Option with id %d was not found in database";
   public static final String OPTION_IS_NULL_CREATION = "Cannot add NULL option to a survey";
   public static final String OPTION_ALREADY_EXISTS = "Given survey already contains this song";
+
+  public static final String YOUTUBE_DL_ERROR = "Error during downloading from YouTube";
+  public static final String NO_SOURCE = "There's no data source in request: nor MediaFile, nor source link";
+  public static final String TOO_MANY_SOURCES = "There are too many sources, cannot resolve what to use";
+  public static final String INCORRECT_YOUTUBE_LINK_FORMAT = "Could not recognize the youtubelink %s";
+
+  public static final String UNEXPECTED_EXCEPTION = "Unexpected internal error occurred on the server: %s";
 }

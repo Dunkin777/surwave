@@ -3,6 +3,7 @@ package epamers.surwave.services;
 import static epamers.surwave.core.ExceptionMessageContract.SONG_IS_NULL_CREATION;
 import static epamers.surwave.core.ExceptionMessageContract.SONG_NOT_FOUND;
 
+import com.google.common.base.Strings;
 import epamers.surwave.entities.Song;
 import epamers.surwave.repos.SongRepository;
 import java.util.List;
@@ -44,8 +45,16 @@ public class SongService {
 
   @Transactional
   public Song create(Song song, MultipartFile mediaFile) {
+
     Song newSong = songRepository.save(song);
-    String storageKey = mediaFileService.upload(mediaFile, newSong.getId());
+    String storageKey = "";
+
+    if (!Strings.isNullOrEmpty(song.getMediaURL())) {
+      storageKey = mediaFileService.uploadFromYoutube(song.getMediaURL(), newSong.getId());
+    } else {
+      storageKey = mediaFileService.upload(mediaFile, newSong.getId());
+    }
+
     newSong.setStorageKey(storageKey);
     songRepository.flush();
 

@@ -1,4 +1,4 @@
-package epamers.surwave.unit.validators;
+package epamers.surwave.validators;
 
 import static epamers.surwave.core.ExceptionMessageContract.VOTING_ALREADY_VOTED;
 import static epamers.surwave.core.ExceptionMessageContract.VOTING_CHOICES_BY_USER_NOT_SATISFIED;
@@ -21,7 +21,6 @@ import epamers.surwave.entities.User;
 import epamers.surwave.entities.Vote;
 import epamers.surwave.services.SurveyService;
 import epamers.surwave.services.UserService;
-import epamers.surwave.validators.VoteListValidator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

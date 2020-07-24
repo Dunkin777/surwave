@@ -58,10 +58,15 @@ dependencies {
 	implementation "org.springframework.boot:spring-boot-starter-security"
 	implementation "org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:$oauth2_ver"
 	implementation "commons-fileupload:commons-fileupload:$filesUpload_ver"
+	implementation 'org.springframework:spring-test:5.2.7.RELEASE'
 	runtimeOnly "org.postgresql:postgresql"
 	annotationProcessor "org.projectlombok:lombok"
 	testImplementation "org.springframework.boot:spring-boot-starter-test"
 	testRuntime "com.h2database:h2:$h2_ver"
 	testCompile "com.jayway.restassured:rest-assured:$restAssured_ver"
 	testCompile "org.springframework.security:spring-security-test"
+}
+
+task unitTest( type: Test ) {
+	exclude '**/integration/**'
 }

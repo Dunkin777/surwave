@@ -8,6 +8,7 @@ import epamers.surwave.dtos.SongView;
 import epamers.surwave.entities.Song;
 import epamers.surwave.services.AnalyticsService;
 import epamers.surwave.services.SongService;
+import epamers.surwave.validators.SurwaveValidator;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +35,7 @@ public class SongController {
   private final SongService songService;
   private final AnalyticsService analyticsService;
   private final ConversionService converter;
+  private final SurwaveValidator<SongForm> validator;
 
   @GetMapping("/all")
   @ApiOperation(
@@ -55,6 +57,7 @@ public class SongController {
           + "Returns new Song id in the Location header. Will use existing Song if finds one by title and performer."
   )
   public void create(@ModelAttribute @Valid SongForm songForm, @ApiIgnore HttpServletResponse response) {
+    validator.validate(songForm);
     Song song = converter.convert(songForm, Song.class);
     Long songId = songService.getOrCreate(song, songForm.getMediaFile()).getId();
 
