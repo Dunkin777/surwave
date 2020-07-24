@@ -3,11 +3,9 @@ package epamers.surwave.entities;
 import static java.util.stream.Collectors.toSet;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -21,6 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
@@ -68,10 +67,13 @@ public class User implements UserDetails {
   }
 
   @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
+  public Set<? extends GrantedAuthority> getAuthorities() {
+
     return userRoles.stream()
         .map(UserRole::getRole)
-        .collect(Collectors.toSet());
+        .map(Role::getAuthorityTitle)
+        .map(SimpleGrantedAuthority::new)
+        .collect(toSet());
   }
 
   @Override
@@ -116,6 +118,6 @@ public class User implements UserDetails {
   public Set<Role> getRoles() {
     return userRoles.stream()
         .map(UserRole::getRole)
-        .collect(Collectors.toSet());
+        .collect(toSet());
   }
 }
