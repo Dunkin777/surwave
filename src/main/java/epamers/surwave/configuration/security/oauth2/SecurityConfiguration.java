@@ -4,6 +4,7 @@ import epamers.surwave.configuration.security.AuthType;
 import epamers.surwave.services.UserService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .anyRequest().authenticated()
         .and()
         .csrf().disable();
+  }
+
+  @Bean
+  public AuthoritiesExtractor authoritiesExtractor(UserService userService) {
+    return userService::extractAuthorities;
   }
 
   @Bean

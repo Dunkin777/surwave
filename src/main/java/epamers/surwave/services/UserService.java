@@ -8,11 +8,16 @@ import epamers.surwave.core.exceptions.NotAuthenticatedException;
 import epamers.surwave.entities.User;
 import epamers.surwave.repos.UserRepository;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -38,6 +43,19 @@ public class UserService implements UserDetailsService {
     user.setLastVisit(LocalDateTime.now());
 
     return userRepository.save(user);
+  }
+
+  public List<GrantedAuthority> extractAuthorities(Map<String, Object> map){
+    String id = (String) map.get("sub");
+    Optional<User> optional = userRepository.findById(id);
+
+    if (optional.isPresent()) {
+      User user = optional.get();
+
+      return new ArrayList<>(user.getAuthorities());
+    }
+
+    return Collections.emptyList();
   }
 
   public User getCurrent() {
