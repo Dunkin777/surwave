@@ -25,8 +25,8 @@ public class AnalyticsService {
   private final SongRepository songRepository;
 
   @Async
+  @Transactional
   public void fillSongFeatures(Long songId) {
-
     for (int attempts = 0; attempts < 3; attempts++) {
       try {
         tryFillSongFeatures(songId);
@@ -43,7 +43,6 @@ public class AnalyticsService {
     }
   }
 
-  @Transactional
   private void tryFillSongFeatures(Long songId) throws FeignException {
     Song song = songRepository.findById(songId).orElseThrow();
 
