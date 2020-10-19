@@ -21,7 +21,7 @@ public class OptionForm {
       example = "12")
   private Long songId;
 
-  @Size(max = 150)
+  @Size(max = 2000)
   @ApiModelProperty(notes = "Notes from user who suggested this song for other voters.",
       example = "Everybody knows the lyrics, will sing along. But let's play it faster.")
   private String comment;
