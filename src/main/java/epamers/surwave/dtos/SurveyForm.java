@@ -36,7 +36,7 @@ public class SurveyForm {
       example = "Songs for New Year party")
   private String title;
 
-  @Size(max = 300)
+  @Size(max = 2000)
   @ApiModelProperty(notes = "Message left by Survey creator for every user who wants to vote.",
       example = "We need to pick some fast songs! And please, have mercy on drummer this time!")
   private String description;

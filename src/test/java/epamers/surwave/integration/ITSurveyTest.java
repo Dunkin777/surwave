@@ -253,8 +253,8 @@ public class ITSurveyTest extends IntegrationTest {
 
   @Test
   public void createSurvey_descriptionTooLong_error() {
-    String descriptionOver300Chars = RandomStringUtils.randomAlphabetic(301);
-    surveyForm.setDescription(descriptionOver300Chars);
+    String invalidDescription = RandomStringUtils.randomAlphabetic(2001);
+    surveyForm.setDescription(invalidDescription);
 
     givenJson()
         .body(surveyForm)
@@ -267,8 +267,8 @@ public class ITSurveyTest extends IntegrationTest {
   public void addOptionToSurvey_commentTooLong_error() {
     Long surveyId = createNewSurvey();
 
-    String commentOver150Chars = RandomStringUtils.randomAlphabetic(151);
-    optionForm.setComment(commentOver150Chars);
+    String invalidComment = RandomStringUtils.randomAlphabetic(2001);
+    optionForm.setComment(invalidComment);
 
     givenJson()
         .body(optionForm)
