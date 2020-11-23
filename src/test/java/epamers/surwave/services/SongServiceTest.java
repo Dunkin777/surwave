@@ -39,9 +39,6 @@ public class SongServiceTest {
   @Mock
   MultipartFile multipartFile;
 
-  @Mock
-  AnalyticsService analyticsService;
-
   private Song song;
 
   @Before

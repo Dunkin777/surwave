@@ -19,7 +19,6 @@ public class SongService {
 
   private final SongRepository songRepository;
   private final MediaFileService mediaFileService;
-  private final AnalyticsService analyticsService;
 
   public List<Song> getAll() {
     return songRepository.findAll();
@@ -35,12 +34,7 @@ public class SongService {
     }
 
     return songRepository.findByTitleIgnoreCaseAndPerformerIgnoreCase(song.getTitle(), song.getPerformer())
-        .orElseGet(() -> {
-          Song newSong = create(song, mediaFile);
-          analyticsService.fillSongFeatures(newSong.getId());
-
-          return newSong;
-        });
+        .orElseGet(() -> create(song, mediaFile));
   }
 
   @Transactional

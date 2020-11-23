@@ -1,12 +1,10 @@
 package epamers.surwave.controllers;
 
-import static epamers.surwave.core.Contract.FEATURES_URL;
 import static epamers.surwave.core.Contract.SONG_URL;
 
 import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SongView;
 import epamers.surwave.entities.Song;
-import epamers.surwave.services.AnalyticsService;
 import epamers.surwave.services.SongService;
 import epamers.surwave.validators.SurwaveValidator;
 import io.swagger.annotations.ApiOperation;
@@ -19,9 +17,7 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +29,6 @@ import springfox.documentation.annotations.ApiIgnore;
 public class SongController {
 
   private final SongService songService;
-  private final AnalyticsService analyticsService;
   private final ConversionService converter;
   private final SurwaveValidator<SongForm> validator;
 
@@ -62,16 +57,5 @@ public class SongController {
     Long songId = songService.getOrCreate(song, songForm.getMediaFile()).getId();
 
     response.addHeader("Location", SONG_URL + "/" + songId);
-  }
-
-  @PutMapping("/{songId}" + FEATURES_URL + "/recalculate")
-  @ResponseStatus(HttpStatus.OK)
-  @ApiOperation(
-      value = "Recalculate song features",
-      notes = "Awaits song id as url argument. Asynchronously calls analytics service to rewrite song features info. "
-          + "Body of request is ignored."
-  )
-  public void recalculateFeatures(@PathVariable Long songId) {
-    analyticsService.fillSongFeatures(songId);
   }
 }

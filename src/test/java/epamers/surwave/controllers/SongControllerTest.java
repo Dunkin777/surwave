@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 import epamers.surwave.dtos.SongForm;
 import epamers.surwave.dtos.SongView;
 import epamers.surwave.entities.Song;
-import epamers.surwave.services.AnalyticsService;
 import epamers.surwave.services.SongService;
 import epamers.surwave.validators.SurwaveValidator;
 import java.util.List;
@@ -47,9 +46,6 @@ public class SongControllerTest {
 
   @Mock
   MultipartFile multipartFile;
-
-  @Mock
-  AnalyticsService analyticsService;
 
   private Song song;
   private SongView songView;
@@ -97,12 +93,5 @@ public class SongControllerTest {
     verify(converter).convert(songForm, Song.class);
     verify(songService).getOrCreate(song, multipartFile);
     verify(response).addHeader("Location", SONG_URL + "/" + newSongId);
-  }
-
-  @Test
-  public void recalculateFeatures_success() {
-    songController.recalculateFeatures(SONG_ID);
-
-    verify(analyticsService).fillSongFeatures(SONG_ID);
   }
 }
